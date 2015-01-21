@@ -1,19 +1,24 @@
 'use strict';
 
 var lion = {
-    //////// the standard library ////////
+    //////// constants ////////
+
+    W_DELAY: 1,
+    W_ENVCALL: 2,
+
+    //////// libraries ////////
 
     // the standard library
     stdlib: {},
 
     // convert f(...) to g(env, ast)
-    wrap: function (func, hasdelay, hasenv) {
+    wrap: function (func, option) {
         return function (env, ast) {
-            var argret = hasenv ? [env] : [];
+            var argret = (option & lion.W_ENVCALL) ? [env] : [];
 
             for (var i = 1; i < ast.length; ++i) {
                 argret.push(
-                    hasdelay ?
+                    (option & lion.W_DELAY) ?
                         // make a function
                         function () {lion.call(env, ast[i]);} :
                         // call directly
@@ -31,11 +36,11 @@ var lion = {
     },
 
     // set a library function with wrap
-    stdwrap: function (name, func, hasdelay, hasenv) {
-        return lion.stdlib[name] = lion.wrap(func, hasdelay, hasenv);
+    stdwrap: function (name, func, option) {
+        return lion.stdlib[name] = lion.wrap(func, option);
     },
 
-    //////// environment ////////
+    //////// environments ////////
 
     // initialize an environment
     envinit: function () {
