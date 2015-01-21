@@ -7,12 +7,18 @@ var lion = {
     stdlib: {},
 
     // convert f(...) to g(env, ast)
-    wrap: function (func, hasenv) {
+    wrap: function (func, hasdelay, hasenv) {
         return function (env, ast) {
             var argret = hasenv ? [env] : [];
 
             for (var i = 1; i < ast.length; ++i) {
-                argret.push(lion.call(env, ast[i]));
+                argret.push(
+                    hasdelay ?
+                        // make a function
+                        function () {lion.call(env, ast[i]);} :
+                        // call directly
+                        lion.call(env, ast[i])
+                );
             }
 
             return func.apply(this, argret);
@@ -20,13 +26,13 @@ var lion = {
     },
 
     // set a library function
-    stdfunc: function (name, func) {
+    stdraw: function (name, func) {
         return lion.stdlib[name] = func;
     },
 
     // set a library function with wrap
-    stdfuncwrap: function (name, func, hasenv) {
-        return lion.stdlib[name] = lion.wrap(func, hasenv);
+    stdwrap: function (name, func, hasdelay, hasenv) {
+        return lion.stdlib[name] = lion.wrap(func, hasdelay, hasenv);
     },
 
     //////// environment ////////
@@ -67,6 +73,6 @@ var lion = {
     },
 };
 
-lion.stdfunc('quote', lion.quote);
-lion.stdfunc('\'', lion.quote);
-lion.stdfunc('call', lion.call);
+lion.stdraw('quote', lion.quote);
+lion.stdraw('\'', lion.quote);
+lion.stdraw('call', lion.call);
