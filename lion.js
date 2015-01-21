@@ -39,7 +39,8 @@ var lion = {
     call: function (env, ast) {
         if (ast instanceof Array) {
             // is callable
-            return env.get(env, ['get', ast[0]])(env, ast);
+            var name = lion.call(env, ast[0]);
+            return env.get(env, ['get', name])(env, ast);
         } else {
             // is atomic
             return ast;
@@ -54,10 +55,6 @@ var lionstd = {};
 lion.addfunc(lionstd, {
     // get value from the environment or its parent
     get: function (env, ast) {
-        while (ast[1] instanceof Array) {
-            ast[1] = lion.call(env, ast[1]);
-        }
-
         if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
             return;
         }
@@ -69,15 +66,11 @@ lion.addfunc(lionstd, {
 
     // set value in the environment
     set: function (env, ast) {
-        while (ast[1] instanceof Array) {
-            ast[1] = lion.call(ast[1]);
-        }
-
         if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
             return;
         }
 
-        env[ast[1]] = lion.call(ast[2]);
+        env[ast[1]] = ast[2];
     },
 
     // initialize an environment
