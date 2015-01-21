@@ -1,6 +1,6 @@
 'use strict';
 
-// utilities
+//////// utilities ////////
 var lion = {
     //////// constants ////////
 
@@ -28,14 +28,11 @@ var lion = {
         };
     },
 
-    // set a library function
-    stdraw: function (name, func) {
-        return lionstd[name] = func;
-    },
-
-    // set a library function with wrap
-    stdwrap: function (name, func, option) {
-        return lionstd[name] = lion.wrap(func, option);
+    // add library functions
+    addfunc: function (env, pkg, hook) {
+        for (var i in pkg) {
+            env[i] = hook ? hook(pkg[i]) : pkg[i];
+        }
     },
 
     // execute an AST
@@ -48,13 +45,21 @@ var lion = {
             return ast;
         }
     },
+};
 
-    //////// built-in functions ////////
+// the standard library
+var lionstd = {};
 
+//////// built-in functions ////////
+lion.addfunc(lionstd, {
     // get value from the environment or its parent
     get: function (env, ast) {
         while (ast[1] instanceof Array) {
             ast[1] = lion.call(env, ast[1]);
+        }
+
+        if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
+            return;
         }
 
         return env[ast[1]] || (
@@ -66,6 +71,10 @@ var lion = {
     set: function (env, ast) {
         while (ast[1] instanceof Array) {
             ast[1] = lion.call(ast[1]);
+        }
+
+        if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
+            return;
         }
 
         env[ast[1]] = lion.call(ast[2]);
@@ -88,13 +97,4 @@ var lion = {
     quote: function (env, ast) {
         return ast[1];
     },
-};
-
-// the standard library
-var lionstd = {
-    parent: undefined,
-    get: lion.get,
-    set:lion.set,
-    init: lion.init,
-    quote: lion.quote,
-};
+});
