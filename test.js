@@ -1,4 +1,4 @@
 'use strict';
 
-var e = lion.envinit();
+var e = lion.init();
 alert(lion.call(e, ['add', ['sub', 7, 100], 2]));

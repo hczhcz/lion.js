@@ -43,19 +43,19 @@ var lion = {
     //////// environments ////////
 
     // initialize an environment
-    envinit: function () {
-        return {'parent': lion.stdlib};
+    init: function (env) {
+        return {'parent': env || lion.stdlib};
     },
 
     // get value from the environment or its parent
-    envget: function (env, name) {
+    get: function (env, name) {
         return env[name] || (
-            env['parent'] && lion.envget(env['parent'], name)
+            env['parent'] && lion.get(env['parent'], name)
         );
     },
 
     // set value in the environment
-    envset: function (env, name, value) {
+    set: function (env, name, value) {
         env[name] = value;
     },
 
@@ -65,7 +65,7 @@ var lion = {
     call: function (env, ast) {
         if (ast instanceof Array) {
             // is callable
-            return lion.envget(env, ast[0])(env, ast);
+            return lion.get(env, ast[0])(env, ast);
         } else {
             // is atomic
             return ast;
@@ -78,6 +78,9 @@ var lion = {
     },
 };
 
+lion.stdraw('call', lion.call);
 lion.stdraw('quote', lion.quote);
 lion.stdraw('\'', lion.quote);
-lion.stdraw('call', lion.call);
+lion.stdwrap('init', lion.init, lion.W_ENVCALL);
+lion.stdwrap('get', lion.get, lion.W_ENVCALL);
+lion.stdwrap('set', lion.set, lion.W_ENVCALL);
