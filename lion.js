@@ -1,7 +1,9 @@
 'use strict';
 
 //////// utilities ////////
+
 var lion = {
+
     //////// constants ////////
 
     W_DELAY: 1,
@@ -29,9 +31,9 @@ var lion = {
     },
 
     // add library functions
-    addfunc: function (env, pkg, hook) {
+    addfunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
-            env[i] = hook ? hook(pkg[i]) : pkg[i];
+            env[i] = hook ? hook(pkg[i], option) : pkg[i];
         }
     },
 
@@ -48,7 +50,8 @@ var lion = {
     },
 };
 
-// the standard library
+//////// the standard library ////////
+
 var lionstd = {};
 
 //////// built-in functions ////////
@@ -86,7 +89,7 @@ lion.addfunc(lionstd, {
         };
     },
 
-    // return an AST object
+    // return the AST
     quote: function (env, ast) {
         return ast[1];
     },
