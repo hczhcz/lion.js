@@ -37,6 +37,18 @@ var lion = {
         }
     },
 
+    // initialize an environment
+    init: function (env) {
+        if (!env) {
+            env = lionstd;
+        }
+
+        return {
+            get: env.get,
+            set: env.set,
+        };
+    },
+
     // execute an AST
     call: function (env, ast) {
         if (ast instanceof Array) {
@@ -74,19 +86,6 @@ lion.addfunc(lionstd, {
         }
 
         env[ast[1]] = ast[2];
-    },
-
-    // initialize an environment
-    init: function (env, ast) {
-        if (!env) {
-            env = lionstd;
-        }
-
-        return {
-            parent: env,
-            get: env.get,
-            set: env.set,
-        };
     },
 
     // return the AST
