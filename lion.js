@@ -16,14 +16,19 @@ var lion = {
         return function (env, ast) {
             var argret = (option & lion.W_ENVCALL) ? [env] : [];
 
+            // scan arguments
             for (var i = 1; i < ast.length; ++i) {
-                argret.push(
-                    (option & lion.W_DELAY) ?
-                        // make a function
-                        function () {lion.call(env, ast[i]);} :
-                        // call directly
+                if (option & lion.W_DELAY) {
+                    // make a function
+                    argret.push(function () {
+                        lion.call(env, ast[i]);
+                    });
+                } else {
+                    // call directly
+                    argret.push(
                         lion.call(env, ast[i])
-                );
+                    );
+                }
             }
 
             return func.apply(this, argret);
@@ -56,7 +61,7 @@ var lion = {
             var name = lion.call(env, ast[0]);
             return env.get(env, ['get', name])(env, ast);
         } else {
-            // is atomic
+            // is an object
             return ast;
         }
     },
