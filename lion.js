@@ -42,18 +42,6 @@ var lion = {
         }
     },
 
-    // initialize an environment
-    init: function (env) {
-        if (!env) {
-            env = lionstd;
-        }
-
-        return {
-            get: env.get,
-            set: env.set,
-        };
-    },
-
     // execute an AST
     call: function (env, ast) {
         if (ast instanceof Array) {
@@ -74,36 +62,56 @@ var lionstd = {};
 //////// built-in functions ////////
 
 lion.addfunc(lionstd, {
+    // initialize an environment
+    // proto: init(value)
+    init: function (env, value) {
+        if (!env) {
+            env = lionstd;
+        }
+
+        if (!value) {
+            value = {};
+        }
+
+        value.parent = env;
+        value.get = env.get;
+        value.set = env.set;
+
+        return value;
+    },
+
     // get value from the environment or its parent
     // proto: get(name) -> ast
-    get: function (env, ast) {
-        if (!(ast[1] instanceof String)) {
+    get: function (env, name) {
+        // if (!(name instanceof String)) {
+        if (typeof name != 'string') {
             // not a name
-            return ast[1];
-        } else if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
+            return name;
+        } else if ((name in env) && !env.hasOwnProperty(name)) {
             // js internal property
-            throw '[LION] name is not acceptable: ' + ast[1];
+            throw '[LION] name is not acceptable: ' + name;
         } else {
-            return env[ast[1]] || (
-                env.parent && env.parent.get(env.parent, ast)
+            return env[name] || (
+                env.parent && env.parent.get(env.parent, name)
             );
         }
     },
 
     // set value in the environment
-    // proto: set(name, ast)
-    set: function (env, ast) {
-        if (!(ast[1] instanceof String)) {
+    // proto: set(name, value)
+    set: function (env, name, value) {
+        // if (!(name instanceof String)) {
+        if (typeof name != 'string') {
             // not a name
-            throw '[LION] name is not string: ' + ast[1];
-        } else if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
+            throw '[LION] name is not string: ' + name;
+        } else if ((name in env) && !env.hasOwnProperty(name)) {
             // js internal property
-            throw '[LION] name is not acceptable: ' + ast[1];
+            throw '[LION] name is not acceptable: ' + name;
         } else {
-            env[ast[1]] = ast[2];
+            env[name] = value;
         }
     },
-}, lion.wrap, W_ENVCALL);
+}, lion.wrap, lion.W_ENVCALL);
 
 lion.addfunc(lionstd, {
 
