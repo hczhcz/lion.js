@@ -11,27 +11,38 @@ var lion = {
 
     //////// helper functions ////////
 
-    // convert f(...) to g(env, ast)
+    // convert f([env, ]arg...) to g(env, ast) with calls
     wrap: function (func, option) {
         return function (env, ast) {
-            var argret = (option & lion.W_ENVCALL) ? [env] : [];
+            var arg = (option & lion.W_ENVCALL) ? [env] : [];
 
             // scan arguments
             for (var i = 1; i < ast.length; ++i) {
                 if (option & lion.W_DELAY) {
                     // make a function
-                    argret.push(function () {
+                    arg.push(function () {
                         lion.call(env, ast[i]);
                     });
                 } else {
                     // call directly
-                    argret.push(
+                    arg.push(
                         lion.call(env, ast[i])
                     );
                 }
             }
 
-            return func.apply(this, argret);
+            return func.apply(this, arg);
+        };
+    },
+
+    // convert f([env, ]arg...) to g(env, ast) without calls
+    wrapraw: function (func, option) {
+        return function (env, ast) {
+            var arg = (option & lion.W_ENVCALL) ? [env] : [];
+
+            arg = arg.concat(ast.slice(1)); // TODO: performance?
+
+            return func.apply(this, arg);
         };
     },
 
