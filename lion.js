@@ -67,28 +67,43 @@ var lion = {
 var lionstd = {};
 
 //////// built-in functions ////////
+
 lion.addfunc(lionstd, {
     // get value from the environment or its parent
+    // proto: get(name) -> ast
     get: function (env, ast) {
-        if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
-            return;
+        if (!(ast[1] instanceof String)) {
+            // not a name
+            return ast[1];
+        } else if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
+            // js internal property
+            throw '[LION] name is not acceptable: ' + ast[1];
+        } else {
+            return env[ast[1]] || (
+                env.parent && env.parent.get(env.parent, ast)
+            );
         }
-
-        return env[ast[1]] || (
-            env.parent && env.parent.get(env.parent, ast)
-        );
     },
 
     // set value in the environment
+    // proto: set(name, ast)
     set: function (env, ast) {
-        if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
-            return;
+        if (!(ast[1] instanceof String)) {
+            // not a name
+            throw '[LION] name is not string: ' + ast[1];
+        } else if ((ast[1] in env) && !env.hasOwnProperty(ast[1])) {
+            // js internal property
+            throw '[LION] name is not acceptable: ' + ast[1];
+        } else {
+            env[ast[1]] = ast[2];
         }
-
-        env[ast[1]] = ast[2];
     },
+}, lion.wrap, W_ENVCALL);
+
+lion.addfunc(lionstd, {
 
     // return the AST
+    // proto: quote(ast)
     quote: function (env, ast) {
         return ast[1];
     },
