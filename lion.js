@@ -85,15 +85,15 @@ lion.addfunc(lionstd, {
         }
 
         value.parent = env;
-        value.get = env.get;
-        value.set = env.set;
+        value.getq = env.getq;
+        value.setq = env.setq;
 
         return value;
     },
 
     // get value from the environment or its parent
-    // proto: get(name) -> ast
-    get: function (env, name) {
+    // proto: getq(name) -> ast
+    getq: function (env, name) {
         // if (!(name instanceof String)) {
         if (typeof name != 'string') {
             // not a name
@@ -103,14 +103,16 @@ lion.addfunc(lionstd, {
             throw '[LION] name is not acceptable: ' + name;
         } else {
             return env[name] || (
-                env.parent && env.parent.get(env.parent, name)
+                env.parent && env.parent.getq(env.parent, [
+                    'getq', name
+                ])
             );
         }
     },
 
     // set value in the environment
-    // proto: set(name, value)
-    set: function (env, name, value) {
+    // proto: setq(name, value)
+    setq: function (env, name, value) {
         // if (!(name instanceof String)) {
         if (typeof name != 'string') {
             // not a name
@@ -122,7 +124,7 @@ lion.addfunc(lionstd, {
             env[name] = value;
         }
     },
-}, lion.wrap, lion.W_ENVCALL);
+}, lion.wrapraw, lion.W_ENVCALL);
 
 lion.addfunc(lionstd, {
 
