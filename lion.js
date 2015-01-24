@@ -56,9 +56,16 @@ var lion = {
     // execute an AST
     call: function (env, ast) {
         if (ast instanceof Array) {
-            // is callable
-            var name = lion.call(env, ast[0]);
-            return env.get(env, ['get', name])(env, ast);
+            // is a function call
+
+            // get the callee from the environment
+            var callee = env.getq(env, [
+                'getq', lion.call(env, ast[0])
+            ]);
+
+            return env.call(env, [
+                'call', callee, ast
+            ]);
         } else {
             // is an object
             return ast;
@@ -87,6 +94,8 @@ lion.addfunc(lionstd, {
         value.parent = env;
         value.getq = env.getq;
         value.setq = env.setq;
+        value.call = env.call;
+        value.exec = env.exec;
 
         return value;
     },
@@ -127,6 +136,35 @@ lion.addfunc(lionstd, {
 }, lion.wrapraw, lion.W_ENVCALL);
 
 lion.addfunc(lionstd, {
+    // execute an AST with arguments
+    // proto: call(callee, caller)
+    call: function (env, ast) {
+        var callee = ast[1];
+        var caller = ast[2];
+
+        if (callee instanceof Function) {
+            // callee is a builtin function
+            return callee(env, caller);
+        } else if (callee instanceof Array) {
+            // callee is an AST
+            env.caller = caller;
+            return lion.call(env, callee);
+        } else if (callee.hasOwnProperty('exec')) {
+            // callee is a callable object
+            // return lion.call(callee, ['exec', env, caller]);
+            throw '[LION] exec call is not implemented';
+        } else {
+            // callee is not callable
+            throw '[LION] callee is not callable: ' + ast[1];
+        }
+    },
+
+    // execute an AST with
+    // proto: exec(parent, caller)
+    // exec: function (env, ast) {
+    //     env.parent = ast[1];
+    //     lion.call(env, )
+    // }
 
     // return the AST
     // proto: quote(ast)
