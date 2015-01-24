@@ -83,10 +83,6 @@ lion.addfunc(lionstd, {
     // initialize an environment
     // proto: init(value)
     init: function (env, value) {
-        if (!env) {
-            env = lionstd;
-        }
-
         if (!value) {
             value = {};
         }
