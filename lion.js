@@ -63,6 +63,7 @@ var lion = {
                 'getq', lion.call(env, ast[0])
             ]);
 
+            // call it
             return env.call(env, [
                 'call', callee, ast
             ]);
@@ -77,11 +78,11 @@ var lion = {
 
 var lionstd = {};
 
-//////// built-in functions ////////
+//////// core functions ////////
 
 lion.addfunc(lionstd, {
     // initialize an environment
-    // proto: init(value)
+    // proto: init(value) -> env
     init: function (env, value) {
         if (!value) {
             value = {};
@@ -94,9 +95,11 @@ lion.addfunc(lionstd, {
 
         return value;
     },
+}, lion.wrap, lion.W_ENVCALL);
 
+lion.addfunc(lionstd, {
     // get value from the environment or its parent
-    // proto: getq(name) -> ast
+    // proto: getq('name) -> value
     getq: function (env, name) {
         // if (!(name instanceof String)) {
         if (typeof name != 'string') {
@@ -115,7 +118,7 @@ lion.addfunc(lionstd, {
     },
 
     // set value in the environment
-    // proto: setq(name, value)
+    // proto: setq('name, 'value)
     setq: function (env, name, value) {
         // if (!(name instanceof String)) {
         if (typeof name != 'string') {
@@ -132,7 +135,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // execute an AST with arguments
-    // proto: call(callee, caller) -> result
+    // proto: call('callee, 'caller) -> result
     call: function (env, ast) {
         var callee = ast[1];
         var caller = ast[2];
@@ -154,35 +157,51 @@ lion.addfunc(lionstd, {
             throw '[LION] callee is not callable: ' + ast[1];
         }
     },
-
-    // return the AST
-    // proto: quote(ast) -> ast
-    quote: function (env, ast) {
-        return ast[1];
-    },
 });
+
+//////// built-in functions ////////
+
+//// call & access ////
 
 lion.addfunc(lionstd, {
     // getq() with wrap
+    // proto: get(name) -> value
     get: function (env, name) {return env.getq(env, ['getq', name])},
     // setq() with wrap
+    // proto: set(name, value)
     set: function (env, name, value) {env.setq(env, ['setq', name, value])},
 
+    // just calling
+    // proto: pass(ast) -> (call)^1 -> result
+    pass: function (env, ast) {return ast;},
     // lion.call() with wrap
-    eval: function (env, ast) {return lion.call(env, ast);}
+    // proto: eval($ast) -> (call)^2 -> result
+    eval: function (env, ast) {return lion.call(env, ast);},
 }, lion.wrap, lion.W_ENVCALL);
 
 lion.addfunc(lionstd, {
-    // return all
+    // return the AST
+    // proto: quote('ast) -> ast
+    quote: function (env, ast) {return ast[1];},
+});
+
+//// control flow ////
+
+lion.addfunc(lionstd, {
+    // call and return arguments as a list
     // proto: list(...) -> ...
     list: function () {return arguments;},
-    // return the first
+    // call and return the first argument
     // proto: retfirst(...) -> first
     // retfirst: function () {return arguments[0];},
-    // return the last
+    // call and return the last argument
     // proto: retlast(...) -> last
     // retlast: function () {return arguments[arguments.length - 1];},
+}, lion.wrap);
 
+//// ??? ////
+
+lion.addfunc(lionstd, {
     // string to AST (JSON only)
     // proto: parse(str) -> ast
     parse: function (json) {return JSON.parse(json)},
@@ -192,7 +211,11 @@ lion.addfunc(lionstd, {
 
     index: function (list, i) {return list[i];},
     // indexset: function (list, i, value) {list[i] = value; return list;}
+}, lion.wrap);
 
+//// math ////
+
+lion.addfunc(lionstd, {
     add: function (a, b) {return a + b;},
     sub: function (a, b) {return a - b;},
     mul: function (a, b) {return a * b;},
