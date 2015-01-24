@@ -91,7 +91,6 @@ lion.addfunc(lionstd, {
         value.getq = env.getq;
         value.setq = env.setq;
         value.call = env.call;
-        value.exec = env.exec;
 
         return value;
     },
@@ -133,7 +132,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // execute an AST with arguments
-    // proto: call(callee, caller)
+    // proto: call(callee, caller) -> result
     call: function (env, ast) {
         var callee = ast[1];
         var caller = ast[2];
@@ -147,23 +146,17 @@ lion.addfunc(lionstd, {
             return lion.call(env, callee);
         } else if (callee.hasOwnProperty('exec')) {
             // callee is a callable object
-            // return lion.call(callee, ['exec', env, caller]);
-            throw '[LION] exec call is not implemented';
+            callee.caller = caller;
+            callee.callenv = env;
+            return lion.call(callee, 'exec');
         } else {
             // callee is not callable
             throw '[LION] callee is not callable: ' + ast[1];
         }
     },
 
-    // execute an AST with
-    // proto: exec(parent, caller)
-    // exec: function (env, ast) {
-    //     env.parent = ast[1];
-    //     lion.call(env, )
-    // }
-
     // return the AST
-    // proto: quote(ast)
+    // proto: quote(ast) -> ast
     quote: function (env, ast) {
         return ast[1];
     },
