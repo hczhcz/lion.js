@@ -163,6 +163,36 @@ lion.addfunc(lionstd, {
 });
 
 lion.addfunc(lionstd, {
+    // getq() with wrap
+    get: function (env, name) {return env.getq(env, ['getq', name])},
+    // setq() with wrap
+    set: function (env, name, value) {env.setq(env, ['setq', name, value])},
+
+    // lion.call() with wrap
+    eval: function (env, ast) {return lion.call(env, ast);}
+}, lion.wrap, lion.W_ENVCALL);
+
+lion.addfunc(lionstd, {
+    // return all
+    // proto: list(...) -> ...
+    list: function () {return arguments;},
+    // return the first
+    // proto: retfirst(...) -> first
+    // retfirst: function () {return arguments[0];},
+    // return the last
+    // proto: retlast(...) -> last
+    // retlast: function () {return arguments[arguments.length - 1];},
+
+    // string to AST (JSON only)
+    // proto: parse(str) -> ast
+    parse: function (json) {return JSON.parse(json)},
+    // AST to string (JSON only)
+    // proto: repr(ast) -> str
+    repr: function (ast) {return JSON.stringify(ast)},
+
+    index: function (list, i) {return list[i];},
+    // indexset: function (list, i, value) {list[i] = value; return list;}
+
     add: function (a, b) {return a + b;},
     sub: function (a, b) {return a - b;},
     mul: function (a, b) {return a * b;},
