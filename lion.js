@@ -49,8 +49,8 @@ var lion = {
     },
 
     // add library functions (general situation)
-    addfuncauto: function (pkg) {
-        lion.addfunc(lionstd, pkg, lion.wrap);
+    addfuncauto: function (env, pkg) {
+        lion.addfunc(env, pkg, lion.wrap);
     },
 
     // execute an AST by getting a callee
@@ -234,7 +234,7 @@ lion.addfunc(lionstd, {
 
 //// JSON ////
 
-lion.addfuncauto({
+lion.addfuncauto(lionstd, {
     // string to AST (JSON only)
     // proto: parse(str) -> ast
     parse: function (json) {return JSON.parse(json)},
@@ -245,7 +245,7 @@ lion.addfuncauto({
 
 //// math ////
 
-lion.addfuncauto({
+lion.addfuncauto(lionstd, {
     add: function (a, b) {return a + b;},
     sub: function (a, b) {return a - b;},
     mul: function (a, b) {return a * b;},
@@ -255,7 +255,7 @@ lion.addfuncauto({
 
 //// array ////
 
-lion.addfuncauto({
+lion.addfuncauto(lionstd, {
     index: function (arr, i) {return arr[i];},
     // indexset: function (arr, i, value) {arr[i] = value; return arr;}
 });
