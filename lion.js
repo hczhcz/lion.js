@@ -101,18 +101,20 @@ var lionstd = {};
 
 lion.addfunc(lionstd, {
     // initialize an environment
-    // proto: init(value) -> env
-    init: function (env, value) {
-        if (!value) {
-            value = {};
+    // proto: init(dict) -> env
+    init: function (env, dict) {
+        if (!dict) {
+            dict = {};
         }
 
-        value.parent = env;
-        value.getq = env.getq;
-        value.setq = env.setq;
-        value.call = env.call;
+        if (env) {
+            dict.parent = env;
+            dict.getq = env.getq;
+            dict.setq = env.setq;
+            dict.call = env.call;
+        }
 
-        return value;
+        return dict;
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
@@ -189,37 +191,49 @@ lion.addfunc(lionstd, {
     // setq() with wrap
     // proto: set(name, value)
     set: function (env, name, value) {env.setq(env, ['setq', name, value])},
-
-    // just calling
-    // proto: pass(ast) -> (call)^1 -> result
-    pass: function (env, ast) {return ast;},
-    // lion.call() with wrap
-    // proto: eval($ast) -> (call)^2 -> result
-    eval: function (env, ast) {return lion.call(env, ast);},
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
     // return the AST
     // proto: quote('ast) -> ast
     quote: function (env, ast) {return ast[1];},
+    // just calling
+    // proto: pass(ast) -> (call)^1 -> result
+    pass: function (env, ast) {return lion.call(env, ast[1]);},
+    // lion.call() with wrap
+    // proto: eval($ast) -> (call)^2 -> result
+    eval: function (env, ast) {return lion.call(env, lion.call(env, ast[1]));},
 });
 
 //// control flow ////
 
-lion.addfuncauto({
+lion.addfunc(lionstd, {
     // call and return arguments as a list
     // proto: list(...) -> ...
-    list: function () {return arguments;},
-
-    // call and return the first argument
-    // proto: retfirst(...) -> first
-    // retfirst: function () {return arguments[0];},
-    // call and return the last argument
-    // proto: retlast(...) -> last
-    // retlast: function () {return arguments[arguments.length - 1];},
-});
+    list: function (arr) {return arr;},
+}, lion.wrap, lion.W_ARG_AS_ARR);
 
 lion.addfunc(lionstd, {
+    // conditional branch
+    // proto: cond(condition, action, ...) -> result
+    cond: function () {
+        var l = arguments.length;
+        for (var i = 0; i + 1 < l; i += 2) {
+            if (arguments[i]()) {
+                return arguments[i + 1]();
+            }
+        }
+    },
+
+    // simple if branch
+    // proto: if(condition, then, else) -> result
+    'if': function (condition, then_br, else_br) {
+        if (condition()) {
+            return then_br();
+        } else if (else_br) {
+            return else_br();
+        }
+    },
 }, lion.wrap, lion.W_DELAY);
 
 //// JSON ////
@@ -246,6 +260,6 @@ lion.addfuncauto({
 //// array ////
 
 lion.addfuncauto({
-    index: function (list, i) {return list[i];},
-    // indexset: function (list, i, value) {list[i] = value; return list;}
+    index: function (arr, i) {return arr[i];},
+    // indexset: function (arr, i, value) {arr[i] = value; return arr;}
 });

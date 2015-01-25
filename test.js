@@ -30,7 +30,7 @@ test({a: 1, b: 2}, {a: 1, b: 2})
 test(['list',
     ['mul', 3, 7],
     ['mod', -10, 7],
-], {0: 21, 1: -3});
+], [21, -3]);
 
 // blocks
 test(['get', 'test1'], undefined);
@@ -38,20 +38,23 @@ test(['list',
     ['setq', 'test1', ['add', 100, 23]],
     ['getq', 'test1'],
     ['test1'],
-], {1: ['add', 100, 23], 2: 123});
+], [undefined, ['add', 100, 23], 123]);
 test(['list',
     ['set', 'test2', ['add', 100, 23]],
     ['get', ['add', 'test', '2']],
     ['get', 'test1'],
     ['getq', 'test2'],
-], {1: 123, 3: 123});
+], [undefined, 123, undefined , 123]);
 
 // calls
+test(['eval', ['quote', ['pass', ['add', 100, 23]]]], 123);
 test([
     ['quote', ['get', 'caller']], ['add', 1, 2]
 ], [['quote', ['get', 'caller']], ['add', 1, 2]]);
 test([
-    ['quote', ['eval', ['index', ['get', 'caller'], 1]]], ['add', 1, 2]
+    ['quote',
+        ['eval', ['index', ['get', 'caller'], 1]]
+    ], ['add', 1, 2]
 ], 3);
 
 // JSON
