@@ -78,36 +78,29 @@ var lion = {
             // is a function call
 
             // get the callee from the environment
-            var callee = env.getq(env, [
-                'getq', lion.call(env, ast[0])
-            ]);
+            var callee = lion.corefunc(
+                env,
+                ['getq', lion.call(env, ast[0])]
+            );
 
             // call it
-            return lion.call1(env, ast, callee);
+            return lion.corefunc(
+                env,
+                ['call', callee, ast]
+            );
         } else {
             // is an object
             return ast;
         }
     },
 
-    // execute an AST with a given callee
-    call1: function (env, ast, callee) {
-        if (callee instanceof Function) {
-            // callee is a builtin function
-            return callee(env, ast);
-        } else if (callee instanceof Array) {
-            // callee is an AST
-            env.caller = ast;
-            return lion.call(env, callee);
-        } else if (callee.hasOwnProperty('exec')) {
-            // callee is a callable object
-            callee.callenv = env;
-            return lion.call(callee, ast);
-        } else {
-            // callee is not callable
-            throw '[LION] callee is not callable: ' + ast[1];
-        }
-    },
+    // search core function in env and lionstd
+    corefunc: function (env, ast) {
+        var name = ast[0];
+        var func = env.hasOwnProperty(name) ? env[name] : lionstd[name];
+
+        return func(env, ast);
+    }
 };
 
 //////// the standard library ////////
@@ -115,6 +108,14 @@ var lion = {
 var lionstd = {};
 
 //////// core functions ////////
+
+// core names:
+//     parent
+//     getq
+//     setq
+//     caller
+//     callenv
+//     exec
 
 lion.addfunc(lionstd, {
     // initialize an environment
@@ -126,12 +127,6 @@ lion.addfunc(lionstd, {
 
         if (env) {
             dict.parent = env;
-            dict.getq = env.getq;
-            dict.setq = env.setq;
-        } else {
-            // TODO: use lion.getq & lion.setq
-            dict.getq = lionstd.getq;
-            dict.setq = lionstd.setq;
         }
 
         return dict;
@@ -139,9 +134,34 @@ lion.addfunc(lionstd, {
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
+    // execute an AST with a given callee
+    // proto: call('callee, 'caller) -> result
+    call: function (env, ast) {
+        var callee = ast[1];
+        var caller = ast[2];
+
+        if (callee instanceof Function) {
+            // callee is a builtin function
+            return callee(env, caller);
+        } else if (callee instanceof Array) {
+            // callee is an AST
+            env.caller = caller;
+            return lion.call(env, callee);
+        } else if (callee.hasOwnProperty('exec')) {
+            // callee is a callable object
+            callee.callenv = env;
+            return lion.call(callee, caller); // TODO: ???
+        } else {
+            // callee is not callable
+            throw '[LION] callee is not callable: ' + callee;
+        }
+    },
+
     // get value from the environment or its parent
     // proto: getq('name) -> value
-    getq: function (env, name) {
+    getq: function (env, ast) {
+        var name = ast[1];
+
         // if (!(name instanceof String)) {
         if (typeof name != 'string') {
             // not a name
@@ -163,7 +183,7 @@ lion.addfunc(lionstd, {
 
                 // call
                 if (parent) {
-                    result = parent.getq(parent, ['getq', name]);
+                    result = lion.corefunc(parent, ['getq', name]);
                 }
             }
 
@@ -173,7 +193,10 @@ lion.addfunc(lionstd, {
 
     // set value in the environment
     // proto: setq('name, 'value)
-    setq: function (env, name, value) {
+    setq: function (env, ast) {
+        var name = ast[1];
+        var value = ast[2];
+
         // if (!(name instanceof String)) {
         if (typeof name != 'string') {
             // not a name
@@ -185,19 +208,19 @@ lion.addfunc(lionstd, {
             env[name] = value;
         }
     },
-}, lion.wrapraw, lion.W_ARG_HAS_ENV);
+});
 
 //////// built-in functions ////////
 
 //// call & access ////
 
 lion.addfunc(lionstd, {
-    // getq() with wrap
+    // getq() with calling
     // proto: get(name) -> value
-    get: function (env, name) {return env.getq(env, ['getq', name])},
-    // setq() with wrap
+    get: function (env, name) {return lion.corefunc(env, ['getq', name])},
+    // setq() with calling
     // proto: set(name, value)
-    set: function (env, name, value) {env.setq(env, ['setq', name, value])},
+    set: function (env, name, value) {lion.corefunc(env, ['setq', name, value])},
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
