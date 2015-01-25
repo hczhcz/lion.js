@@ -8,6 +8,7 @@ var lion = {
 
     W_DELAY: 1,
     W_ARG_HAS_ENV: 2,
+    W_ARG_AS_ARR: 4,
 
     //////// helper functions ////////
 
@@ -17,7 +18,8 @@ var lion = {
             var arg = (option & lion.W_ARG_HAS_ENV) ? [env] : [];
 
             // scan arguments
-            for (var i = 1; i < ast.length; ++i) {
+            var l = ast.length;
+            for (var i = 1; i < l; ++i) {
                 if (option & lion.W_DELAY) {
                     // make a function
                     arg.push(function () {
@@ -31,7 +33,11 @@ var lion = {
                 }
             }
 
-            return func.apply(this, arg);
+            if (option & lion.W_ARG_AS_ARR) {
+                return func(arg);
+            } else {
+                return func.apply(this, arg);
+            }
         };
     },
 
@@ -40,9 +46,17 @@ var lion = {
         return function (env, ast) {
             var arg = (option & lion.W_ARG_HAS_ENV) ? [env] : [];
 
-            arg = arg.concat(ast.slice(1)); // TODO: performance?
+            // scan arguments
+            var l = ast.length;
+            for (var i = 1; i < l; ++i) {
+                arg.push(ast[i]);
+            }
 
-            return func.apply(this, arg);
+            if (option & lion.W_ARG_AS_ARR) {
+                return func(arg);
+            } else {
+                return func.apply(this, arg);
+            }
         };
     },
 
