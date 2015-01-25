@@ -101,9 +101,8 @@ var lion = {
             return lion.call(env, callee);
         } else if (callee.hasOwnProperty('exec')) {
             // callee is a callable object
-            callee.caller = ast;
             callee.callenv = env;
-            return lion.call(callee, 'exec');
+            return lion.call(callee, ast);
         } else {
             // callee is not callable
             throw '[LION] callee is not callable: ' + ast[1];
@@ -129,6 +128,10 @@ lion.addfunc(lionstd, {
             dict.parent = env;
             dict.getq = env.getq;
             dict.setq = env.setq;
+        } else {
+            // TODO: use lion.getq & lion.setq
+            dict.getq = lionstd.getq;
+            dict.setq = lionstd.setq;
         }
 
         return dict;
@@ -147,11 +150,24 @@ lion.addfunc(lionstd, {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
-            return env[name] || (
-                env.parent && env.parent.getq(env.parent, [
-                    'getq', name
-                ])
-            );
+            var result = env[name];
+
+            if (!result) {
+                // find from env's parent
+                var parent = env.parent;
+
+                if (!parent && (env != lionstd)) {
+                    // find from standard library
+                    parent = lionstd;
+                }
+
+                // call
+                if (parent) {
+                    result = parent.getq(parent, ['getq', name]);
+                }
+            }
+
+            return result;
         }
     },
 
