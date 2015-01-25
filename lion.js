@@ -41,25 +41,6 @@ var lion = {
         };
     },
 
-    // convert f([env, ]arg...) to g(env, ast) without calls
-    wrapraw: function (func, option) {
-        return function (env, ast) {
-            var arg = (option & lion.W_ARG_HAS_ENV) ? [env] : [];
-
-            // scan arguments
-            var l = ast.length;
-            for (var i = 1; i < l; ++i) {
-                arg.push(ast[i]);
-            }
-
-            if (option & lion.W_ARG_AS_ARR) {
-                return func(arg);
-            } else {
-                return func.apply(this, arg);
-            }
-        };
-    },
-
     // add library functions
     addfunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
@@ -110,28 +91,13 @@ var lionstd = {};
 //////// core functions ////////
 
 // core names:
-//     parent
+//     call
 //     getq
 //     setq
+//     parent
 //     caller
 //     callenv
-//     exec
-
-lion.addfunc(lionstd, {
-    // initialize an environment
-    // proto: init(dict) -> env
-    init: function (env, dict) {
-        if (!dict) {
-            dict = {};
-        }
-
-        if (env) {
-            dict.parent = env;
-        }
-
-        return dict;
-    },
-}, lion.wrap, lion.W_ARG_HAS_ENV);
+//     callable
 
 lion.addfunc(lionstd, {
     // execute an AST with a given callee

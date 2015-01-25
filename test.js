@@ -1,7 +1,7 @@
 'use strict';
 
 function test(ast, expected) {
-    var env = lionstd.init(undefined, ['init']);
+    var env = {}
 
     var ret = lion.call(env, ast);
 
