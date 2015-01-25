@@ -7,14 +7,14 @@ var lion = {
     //////// constants ////////
 
     W_DELAY: 1,
-    W_ENVCALL: 2,
+    W_ARG_HAS_ENV: 2,
 
     //////// helper functions ////////
 
     // convert f([env, ]arg...) to g(env, ast) with calls
     wrap: function (func, option) {
         return function (env, ast) {
-            var arg = (option & lion.W_ENVCALL) ? [env] : [];
+            var arg = (option & lion.W_ARG_HAS_ENV) ? [env] : [];
 
             // scan arguments
             for (var i = 1; i < ast.length; ++i) {
@@ -38,7 +38,7 @@ var lion = {
     // convert f([env, ]arg...) to g(env, ast) without calls
     wrapraw: function (func, option) {
         return function (env, ast) {
-            var arg = (option & lion.W_ENVCALL) ? [env] : [];
+            var arg = (option & lion.W_ARG_HAS_ENV) ? [env] : [];
 
             arg = arg.concat(ast.slice(1)); // TODO: performance?
 
@@ -51,6 +51,11 @@ var lion = {
         for (var i in pkg) {
             env[i] = hook ? hook(pkg[i], option) : pkg[i];
         }
+    },
+
+    // add library functions (general situation)
+    addfuncauto: function (pkg) {
+        lion.addfunc(lionstd, pkg, lion.wrap);
     },
 
     // execute an AST
@@ -95,7 +100,7 @@ lion.addfunc(lionstd, {
 
         return value;
     },
-}, lion.wrap, lion.W_ENVCALL);
+}, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
     // get value from the environment or its parent
@@ -131,7 +136,7 @@ lion.addfunc(lionstd, {
             env[name] = value;
         }
     },
-}, lion.wrapraw, lion.W_ENVCALL);
+}, lion.wrapraw, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
     // execute an AST with arguments
@@ -177,7 +182,7 @@ lion.addfunc(lionstd, {
     // lion.call() with wrap
     // proto: eval($ast) -> (call)^2 -> result
     eval: function (env, ast) {return lion.call(env, ast);},
-}, lion.wrap, lion.W_ENVCALL);
+}, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
     // return the AST
@@ -187,38 +192,46 @@ lion.addfunc(lionstd, {
 
 //// control flow ////
 
-lion.addfunc(lionstd, {
+lion.addfuncauto({
     // call and return arguments as a list
     // proto: list(...) -> ...
     list: function () {return arguments;},
+
     // call and return the first argument
     // proto: retfirst(...) -> first
     // retfirst: function () {return arguments[0];},
     // call and return the last argument
     // proto: retlast(...) -> last
     // retlast: function () {return arguments[arguments.length - 1];},
-}, lion.wrap);
-
-//// ??? ////
+});
 
 lion.addfunc(lionstd, {
+}, lion.wrap, lion.W_DELAY);
+
+//// JSON ////
+
+lion.addfuncauto({
     // string to AST (JSON only)
     // proto: parse(str) -> ast
     parse: function (json) {return JSON.parse(json)},
     // AST to string (JSON only)
     // proto: repr(ast) -> str
     repr: function (ast) {return JSON.stringify(ast)},
-
-    index: function (list, i) {return list[i];},
-    // indexset: function (list, i, value) {list[i] = value; return list;}
-}, lion.wrap);
+});
 
 //// math ////
 
-lion.addfunc(lionstd, {
+lion.addfuncauto({
     add: function (a, b) {return a + b;},
     sub: function (a, b) {return a - b;},
     mul: function (a, b) {return a * b;},
     div: function (a, b) {return a / b;},
     mod: function (a, b) {return a % b;},
-}, lion.wrap);
+});
+
+//// array ////
+
+lion.addfuncauto({
+    index: function (list, i) {return list[i];},
+    // indexset: function (list, i, value) {list[i] = value; return list;}
+});
