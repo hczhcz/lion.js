@@ -72,7 +72,7 @@ var lion = {
         lion.addfunc(lionstd, pkg, lion.wrap);
     },
 
-    // execute an AST
+    // execute an AST by getting a callee
     call: function (env, ast) {
         if (ast instanceof Array) {
             // is a function call
@@ -83,12 +83,30 @@ var lion = {
             ]);
 
             // call it
-            return env.call(env, [
-                'call', callee, ast
-            ]);
+            return lion.call1(env, ast, callee);
         } else {
             // is an object
             return ast;
+        }
+    },
+
+    // execute an AST with a given callee
+    call1: function (env, ast, callee) {
+        if (callee instanceof Function) {
+            // callee is a builtin function
+            return callee(env, ast);
+        } else if (callee instanceof Array) {
+            // callee is an AST
+            env.caller = ast;
+            return lion.call(env, callee);
+        } else if (callee.hasOwnProperty('exec')) {
+            // callee is a callable object
+            callee.caller = ast;
+            callee.callenv = env;
+            return lion.call(callee, 'exec');
+        } else {
+            // callee is not callable
+            throw '[LION] callee is not callable: ' + ast[1];
         }
     },
 };
@@ -111,7 +129,6 @@ lion.addfunc(lionstd, {
             dict.parent = env;
             dict.getq = env.getq;
             dict.setq = env.setq;
-            dict.call = env.call;
         }
 
         return dict;
@@ -153,32 +170,6 @@ lion.addfunc(lionstd, {
         }
     },
 }, lion.wrapraw, lion.W_ARG_HAS_ENV);
-
-lion.addfunc(lionstd, {
-    // execute an AST with arguments
-    // proto: call('callee, 'caller) -> result
-    call: function (env, ast) {
-        var callee = ast[1];
-        var caller = ast[2];
-
-        if (callee instanceof Function) {
-            // callee is a builtin function
-            return callee(env, caller);
-        } else if (callee instanceof Array) {
-            // callee is an AST
-            env.caller = caller;
-            return lion.call(env, callee);
-        } else if (callee.hasOwnProperty('exec')) {
-            // callee is a callable object
-            callee.caller = caller;
-            callee.callenv = env;
-            return lion.call(callee, 'exec');
-        } else {
-            // callee is not callable
-            throw '[LION] callee is not callable: ' + ast[1];
-        }
-    },
-});
 
 //////// built-in functions ////////
 
