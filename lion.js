@@ -58,10 +58,12 @@ var lion = {
         if (ast instanceof Array) {
             // is a function call
 
+            var callee = lion.call(env, ast[0]);
+
             // call it
             return lion.corefunc(
                 env,
-                ['call', lion.call(env, ast[0]), ast]
+                ['call', callee, ast]
             );
         } else {
             // is an object
@@ -172,7 +174,7 @@ lion.addfunc(lionstd, {
     },
 
     // set value in the environment
-    // proto: setq('name, 'value)
+    // proto: setq('name, 'value) -> value
     setq: function (env, ast) {
         var name = ast[1];
         var value = ast[2];
@@ -185,7 +187,7 @@ lion.addfunc(lionstd, {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
-            env[name] = value;
+            return env[name] = value;
         }
     },
 });
@@ -197,15 +199,19 @@ lion.addfunc(lionstd, {
 lion.addfunc(lionstd, {
     // getq() with calling
     // proto: get(name) -> value
-    get: function (env, name) {return lion.corefunc(env, ['getq', name])},
+    get: function (env, name) {
+        return lion.corefunc(env, ['getq', name]);
+    },
     // setq() with calling
-    // proto: set(name, value)
-    set: function (env, name, value) {lion.corefunc(env, ['setq', name, value])},
+    // proto: set(name, value) -> value
+    set: function (env, name, value) {
+        return lion.corefunc(env, ['setq', name, value]);
+    },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
     // return the AST
-    // proto: quote('ast) -> ast
+    // proto: quote('ast) -> 'ast
     quote: function (env, ast) {return ast[1];},
     // just calling
     // proto: pass(ast) -> (call)^1 -> result
@@ -219,7 +225,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // call and return arguments as a list
-    // proto: list(...) -> ...
+    // proto: list(...) -> [...]
     list: function (arr) {return arr;},
 }, lion.wrap, lion.W_ARG_AS_ARR);
 
@@ -260,6 +266,8 @@ lion.addfuncauto(lionstd, {
 //// math ////
 
 lion.addfuncauto(lionstd, {
+    // operators
+    // proto: op(a, b) -> a op b
     add: function (a, b) {return a + b;},
     sub: function (a, b) {return a - b;},
     mul: function (a, b) {return a * b;},
@@ -270,6 +278,31 @@ lion.addfuncauto(lionstd, {
 //// array ////
 
 lion.addfuncauto(lionstd, {
+    // get index of array
+    // proto: index(arr, i) -> arr[i]
     index: function (arr, i) {return arr[i];},
     // indexset: function (arr, i, value) {arr[i] = value; return arr;}
+});
+
+//// js built-in ////
+
+lion.addfunc(lionstd, {
+    'math': {
+        // for testing only
+        getq: function (env, ast) {
+            var name = ast[1];
+
+            if (Math.hasOwnProperty(name)) {
+                return lion.wrap(Math[name]);
+            }
+        }
+    },
+})
+
+//// alias ////
+
+lion.addfunc(lionstd, {
+    ':': 'get',
+    ':=': 'set',
+    '': 'quote',
 });

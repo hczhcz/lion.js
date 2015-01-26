@@ -38,13 +38,13 @@ test(['list',
     ['setq', 'test1', ['add', 100, 23]],
     ['getq', 'test1'],
     ['test1'],
-], [undefined, ['add', 100, 23], 123]);
+], [['add', 100, 23], ['add', 100, 23], 123]);
 test(['list',
     ['set', 'test2', ['add', 100, 23]],
     ['get', ['add', 'test', '2']],
     ['get', 'test1'],
     ['getq', 'test2'],
-], [undefined, 123, undefined , 123]);
+], [123, 123, undefined , 123]);
 
 // calls
 test(['eval', ['quote', ['pass', ['add', 100, 23]]]], 123);
@@ -64,5 +64,10 @@ test(['quote', ['div', 2333, 10]], ['div', 2333, 10]);
 test(['repr', ['quote', ['div', 2333, 10]]], '["div",2333,10]');
 test(['parse', ['repr', ['quote', ['div', 2333, 10]]]], ['div', 2333, 10]);
 test(['eval', ['parse', ['repr', ['quote', ['div', 2333, 10]]]]], 233.3);
+
+// js built-in
+test(['math', 'floor', ['sqrt', 123456]], 351);
+test(['', ['abcd', 'efg']], ['abcd', 'efg'])
+// test([['math', 'getq', 'floor'], [['math', 'get', 'sqrt'], 123456]]);
 
 document.writeln('<hr><b>Finished.</b>');
