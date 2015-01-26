@@ -29,7 +29,7 @@ test([['add', 'm', 'od'], 12345, 100], 45);
 test({a: 1, b: 2}, {a: 1, b: 2})
 test(['list',
     ['mul', 3, 7],
-    ['mod', -10, 7],
+    ['mod', -10, 7]
 ], [21, -3]);
 
 // blocks
@@ -37,13 +37,13 @@ test(['get', 'test1'], undefined);
 test(['list',
     ['setq', 'test1', ['add', 100, 23]],
     ['getq', 'test1'],
-    ['test1'],
+    ['test1']
 ], [['add', 100, 23], ['add', 100, 23], 123]);
 test(['list',
     ['set', 'test2', ['add', 100, 23]],
     ['get', ['add', 'test', '2']],
     ['get', 'test1'],
-    ['getq', 'test2'],
+    ['getq', 'test2']
 ], [123, 123, undefined , 123]);
 
 // calls
