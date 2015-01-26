@@ -56,6 +56,8 @@ test([
         ['eval', ['index', ['get', 'caller'], 1]]
     ], ['add', 1, 2]
 ], 3);
+test([{x: 1234}, 'get', 'x'], 1234);
+test([{x: {y: {z: 2345}}}, 'x', 'y', 'get', 'z'], 2345);
 
 // JSON
 test(['quote', ['div', 2333, 10]], ['div', 2333, 10]);

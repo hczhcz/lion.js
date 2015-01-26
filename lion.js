@@ -97,7 +97,6 @@ var lionstd = {};
 //     parent
 //     caller
 //     callenv
-//     callable
 
 lion.addfunc(lionstd, {
     // execute an AST with a given callee
@@ -111,15 +110,19 @@ lion.addfunc(lionstd, {
             return callee(env, caller);
         } else if (callee instanceof Array) {
             // callee is an AST
-            env.caller = caller;
-            return lion.call(env, callee);
-        } else if (callee.hasOwnProperty('exec')) {
-            // callee is a callable object
-            callee.callenv = env;
-            return lion.call(callee, caller); // TODO: ???
+            // call with a new environment
+            var newenv = {
+                parent: env,
+                caller: caller,
+            };
+            return lion.call(newenv, callee);
         } else {
-            // callee is not callable
-            throw '[LION] callee is not callable: ' + callee;
+            // callee is an object
+            callee.callenv = function () {return env;};
+            return lion.call(callee, caller.slice(1));
+        // } else {
+        //     // callee is not callable
+        //     throw '[LION] callee is not callable: ' + callee;
         }
     },
 
