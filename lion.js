@@ -153,24 +153,21 @@ lion.addfunc(lionstd, {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
-            var result = env[name];
-
-            if (!result) {
-                // find from env's parent
-                var parent = env.parent;
-
-                if (!parent && (env != lionstd)) {
+            if (env.hasOwnProperty(name)) {
+                // found
+                return env[name];
+            } else {
+                // not found
+                if (env.hasOwnProperty('parent')) {
+                    // find from env's parent
+                    return lion.corefunc(env.parent, ['getq', name]);
+                } else if (env != lionstd) {
                     // find from standard library
-                    parent = lionstd;
-                }
-
-                // call
-                if (parent) {
-                    result = lion.corefunc(parent, ['getq', name]);
+                    return lion.corefunc(lionstd, ['getq', name]);
+                } else {
+                    return undefined;
                 }
             }
-
-            return result;
         }
     },
 
