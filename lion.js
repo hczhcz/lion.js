@@ -209,6 +209,12 @@ lion.addfunc(lionstd, {
     set: function (env, name, value) {
         return lion.corefunc(env, ['setq', name, value]);
     },
+
+    // set quoted value
+    // proto: let(name, value) -> 'value
+    let: function (env, name, value) {
+        return lion.corefunc(env, ['setq', name, ['quote', value]]);
+    }
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
@@ -252,6 +258,26 @@ lion.addfunc(lionstd, {
             return else_br();
         }
     },
+
+    // while loop
+    // proto: while(condition, body) -> last result
+    'while': function (condition, body) {
+        var last;
+        while (condition()) {
+            last = body();
+        }
+        return last;
+    },
+
+    // until (do-while) loop
+    // proto: until(condition, body) -> last result
+    until: function (condition, body) {
+        var last;
+        do {
+            last = body();
+        } while (condition());
+        return last;
+    },
 }, lion.wrap, lion.W_DELAY);
 
 //// JSON ////
@@ -275,6 +301,8 @@ lion.addfuncauto(lionstd, {
     mul: function (a, b) {return a * b;},
     div: function (a, b) {return a / b;},
     mod: function (a, b) {return a % b;},
+    lt: function (a, b) {return a < b;},
+    gt: function (a, b) {return a > b;},
 });
 
 //// array ////
@@ -306,5 +334,6 @@ lion.addfunc(lionstd, {
 lion.addfunc(lionstd, {
     ':': 'get',
     ':=': 'set',
+    // '=': 'let',
     '': 'quote',
 });

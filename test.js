@@ -59,6 +59,17 @@ test([
 test([{x: 1234}, 'get', 'x'], 1234);
 test([{x: {y: {z: 2345}}}, 'x', 'y', 'get', 'z'], 2345);
 
+// control flow
+test(['index', ['list',
+    ['let', 'x', 1],
+    ['let', 'sum', 0],
+    ['while', ['lt', ['x'], 101], ['list',
+        ['let', 'sum', ['add', ['sum'], ['x']]],
+        ['let', 'x', ['add', ['x'], 1]],
+    ]],
+    ['sum']
+], 3], 5050);
+
 // JSON
 test(['quote', ['div', 2333, 10]], ['div', 2333, 10]);
 test(['repr', ['quote', ['div', 2333, 10]]], '["div",2333,10]');
