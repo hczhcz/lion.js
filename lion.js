@@ -22,9 +22,11 @@ var lion = {
             for (var i = 1; i < l; ++i) {
                 if (option & lion.W_DELAY) {
                     // make a function
-                    arg.push(function () {
-                        lion.call(env, ast[i]);
-                    });
+                    arg.push(function (target) {
+                        return function () {
+                            return lion.call(env, target);
+                        }
+                    } (ast[i]));
                 } else {
                     // call directly
                     arg.push(
