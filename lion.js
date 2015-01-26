@@ -58,16 +58,10 @@ var lion = {
         if (ast instanceof Array) {
             // is a function call
 
-            // get the callee from the environment
-            var callee = lion.corefunc(
-                env,
-                ['getq', lion.call(env, ast[0])]
-            );
-
             // call it
             return lion.corefunc(
                 env,
-                ['call', callee, ast]
+                ['call', lion.call(env, ast[0]), ast]
             );
         } else {
             // is an object
@@ -105,7 +99,24 @@ lion.addfunc(lionstd, {
         var callee = ast[1];
         var caller = ast[2];
 
-        if (callee instanceof Function) {
+        if (typeof callee == 'string') {
+            // get the callee from the environment
+            var newcallee = lion.corefunc(
+                env,
+                ['getq', callee]
+            );
+
+            if (newcallee) {
+                // apply the callee
+                return lion.corefunc(
+                    env,
+                    ['call', newcallee, caller]
+                );
+            } else {
+                // callee not found
+                return undefined;
+            }
+        } else if (callee instanceof Function) {
             // callee is a builtin function
             return callee(env, caller);
         } else if (callee instanceof Array) {
@@ -115,10 +126,13 @@ lion.addfunc(lionstd, {
                 parent: env,
                 caller: caller,
             };
+
             return lion.call(newenv, callee);
         } else {
             // callee is an object
+            // TODO: is this secure?
             callee.callenv = function () {return env;};
+
             return lion.call(callee, caller.slice(1));
         // } else {
         //     // callee is not callable
@@ -134,7 +148,7 @@ lion.addfunc(lionstd, {
         // if (!(name instanceof String)) {
         if (typeof name != 'string') {
             // not a name
-            return name;
+            throw '[LION] name is not string: ' + name;
         } else if ((name in env) && !env.hasOwnProperty(name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
