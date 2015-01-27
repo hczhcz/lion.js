@@ -24,57 +24,63 @@ function test(ast, expected) {
 // basic
 test('hello, world');
 test(123, 123);
-test(['add', ['sub', ['div', 30000, 30], 100], 10], 910);
-test([['add', 'm', 'od'], 12345, 100], 45);
+test(['+', ['-', ['/', 30000, 30], 100], 10], 910);
 test({a: 1, b: 2}, {a: 1, b: 2})
 test(['list',
-    ['mul', 3, 7],
-    ['mod', -10, 7]
+    ['*', 3, 7],
+    ['%', -10, 7]
 ], [21, -3]);
 
 // blocks
 test(['get', 'test1'], undefined);
 test(['list',
-    ['setq', 'test1', ['add', 100, 23]],
+    ['setq', 'test1', ['+', 100, 23]],
     ['getq', 'test1'],
     ['test1']
-], [['add', 100, 23], ['add', 100, 23], 123]);
+], [['+', 100, 23], ['+', 100, 23], 123]);
 test(['list',
-    ['set', 'test2', ['add', 100, 23]],
-    ['get', ['add', 'test', '2']],
+    ['set', 'test2', ['+', 100, 23]],
+    ['get', ['+', 'test', '2']],
     ['get', 'test1'],
     ['getq', 'test2']
 ], [123, 123, undefined , 123]);
 
 // calls
-test(['eval', ['quote', ['pass', ['add', 100, 23]]]], 123);
+test([['+', 'qu', 'ote'], ['hello', 'world']], ['hello', 'world']);
+test(['eval', ['quote', ['pass', ['+', 100, 23]]]], 123);
 test([
-    ['quote', ['get', 'caller']], ['add', 1, 2]
-], [['quote', ['get', 'caller']], ['add', 1, 2]]);
+    ['quote', ['get', 'caller']], ['+', 1, 2]
+], [['quote', ['get', 'caller']], ['+', 1, 2]]);
 test([
     ['quote',
         ['eval', ['index', ['get', 'caller'], 1]]
-    ], ['add', 1, 2]
+    ], ['+', 1, 2]
 ], 3);
 test([{x: 1234}, 'get', 'x'], 1234);
 test([{x: {y: {z: 2345}}}, 'x', 'y', 'get', 'z'], 2345);
+// test([
+//     ['quote', ['list',
+//         ['set', 'tmp', ['eval', ['index', ['get', 'caller'], 1]]],
+//         ['cond', ['get', 'tmp'], ['']]
+//     ]], 10
+// ]);
 
 // control flow
 test(['index', ['list',
     ['let', 'x', 1],
     ['let', 'sum', 0],
-    ['while', ['lt', ['x'], 101], ['list',
-        ['let', 'sum', ['add', ['sum'], ['x']]],
-        ['let', 'x', ['add', ['x'], 1]],
+    ['while', ['<', ['x'], 101], ['list',
+        ['let', 'sum', ['+', ['sum'], ['x']]],
+        ['let', 'x', ['+', ['x'], 1]],
     ]],
     ['sum']
 ], 3], 5050);
 
 // JSON
-test(['quote', ['div', 2333, 10]], ['div', 2333, 10]);
-test(['repr', ['quote', ['div', 2333, 10]]], '["div",2333,10]');
-test(['parse', ['repr', ['quote', ['div', 2333, 10]]]], ['div', 2333, 10]);
-test(['eval', ['parse', ['repr', ['quote', ['div', 2333, 10]]]]], 233.3);
+test(['quote', ['/', 2333, 10]], ['/', 2333, 10]);
+test(['repr', ['quote', ['/', 2333, 10]]], '["/",2333,10]');
+test(['parse', ['repr', ['quote', ['/', 2333, 10]]]], ['/', 2333, 10]);
+test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
 
 // js built-in
 test(['math', 'floor', ['sqrt', 123456]], 351);

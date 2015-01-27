@@ -65,7 +65,7 @@ var lion = {
             // call it
             return lion.corefunc(
                 env,
-                ['call', callee, ast]
+                ['callq', callee, ast]
             );
         } else {
             // is an object
@@ -89,7 +89,7 @@ var lionstd = {};
 //////// core functions ////////
 
 // core names:
-//     call
+//     callq
 //     getq
 //     setq
 //     parent
@@ -98,8 +98,8 @@ var lionstd = {};
 
 lion.addfunc(lionstd, {
     // execute an AST with a given callee
-    // proto: call('callee, 'caller) -> result
-    call: function (env, ast) {
+    // proto: callq('callee, 'caller) -> result
+    callq: function (env, ast) {
         var callee = ast[1];
         var caller = ast[2];
 
@@ -114,7 +114,7 @@ lion.addfunc(lionstd, {
                 // apply the callee
                 return lion.corefunc(
                     env,
-                    ['call', newcallee, caller]
+                    ['callq', newcallee, caller]
                 );
             } else {
                 // callee not found
@@ -296,13 +296,13 @@ lion.addfuncauto(lionstd, {
 lion.addfuncauto(lionstd, {
     // operators
     // proto: op(a, b) -> a op b
-    add: function (a, b) {return a + b;},
-    sub: function (a, b) {return a - b;},
-    mul: function (a, b) {return a * b;},
-    div: function (a, b) {return a / b;},
-    mod: function (a, b) {return a % b;},
-    lt: function (a, b) {return a < b;},
-    gt: function (a, b) {return a > b;},
+    '+': function (a, b) {return a + b;},
+    '-': function (a, b) {return a - b;},
+    '*': function (a, b) {return a * b;},
+    '/': function (a, b) {return a / b;},
+    '%': function (a, b) {return a % b;},
+    '<': function (a, b) {return a < b;},
+    '>': function (a, b) {return a > b;},
 });
 
 //// array ////
