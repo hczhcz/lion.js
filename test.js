@@ -1,7 +1,7 @@
 'use strict';
 
 function test(ast, expected) {
-    var env = {}
+    var env = {};
 
     var ret = lion.call(env, ast);
 
@@ -75,6 +75,12 @@ test(['index', ['list',
     ]],
     ['sum']
 ], 3], 5050);
+test([',',
+    ['let', 'arr', ['', [2, 3, 4]]],
+    ['each', 'x', ['arr'], ['*', ['x'], ['index', ['arr'], ['x']]]]
+], [0, 3, 8]);
+test(['apply', 'x', ['', [2, 3, 4]], ['+', ['x'], 3]], [5, 6, 7]);
+test(['apply', 'x', ['list', 2, 3, 4], ['+', ['x'], 3]], [5, 6, 7]);
 
 // JSON
 test(['quote', ['/', 2333, 10]], ['/', 2333, 10]);

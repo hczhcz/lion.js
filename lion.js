@@ -239,7 +239,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // conditional branch
-    // proto: cond(condition, action, ...) -> result
+    // proto: cond(cond, action, ...) -> result
     cond: function () {
         var l = arguments.length;
         for (var i = 0; i + 1 < l; i += 2) {
@@ -249,36 +249,76 @@ lion.addfunc(lionstd, {
         }
     },
 
-    // simple if branch
-    // proto: if(condition, then, else) -> result
-    'if': function (condition, then_br, else_br) {
-        if (condition()) {
+    // simple branch (if branch)
+    // proto: if(cond, then, else) -> result
+    'if': function (cond, then_br, else_br) {
+        if (cond()) {
             return then_br();
         } else if (else_br) {
             return else_br();
         }
     },
 
-    // while loop
-    // proto: while(condition, body) -> last result
-    'while': function (condition, body) {
-        var last;
-        while (condition()) {
-            last = body();
+    // for loop
+    // proto: for (init, cond, step, body) -> all result
+    'for': function (init, cond, step, body) {
+        var all = [];
+        for (init(); cond(); step()) {
+            all.push(body());
         }
-        return last;
+        return all;
+    },
+
+    // while loop
+    // proto: while(cond, body) -> all result
+    'while': function (cond, body) {
+        var all = [];
+        while (cond()) {
+            all.push(body());
+        }
+        return all;
     },
 
     // until (do-while) loop
-    // proto: until(condition, body) -> last result
-    until: function (condition, body) {
-        var last;
+    // proto: until(cond, body) -> all result
+    until: function (cond, body) {
+        var all = [];
         do {
-            last = body();
-        } while (condition());
-        return last;
+            all.push(body());
+        } while (cond());
+        return all;
     },
 }, lion.wrap, lion.W_DELAY);
+
+lion.addfunc(lionstd, {
+    // iteration loop (for-in loop) by index
+    // proto: each (iter, data, body) -> all result
+    each: function (env, iter, data, body) {
+        var all = [];
+
+        var name = iter();
+        var list = data();
+        for (var i in list) {
+            lion.corefunc(env, ['setq', name, ['quote', i]]);
+            all.push(body());
+        }
+        return all;
+    },
+
+    // iteration loop (for-in loop) by value
+    // proto: apply (iter, data, body) -> all result
+    apply: function (env, iter, data, body) {
+        var all = [];
+
+        var name = iter();
+        var list = data();
+        for (var i in list) {
+            lion.corefunc(env, ['setq', name, ['quote', list[i]]]);
+            all.push(body());
+        }
+        return all;
+    },
+}, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
 //// JSON ////
 
@@ -336,6 +376,7 @@ lion.addfuncauto(lionstd, {
     is: function (a, b) {return (typeof a) == b;}, // custom
     instanceof: function (a, b) {return a instanceof b;},
     // new, delete
+    // a ? b : c
 });
 
 //// array ////
