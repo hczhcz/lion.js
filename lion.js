@@ -291,10 +291,23 @@ lion.addfuncauto(lionstd, {
     repr: function (ast) {return JSON.stringify(ast)},
 });
 
-//// math ////
+//// operators ////
 
 lion.addfuncauto(lionstd, {
-    // operators
+    // unary operators
+    // proto: op(a) -> op a (a op)
+    positive: function (a) {return +a;},
+    negative: function (a) {return -a;},
+    '++': function (a) {return ++a;},
+    '--': function (a) {return --a;},
+    '+++': function (a) {return a++;},
+    '---': function (a) {return a--;},
+    '!': function (a) {return !a;},
+    '~': function (a) {return ~a;},
+    typeof: function (a) {return typeof a;},
+    void: function (a) {return void a;},
+
+    // binary operators
     // proto: op(a, b) -> a op b
     '+': function (a, b) {return a + b;},
     '-': function (a, b) {return a - b;},
@@ -303,14 +316,39 @@ lion.addfuncauto(lionstd, {
     '%': function (a, b) {return a % b;},
     '<': function (a, b) {return a < b;},
     '>': function (a, b) {return a > b;},
+    '<=': function (a, b) {return a <= b;},
+    '>=': function (a, b) {return a >= b;},
+    '==': function (a, b) {return a == b;},
+    '!=': function (a, b) {return a != b;},
+    '===': function (a, b) {return a === b;},
+    '!==': function (a, b) {return a !== b;},
+    '&&': function (a, b) {return a && b;},
+    '||': function (a, b) {return a || b;},
+    '<<': function (a, b) {return a << b;},
+    '>>': function (a, b) {return a >> b;},
+    '>>>': function (a, b) {return a >>> b;},
+    '&': function (a, b) {return a & b;},
+    '^': function (a, b) {return a ^ b;},
+    '|': function (a, b) {return a | b;},
+    ',': function (a, b) {return a , b;},
+    // '=': function (a, b) {return a = b;}, // +=, -=, ...
+    in: function (a, b) {return a in b;},
+    is: function (a, b) {return (typeof a) == b;}, // custom
+    instanceof: function (a, b) {return a instanceof b;},
+    // new, delete
 });
 
 //// array ////
 
 lion.addfuncauto(lionstd, {
-    // get index of array
+    // get the length of array
+    // proto: length(arr) -> arr.length
+    length: function (arr) {return arr.length},
+
+    // get member from array
     // proto: index(arr, i) -> arr[i]
     index: function (arr, i) {return arr[i];},
+
     // indexset: function (arr, i, value) {arr[i] = value; return arr;}
 });
 
@@ -336,4 +374,5 @@ lion.addfunc(lionstd, {
     ':=': 'set',
     // '=': 'let',
     '': 'quote',
+    'neg': 'negative',
 });
