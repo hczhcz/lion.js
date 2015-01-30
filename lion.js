@@ -362,6 +362,8 @@ lion.addfunc(lionstd, {
 
             if (Math.hasOwnProperty(name)) {
                 return lion.wrap(Math[name]);
+            } else {
+                return lionstd.getq(env, ast);
             }
         }
     },
