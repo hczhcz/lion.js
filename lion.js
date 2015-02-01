@@ -43,6 +43,28 @@ var lion = {
         };
     },
 
+    // convert a native object to an environment
+    wrapobj: function (obj, option) {
+        return {
+            getq: function (env, ast) {
+                var name = ast[1];
+
+                if (obj.hasOwnProperty(name)) {
+                    return lion.wrap(obj[name], option);
+                } else {
+                    return lionstd.getq(env, ast);
+                }
+            },
+
+            setq: function (env, ast) {
+                var name = ast[1];
+                var value = ast[2];
+
+                throw '[LION] the environment is readonly: ' + name;
+            }
+        }
+    },
+
     // add library functions
     addfunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
@@ -169,6 +191,7 @@ lion.addfunc(lionstd, {
                     // find from standard library
                     return lion.corefunc(lionstd, ['getq', name]);
                 } else {
+                    // not found
                     return undefined;
                 }
             }
@@ -396,18 +419,8 @@ lion.addfuncauto(lionstd, {
 //// js built-in ////
 
 lion.addfunc(lionstd, {
-    'math': {
-        // for testing only
-        getq: function (env, ast) {
-            var name = ast[1];
-
-            if (Math.hasOwnProperty(name)) {
-                return lion.wrap(Math[name]);
-            } else {
-                return lionstd.getq(env, ast);
-            }
-        }
-    },
+    'math': lion.wrapobj(Math),
+    'json': lion.wrapobj(JSON),
 })
 
 //// alias ////
