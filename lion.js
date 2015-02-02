@@ -282,6 +282,16 @@ lion.addfunc(lionstd, {
         }
     },
 
+    // simple loop
+    // proto: loop (count, body) -> all result
+    loop: function (count, body) {
+        var all = [];
+        for (var i = count(); i != 0; --i) {
+            all.push(body());
+        }
+        return all;
+    },
+
     // for loop
     // proto: for (init, cond, step, body) -> all result
     'for': function (init, cond, step, body) {
