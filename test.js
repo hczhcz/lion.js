@@ -1,7 +1,7 @@
 'use strict';
 
 function test(ast, expected) {
-    var env = {};
+    var env = {LIONENV: true};
 
     var ret = lion.call(env, ast);
 
@@ -56,8 +56,17 @@ test([
         ['eval', ['index', ['get', 'caller'], 1]]
     ], ['+', 1, 2]
 ], 3);
-test([{x: 1234}, 'get', 'x'], 1234);
-test([{x: {y: {z: 2345}}}, 'x', 'y', 'get', 'z'], 2345);
+test([{LIONENV: true, x: 1234}, 'get', 'x'], 1234);
+test([{
+    LIONENV: true,
+    x: {
+        LIONENV: true,
+        y: {
+            LIONENV: true,
+            z: 2345
+        }
+    }
+}, 'x', 'y', 'get', 'z'], 2345);
 // test([
 //     ['quote', ['list',
 //         ['set', 'tmp', ['eval', ['index', ['get', 'caller'], 1]]],

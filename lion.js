@@ -46,10 +46,12 @@ var lion = {
     // convert a native object to an environment
     wrapobj: function (obj, option) {
         return {
+            LIONENV: true,
+
             getq: function (env, ast) {
                 var name = ast[1];
 
-                if (obj.hasOwnProperty(name)) {
+                if (Object.hasOwnProperty.apply(obj, [name])) {
                     return lion.wrap(obj[name], option);
                 } else {
                     return lionstd.getq(env, ast);
@@ -98,7 +100,15 @@ var lion = {
     // search core function in env and lionstd
     corefunc: function (env, ast) {
         var name = ast[0];
-        var func = env.hasOwnProperty(name) ? env[name] : lionstd[name];
+        var func;
+
+        if (Object.hasOwnProperty.apply(env, [name])) {
+            func = env[name];
+        } else if (Object.hasOwnProperty.apply(env, ['LIONENV'])) {
+            func = lionstd[name];
+        } else {
+            throw '[LION] core function is not in the environment: ' + name;
+        }
 
         return func(env, ast);
     }
@@ -111,6 +121,7 @@ var lionstd = {};
 //////// core functions ////////
 
 // core names:
+//     LIONENV
 //     callq
 //     getq
 //     setq
@@ -149,6 +160,7 @@ lion.addfunc(lionstd, {
             // callee is an AST
             // call with a new environment
             var newenv = {
+                LIONENV: true,
                 parent: env,
                 caller: caller,
             };
@@ -156,10 +168,12 @@ lion.addfunc(lionstd, {
             return lion.call(newenv, callee);
         } else {
             // callee is an object
-            // TODO: is this secure?
+            // TODO: add isloadable
             callee.callenv = function () {return env;};
+            var result = lion.call(callee, caller.slice(1));
+            delete callee.callenv;
 
-            return lion.call(callee, caller.slice(1));
+            return result;
         // } else {
         //     // callee is not callable
         //     throw '[LION] callee is not callable: ' + callee;
@@ -175,16 +189,16 @@ lion.addfunc(lionstd, {
         if (typeof name != 'string') {
             // not a name
             throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !env.hasOwnProperty(name)) {
+        } else if ((name in env) && !Object.hasOwnProperty.apply(env, [name])) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
-            if (env.hasOwnProperty(name)) {
+            if (Object.hasOwnProperty.apply(env, [name])) {
                 // found
                 return env[name];
             } else {
                 // not found
-                if (env.hasOwnProperty('parent')) {
+                if (Object.hasOwnProperty.apply(env, ['parent'])) {
                     // find from env's parent
                     return lion.corefunc(env.parent, ['getq', name]);
                 } else if (env != lionstd) {
@@ -208,7 +222,7 @@ lion.addfunc(lionstd, {
         if (typeof name != 'string') {
             // not a name
             throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !env.hasOwnProperty(name)) {
+        } else if ((name in env) && !Object.hasOwnProperty.apply(env, [name])) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
@@ -251,6 +265,10 @@ lion.addfunc(lionstd, {
     // proto: eval($ast) -> (call)^2 -> result
     eval: function (env, ast) {return lion.call(env, lion.call(env, ast[1]));},
 });
+
+//// function ////
+
+// TODO: lambda
 
 //// control flow ////
 
