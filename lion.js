@@ -48,6 +48,7 @@ var lion = {
         return {
             LIONENV: true,
 
+            // see lionstd.getq
             getq: function (env, ast) {
                 var name = ast[1];
 
@@ -58,6 +59,7 @@ var lion = {
                 }
             },
 
+            // see lionstd.setq
             setq: function (env, ast) {
                 var name = ast[1];
                 var value = ast[2];
@@ -65,12 +67,13 @@ var lion = {
                 throw '[LION] the environment is readonly: ' + name;
             },
 
+            // see lionstd.delq
             delq: function (env, ast) {
                 var name = ast[1];
 
                 throw '[LION] the environment is readonly: ' + name;
             },
-        }
+        };
     },
 
     // add library functions
@@ -175,11 +178,21 @@ lion.addfunc(lionstd, {
             return lion.call(newenv, callee);
         } else {
             // callee is an object
-            // TODO: add isloadable
-            // TODO: setq?
-            callee.callenv = function () {return env;};
+
+            // add callenv
+            lion.corefunc(
+                callee,
+                ['setq', 'callenv', function () {return env;}]
+            );
+
+            // use callee as the new environment
             var result = lion.call(callee, caller.slice(1));
-            delete callee.callenv;
+
+            // remove callenv
+            lion.corefunc(
+                callee,
+                ['delq', 'callenv']
+            );
 
             return result;
         // } else {
