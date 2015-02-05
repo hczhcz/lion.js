@@ -63,7 +63,13 @@ var lion = {
                 var value = ast[2];
 
                 throw '[LION] the environment is readonly: ' + name;
-            }
+            },
+
+            delq: function (env, ast) {
+                var name = ast[1];
+
+                throw '[LION] the environment is readonly: ' + name;
+            },
         }
     },
 
@@ -111,7 +117,7 @@ var lion = {
         }
 
         return func(env, ast);
-    }
+    },
 };
 
 //////// the standard library ////////
@@ -125,6 +131,7 @@ var lionstd = {};
 //     callq
 //     getq
 //     setq
+//     delq
 //     parent
 //     caller
 //     callenv
@@ -169,6 +176,7 @@ lion.addfunc(lionstd, {
         } else {
             // callee is an object
             // TODO: add isloadable
+            // TODO: setq?
             callee.callenv = function () {return env;};
             var result = lion.call(callee, caller.slice(1));
             delete callee.callenv;
@@ -229,6 +237,23 @@ lion.addfunc(lionstd, {
             return env[name] = value;
         }
     },
+
+    // delete value in the environment
+    // proto: delq('name) -> success
+    delq: function (env, ast) {
+        var name = ast[1];
+
+        // if (!(name instanceof String)) {
+        if (typeof name != 'string') {
+            // not a name
+            throw '[LION] name is not string: ' + name;
+        } else if ((name in env) && !Object.hasOwnProperty.apply(env, [name])) {
+            // js internal property
+            throw '[LION] name is not acceptable: ' + name;
+        } else {
+            return delete env[name];
+        }
+    },
 });
 
 //////// built-in functions ////////
@@ -246,12 +271,17 @@ lion.addfunc(lionstd, {
     set: function (env, name, value) {
         return lion.corefunc(env, ['setq', name, value]);
     },
+    // delq() with calling
+    // proto: del(name) -> success
+    del: function (env, name) {
+        return lion.corefunc(env, ['delq', name]);
+    },
 
     // set quoted value
     // proto: let(name, value) -> 'value
     let: function (env, name, value) {
         return lion.corefunc(env, ['setq', name, ['quote', value]]);
-    }
+    },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lionstd, {
