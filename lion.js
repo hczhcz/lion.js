@@ -64,14 +64,16 @@ var lion = {
                 var name = ast[1];
                 var value = ast[2];
 
-                throw '[LION] the environment is readonly: ' + name;
+                return lionstd.setq(env, ast); // TODO: ?
+                // throw '[LION] the environment is readonly: ' + name;
             },
 
             // see lionstd.delq
             delq: function (env, ast) {
                 var name = ast[1];
 
-                throw '[LION] the environment is readonly: ' + name;
+                return lionstd.delq(env, ast); // TODO: ?
+                // throw '[LION] the environment is readonly: ' + name;
             },
         };
     },
