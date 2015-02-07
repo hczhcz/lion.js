@@ -325,18 +325,24 @@ lion.addfunc(lionstd, {
 //// function ////
 
 lion.addfunc(lionstd, {
-    // give name to arguments
-    // proto setarg(...) -> caller
+    // give name to arguments with wrap
+    // proto setarg(func, ...) -> caller
     setarg: function (env, arr) {
         var caller = lion.corefunc(
             env,
             ['getq', 'caller']
         );
 
-        for (var i = 0; i < arr.length; ++i) {
+        var func = arr[0];
+
+        for (var i = 1; i < arr.length; ++i) {
             lion.corefunc(
                 env,
-                ['setq', arr[i], caller[i + 1]]
+                ['setq', arr[i], (
+                    func ?
+                    [func, caller[i]] :
+                    caller[i]
+                )]
             );
         }
 

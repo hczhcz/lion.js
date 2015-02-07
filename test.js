@@ -71,13 +71,19 @@ test([{
 // function
 test([
     ['quote', ['index', ['list',
-        ['setarg', 'test'],
+        ['setarg', undefined, 'test'],
         ['test']
     ], 1]]
 , ['+', 3, 4]], 7);
 test([
     ['quote', ['index', ['list',
-        ['setarg', 'test'],
+        ['setarg', 'quote', 'test'],
+        ['test']
+    ], 1]]
+, ['+', 3, 4]], ['+', 3, 4]);
+test([
+    ['quote', ['index', ['list',
+        ['setarg', undefined, 'test'],
         ['test']
     ], 1]]
 , 7], 7);
