@@ -15,7 +15,7 @@ var lion = {
     // convert f([env, ]arg...) to g(env, ast) with calls
     wrap: function (func, option) {
         return function (env, ast) {
-            var arg = (option & lion.W_ARG_HAS_ENV) ? [env] : [];
+            var arg = [];
 
             // scan arguments
             var l = ast.length;
@@ -36,8 +36,15 @@ var lion = {
             }
 
             if (option & lion.W_ARG_AS_ARR) {
-                return func(arg);
+                if (option & lion.W_ARG_HAS_ENV) {
+                    return func(env, arg);
+                } else {
+                    return func(arg);
+                }
             } else {
+                if (option & lion.W_ARG_HAS_ENV) {
+                    arg.unshift(env);
+                }
                 return func.apply(this, arg);
             }
         };
