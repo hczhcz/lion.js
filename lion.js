@@ -280,7 +280,7 @@ lion.addfunc(lionstd, {
 
 //////// built-in functions ////////
 
-//// call & access ////
+//// access ////
 
 lion.addfunc(lionstd, {
     // getq() with calling
@@ -306,6 +306,8 @@ lion.addfunc(lionstd, {
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
+//// call ////
+
 lion.addfunc(lionstd, {
     // return the AST
     // proto: quote('ast) -> 'ast
@@ -320,9 +322,35 @@ lion.addfunc(lionstd, {
 
 //// function ////
 
-// TODO: lambda
+lion.addfunc(lionstd, {
+    // give name to arguments
+    // proto setarg(...) -> caller
+    setarg: function (env, arr) {
+        var caller = lion.corefunc(
+            env,
+            ['getq', 'caller']
+        );
+
+        for (var i = 0; i < arr.length; ++i) {
+            lion.corefunc(
+                env,
+                ['setq', arr[i], caller[i + 1]]
+            );
+        }
+
+        return caller;
+    },
+}, lion.wrap, lion.W_ARG_HAS_ENV | lion.W_ARG_AS_ARR);
 
 //// control flow ////
+
+lion.addfunc(lionstd, {
+    // return arguments as a list
+    // proto: listq(...) -> [...]
+    listq: function (env, ast) {
+        return ast.slice(1);
+    },
+});
 
 lion.addfunc(lionstd, {
     // call and return arguments as a list

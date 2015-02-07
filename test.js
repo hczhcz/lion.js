@@ -31,7 +31,7 @@ test(['list',
     ['%', -10, 7]
 ], [21, -3]);
 
-// blocks
+// access
 test(['get', 'test1'], undefined);
 test(['list',
     ['setq', 'test1', ['+', 100, 23]],
@@ -45,7 +45,7 @@ test(['list',
     ['getq', 'test2']
 ], [123, 123, undefined , 123]);
 
-// calls
+// call
 test([['+', 'qu', 'ote'], ['hello', 'world']], ['hello', 'world']);
 test(['eval', ['quote', ['pass', ['+', 100, 23]]]], 123);
 test([
@@ -67,6 +67,22 @@ test([{
         }
     }
 }, 'x', 'y', 'get', 'z'], 2345);
+
+// function
+test([
+    ['quote', ['index', ['list',
+        ['setarg', 'test'],
+        ['test']
+    ], 1]]
+, ['+', 3, 4]], 7);
+test([
+    ['quote', ['index', ['list',
+        ['setarg', 'test'],
+        ['test']
+    ], 1]]
+, 7], 7);
+
+
 // test([
 //     ['quote', ['list',
 //         ['set', 'tmp', ['eval', ['index', ['get', 'caller'], 1]]],
