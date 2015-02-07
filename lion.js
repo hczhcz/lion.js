@@ -170,7 +170,7 @@ lion.addfunc(lionstd, {
                 );
             } else {
                 // callee not found
-                return undefined;
+                throw '[LION] callee not found: ' + callee;
             }
         } else if (callee instanceof Function) {
             // callee is a builtin function
@@ -185,7 +185,7 @@ lion.addfunc(lionstd, {
             };
 
             return lion.call(newenv, callee);
-        } else {
+        } else if (callee instanceof Object) {
             // callee is an object
 
             // add callenv
@@ -204,9 +204,10 @@ lion.addfunc(lionstd, {
             );
 
             return result;
-        // } else {
-        //     // callee is not callable
-        //     throw '[LION] callee is not callable: ' + callee;
+        } else {
+            // callee is not callable
+            return callee;
+            // throw '[LION] callee is not callable: ' + callee;
         }
     },
 
@@ -237,6 +238,7 @@ lion.addfunc(lionstd, {
                 } else {
                     // not found
                     return undefined;
+                    // throw '[LION] value not found: ' + name;
                 }
             }
         }
