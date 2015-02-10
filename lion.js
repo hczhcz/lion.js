@@ -338,6 +338,62 @@ lion.addfunc(lionstd, {
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV | lion.W_ARG_AS_ARR);
 
+lion.addfunc(lionstd, {
+    // make a lambda function
+    // proto: lambda(..., body)
+    lambda: function (env, ast) {
+        var setparent = ['setq', 'parent', env];
+        var setarg = ['setarg', 'pass'];
+
+        for (var i = 1; i < ast.length - 1; ++i) {
+            setarg.push(ast[i]);
+        }
+
+        return [
+            'do',
+            setparent,
+            setarg,
+            ast[ast.length - 1]
+        ]
+    },
+
+    // make a lambda function (do not wrap arguments)
+    // proto: lambdar(..., body)
+    lambdar: function (env, ast) {
+        var setparent = ['setq', 'parent', env];
+        var setarg = ['setarg', ''];
+
+        for (var i = 1; i < ast.length - 1; ++i) {
+            setarg.push(ast[i]);
+        }
+
+        return [
+            'do',
+            setparent,
+            setarg,
+            ast[ast.length - 1]
+        ]
+    },
+
+    // make a lambda function (wrap arguments via quote)
+    // proto: lambdaq(..., body)
+    lambdaq: function (env, ast) {
+        var setparent = ['setq', 'parent', env];
+        var setarg = ['setarg', 'quote'];
+
+        for (var i = 1; i < ast.length - 1; ++i) {
+            setarg.push(ast[i]);
+        }
+
+        return [
+            'do',
+            setparent,
+            setarg,
+            ast[ast.length - 1]
+        ]
+    },
+});
+
 //// control flow ////
 
 lion.addfunc(lionstd, {
@@ -544,4 +600,5 @@ lion.addfunc(lionstd, {
     // '=': 'let',
     '': 'quote',
     'neg': 'negative',
+    '\\': 'lambda',
 });
