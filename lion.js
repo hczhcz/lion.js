@@ -180,28 +180,16 @@ lion.addfunc(lionstd, {
             // call with a new environment
             var newenv = {
                 LIONENV: true,
-                parent: env,
                 caller: caller,
+                callenv: env,
             };
 
             return lion.call(newenv, callee);
         } else if (callee instanceof Object) {
             // callee is an object
 
-            // add callenv
-            lion.corefunc(
-                callee,
-                ['setq', 'callenv', function () {return env;}]
-            );
-
             // use callee as the new environment
             var result = lion.call(callee, caller.slice(1));
-
-            // remove callenv
-            lion.corefunc(
-                callee,
-                ['delq', 'callenv']
-            );
 
             return result;
         } else {
