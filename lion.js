@@ -59,7 +59,7 @@ var lion = {
             getq: function (env, ast) {
                 var name = ast[1];
 
-                if (Object.hasOwnProperty.apply(obj, [name])) {
+                if (Object.hasOwnProperty.call(obj, name)) {
                     return lion.wrap(obj[name], option);
                 } else {
                     return lionstd.getq(env, ast);
@@ -120,9 +120,9 @@ var lion = {
         var name = ast[0];
         var func;
 
-        if (Object.hasOwnProperty.apply(env, [name])) {
+        if (Object.hasOwnProperty.call(env, name)) {
             func = env[name];
-        } else if (Object.hasOwnProperty.apply(env, ['LIONENV'])) {
+        } else if (Object.hasOwnProperty.call(env, 'LIONENV')) {
             func = lionstd[name];
         } else {
             throw '[LION] core function is not in the environment: ' + name;
@@ -138,7 +138,7 @@ var lionstd = {};
 
 //////// core functions ////////
 
-// core names:
+// core-level names:
 //     LIONENV
 //     callq
 //     getq
@@ -220,16 +220,16 @@ lion.addfunc(lionstd, {
         if (typeof name != 'string') {
             // not a name
             throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !Object.hasOwnProperty.apply(env, [name])) {
+        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
-            if (Object.hasOwnProperty.apply(env, [name])) {
+            if (Object.hasOwnProperty.call(env, name)) {
                 // found
                 return env[name];
             } else {
                 // not found
-                if (Object.hasOwnProperty.apply(env, ['parent'])) {
+                if (Object.hasOwnProperty.call(env, 'parent')) {
                     // find from env's parent
                     return lion.corefunc(env.parent, ['getq', name]);
                 } else if (env != lionstd) {
@@ -254,7 +254,7 @@ lion.addfunc(lionstd, {
         if (typeof name != 'string') {
             // not a name
             throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !Object.hasOwnProperty.apply(env, [name])) {
+        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
@@ -271,7 +271,7 @@ lion.addfunc(lionstd, {
         if (typeof name != 'string') {
             // not a name
             throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !Object.hasOwnProperty.apply(env, [name])) {
+        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
@@ -326,7 +326,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // give name to arguments with wrap
-    // proto setarg(func, ...) -> caller
+    // proto: setarg(func, ...) -> caller
     setarg: function (env, arr) {
         var caller = lion.corefunc(
             env,
