@@ -364,6 +364,10 @@ lion.addfunc(lionstd, {
     // call and return arguments as a list
     // proto: list(...) -> [...]
     list: function (arr) {return arr;},
+
+    // call and return the last argument
+    // proto: do(...) -> [...]
+    do: function (arr) {return arr[arr.length - 1];},
 }, lion.wrap, lion.W_ARG_AS_ARR);
 
 lion.addfunc(lionstd, {
@@ -464,10 +468,10 @@ lion.addfunc(lionstd, {
 lion.addfuncauto(lionstd, {
     // string to AST (JSON only)
     // proto: parse(str) -> ast
-    parse: function (json) {return JSON.parse(json)},
+    parse: function (json) {return JSON.parse(json);},
     // AST to string (JSON only)
     // proto: repr(ast) -> str
-    repr: function (ast) {return JSON.stringify(ast)},
+    repr: function (ast) {return JSON.stringify(ast);},
 });
 
 //// operators ////
@@ -523,11 +527,16 @@ lion.addfuncauto(lionstd, {
 lion.addfuncauto(lionstd, {
     // get the length of array
     // proto: length(arr) -> arr.length
-    length: function (arr) {return arr.length},
+    length: function (arr) {
+        return arr.length;
+    },
 
     // get member from array
     // proto: index(arr, i) -> arr[i]
-    index: function (arr, i) {return arr[i];},
+    index: function (arr, i) {
+        // notice: the index should be an integer
+        return arr[Math.floor(i)];
+    },
 
     // indexset: function (arr, i, value) {arr[i] = value; return arr;}
 });

@@ -97,15 +97,15 @@ test([
 // ]);
 
 // control flow
-test(['index', ['list',
+test(['do',
     ['let', 'x', 1],
     ['let', 'sum', 0],
-    ['while', ['<', ['x'], 101], ['list',
+    ['while', ['<', ['x'], 101], ['do',
         ['let', 'sum', ['+', ['sum'], ['x']]],
         ['let', 'x', ['+', ['x'], 1]],
     ]],
     ['sum']
-], 3], 5050);
+], 5050);
 test([',',
     ['let', 'arr', ['', [2, 3, 4]]],
     ['each', 'x', ['arr'], ['*', ['x'], ['index', ['arr'], ['x']]]]
