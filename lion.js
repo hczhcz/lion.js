@@ -290,8 +290,8 @@ lion.addfunc(lionstd, {
     },
 
     // set quoted value
-    // proto: let(name, value) -> 'value
-    let: function (env, name, value) {
+    // proto: var(name, value) -> 'value
+    var: function (env, name, value) {
         return lion.corefunc(env, ['setq', name, ['quote', value]]);
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
@@ -597,7 +597,7 @@ lion.addfunc(lionstd, {
 lion.addfunc(lionstd, {
     ':': 'get',
     ':=': 'set',
-    // '=': 'let',
+    // '=': 'var',
     '': 'quote',
     'neg': 'negative',
     '\\': 'lambda',
