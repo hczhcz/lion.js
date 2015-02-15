@@ -328,7 +328,7 @@ lion.addfunc(lionstd, {
                 env,
                 ['setq', arr[i], (
                     func ?
-                    [func, caller[i]] :
+                    ['callenv', func, caller[i]] :
                     caller[i]
                 )]
             );
@@ -362,24 +362,6 @@ lion.addfunc(lionstd, {
     lambdar: function (env, ast) {
         var setparent = ['setq', 'parent', env];
         var setarg = ['setarg', ''];
-
-        for (var i = 1; i < ast.length - 1; ++i) {
-            setarg.push(ast[i]);
-        }
-
-        return [
-            'do',
-            setparent,
-            setarg,
-            ast[ast.length - 1]
-        ]
-    },
-
-    // make a lambda function (wrap arguments via quote)
-    // proto: lambdaq(..., body)
-    lambdaq: function (env, ast) {
-        var setparent = ['setq', 'parent', env];
-        var setarg = ['setarg', 'quote'];
 
         for (var i = 1; i < ast.length - 1; ++i) {
             setarg.push(ast[i]);

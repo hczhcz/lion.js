@@ -93,6 +93,11 @@ test([['lambda',
 test([['\\',
     'a', 'b', ['index', ['getq', 'a'], ['b']]
 ], ['r', 's'], 1], ['r', 's']);
+// test([['lambdar',
+//     'a', 'b', 'c', [['a'], ['eval', ['getq', 'b']], ['eval', ['getq', 'c']]]
+// ], ['lambda',
+//     'a', 'b', ['getq', 'a']
+// ], 3, ['+', 1, 1]], ['r', 's']);
 
 // test([
 //     ['quote', ['list',
