@@ -55,31 +55,31 @@ var lion = {
         return {
             LIONENV: true,
 
-            // see lionstd.getq
+            // see lioncore.getq
             getq: function (env, ast) {
                 var name = ast[1];
 
                 if (Object.hasOwnProperty.call(obj, name)) {
                     return lion.wrap(obj[name], option);
                 } else {
-                    return lionstd.getq(env, ast);
+                    return lioncore.getq(env, ast); // TODO: ?
                 }
             },
 
-            // see lionstd.setq
+            // see lioncore.setq
             setq: function (env, ast) {
                 var name = ast[1];
                 var value = ast[2];
 
-                return lionstd.setq(env, ast); // TODO: ?
+                return lioncore.setq(env, ast); // TODO: ?
                 // throw '[LION] the environment is readonly: ' + name;
             },
 
-            // see lionstd.delq
+            // see lioncore.delq
             delq: function (env, ast) {
                 var name = ast[1];
 
-                return lionstd.delq(env, ast); // TODO: ?
+                return lioncore.delq(env, ast); // TODO: ?
                 // throw '[LION] the environment is readonly: ' + name;
             },
         };
@@ -115,7 +115,7 @@ var lion = {
         }
     },
 
-    // search core function in env and lionstd
+    // search core function in env and lioncore
     corefunc: function (env, ast) {
         var name = ast[0];
         var func;
@@ -123,7 +123,7 @@ var lion = {
         if (Object.hasOwnProperty.call(env, name)) {
             func = env[name];
         } else if (Object.hasOwnProperty.call(env, 'LIONENV')) {
-            func = lionstd[name];
+            func = lioncore[name];
         } else {
             throw '[LION] core function is not in the environment: ' + name;
         }
@@ -132,11 +132,9 @@ var lion = {
     },
 };
 
-//////// the standard library ////////
-
-var lionstd = {};
-
 //////// core functions ////////
+
+var lioncore = {};
 
 // core-level names:
 //     LIONENV
@@ -148,7 +146,7 @@ var lionstd = {};
 //     caller
 //     callenv
 
-lion.addfunc(lionstd, {
+lion.addfunc(lioncore, {
     // execute an AST with a given callee
     // proto: callq('callee, 'caller) -> result
     callq: function (env, ast) {
@@ -268,9 +266,19 @@ lion.addfunc(lionstd, {
     },
 });
 
-//////// built-in functions ////////
+//////// the standard library ////////
+
+var lionstd = {};
 
 //// access ////
+
+lion.addfunc(lionstd, {
+    // core functions
+    callq: function (env, ast) {lion.corefunc(env, ast);},
+    getq: function (env, ast) {lion.corefunc(env, ast);},
+    setq: function (env, ast) {lion.corefunc(env, ast);},
+    delq: function (env, ast) {lion.corefunc(env, ast);},
+});
 
 lion.addfunc(lionstd, {
     // getq() with calling
