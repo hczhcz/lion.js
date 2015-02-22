@@ -53,7 +53,7 @@ var lion = {
     // convert a native object to an environment
     wrapobj: function (obj, option) {
         return {
-            LIONENV: true,
+            LIONJS: true,
 
             // see lioncore.getq
             getq: function (env, ast) {
@@ -122,10 +122,8 @@ var lion = {
 
         if (Object.hasOwnProperty.call(env, name)) {
             func = env[name];
-        } else if (Object.hasOwnProperty.call(env, 'LIONENV')) {
+        } else if (Object.hasOwnProperty.call(lioncore, name)) {
             func = lioncore[name];
-        } else {
-            throw '[LION] core function is not in the environment: ' + name;
         }
 
         return func(env, ast);
@@ -137,7 +135,7 @@ var lion = {
 var lioncore = {};
 
 // core-level names:
-//     LIONENV
+//     LIONJS
 //     callq
 //     getq
 //     setq
@@ -150,6 +148,8 @@ lion.addfunc(lioncore, {
     // execute an AST with a given callee
     // proto: callq('callee, 'caller) -> result
     callq: function (env, ast) {
+        // TODO: check LIONJS tag
+
         var callee = ast[1];
         var caller = ast[2];
 
@@ -177,7 +177,7 @@ lion.addfunc(lioncore, {
             // callee is an AST
             // call with a new environment
             var newenv = {
-                LIONENV: true,
+                LIONJS: true,
                 caller: caller,
                 callenv: env,
             };
