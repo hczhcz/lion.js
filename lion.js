@@ -65,23 +65,6 @@ var lion = {
                     return lioncore.getq(env, ast); // TODO: ?
                 }
             },
-
-            // see lioncore.setq
-            setq: function (env, ast) {
-                var name = ast[1];
-                var value = ast[2];
-
-                return lioncore.setq(env, ast); // TODO: ?
-                // throw '[LION] the environment is readonly: ' + name;
-            },
-
-            // see lioncore.delq
-            delq: function (env, ast) {
-                var name = ast[1];
-
-                return lioncore.delq(env, ast); // TODO: ?
-                // throw '[LION] the environment is readonly: ' + name;
-            },
         };
     },
 
