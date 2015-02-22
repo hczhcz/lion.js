@@ -512,14 +512,11 @@ lion.addfuncauto(lionstd, {
     '--': function (a) {return --a;},
     '+++': function (a) {return a++;},
     '---': function (a) {return a--;},
-    '!': function (a) {return !a;},
     '~': function (a) {return ~a;},
     typeof: function (a) {return typeof a;},
-    void: function (a) {return void a;},
 
     // binary operators
     // proto: op(a, b) -> a op b
-    // TODO: logic?
     '+': function (a, b) {return a + b;},
     '-': function (a, b) {return a - b;},
     '*': function (a, b) {return a * b;},
@@ -533,22 +530,35 @@ lion.addfuncauto(lionstd, {
     '!=': function (a, b) {return a != b;},
     '===': function (a, b) {return a === b;},
     '!==': function (a, b) {return a !== b;},
-    '&&': function (a, b) {return a && b;},
-    '||': function (a, b) {return a || b;},
     '<<': function (a, b) {return a << b;},
     '>>': function (a, b) {return a >> b;},
     '>>>': function (a, b) {return a >>> b;},
     '&': function (a, b) {return a & b;},
     '^': function (a, b) {return a ^ b;},
     '|': function (a, b) {return a | b;},
-    ',': function (a, b) {return a , b;},
-    // '=': function (a, b) {return a = b;}, // +=, -=, ...
     in: function (a, b) {return a in b;},
     is: function (a, b) {return (typeof a) == b;}, // custom
     instanceof: function (a, b) {return a instanceof b;},
-    // new, delete
-    // a ? b : c
 });
+
+lion.addfunc(lionstd, {
+    // unary operators
+    // proto: op(a) -> op a (a op)
+    '!': function (a) {return !a();},
+    void: function (a) {return void a();},
+
+    // binary operators
+    // proto: op(a, b) -> a op b
+    '&&': function (a, b) {return a() && b();},
+    '||': function (a, b) {return a() || b();},
+    ',': function (a, b) {return a() , b();},
+    // '=': function (a, b) {return a() = b();}, // +=, -=, ...
+    // new, delete
+
+    // inline if
+    // proto: ?:(a, b, c) -> a ? b : c
+    '?:': function (a, b, c) {return a() ? b() : c();},
+}, lion.wrap, lion.W_DELAY);
 
 //// array ////
 
