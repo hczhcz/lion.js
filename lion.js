@@ -68,6 +68,17 @@ var lion = {
         };
     },
 
+    // add checker to a function (for lioncore)
+    wrapcore: function (func, option) {
+        return function (env, ast) {
+            if (Object.hasOwnProperty.call(env, 'LIONJS')) {
+                return func(env, ast);
+            } else {
+                throw '[LION] core function is not allowed: ' + ast[0];
+            }
+        };
+    },
+
     // add library functions
     addfunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
@@ -131,8 +142,6 @@ lion.addfunc(lioncore, {
     // execute an AST with a given callee
     // proto: callq('callee, 'caller) -> result
     callq: function (env, ast) {
-        // TODO: check LIONJS tag
-
         var callee = ast[1];
         var caller = ast[2];
 
@@ -247,7 +256,7 @@ lion.addfunc(lioncore, {
             return delete env[name];
         }
     },
-});
+}, lion.wrapcore);
 
 //////// the standard library ////////
 
