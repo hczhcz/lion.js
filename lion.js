@@ -268,16 +268,16 @@ lion.addfunc(lioncore, {
 
 //////// the standard library ////////
 
-var lionstd = {};
+var lionstd = {LIONJS: true};
 
 //// access ////
 
 lion.addfunc(lionstd, {
     // core functions
-    callq: function (env, ast) {lion.corefunc(env, ast);},
-    getq: function (env, ast) {lion.corefunc(env, ast);},
-    setq: function (env, ast) {lion.corefunc(env, ast);},
-    delq: function (env, ast) {lion.corefunc(env, ast);},
+    callq: function (env, ast) {return lioncore.callq(env, ast);},
+    getq: function (env, ast) {return lioncore.getq(env, ast);},
+    setq: function (env, ast) {return lioncore.setq(env, ast);},
+    delq: function (env, ast) {return lioncore.delq(env, ast);},
 });
 
 lion.addfunc(lionstd, {
@@ -324,6 +324,7 @@ lion.addfunc(lionstd, {
     // give name to arguments with wrap
     // proto: setarg(func, ...) -> caller
     setarg: function (env, arr) {
+        // get arguments
         var caller = lion.corefunc(
             env,
             ['getq', 'caller']
@@ -526,6 +527,7 @@ lion.addfuncauto(lionstd, {
 
     // binary operators
     // proto: op(a, b) -> a op b
+    // TODO: logic?
     '+': function (a, b) {return a + b;},
     '-': function (a, b) {return a - b;},
     '*': function (a, b) {return a * b;},
@@ -578,9 +580,9 @@ lion.addfuncauto(lionstd, {
 //// js built-in ////
 
 lion.addfunc(lionstd, {
-    'math': lion.wrapobj(Math),
-    'json': lion.wrapobj(JSON),
-})
+    'math': Math,
+    'json': JSON,
+}, lion.wrapobj);
 
 //// alias ////
 
