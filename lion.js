@@ -86,11 +86,6 @@ var lion = {
         }
     },
 
-    // add library functions (general situation)
-    addfuncauto: function (env, pkg) {
-        lion.addfunc(env, pkg, lion.wrap);
-    },
-
     // execute an AST by getting a callee
     call: function (env, ast) {
         if (ast instanceof Array) {
@@ -498,26 +493,26 @@ lion.addfunc(lionstd, {
 
 //// JSON ////
 
-lion.addfuncauto(lionstd, {
+lion.addfunc(lionstd, {
     // string to AST (JSON only)
     // proto: parse(str) -> ast
     parse: function (json) {return JSON.parse(json);},
     // AST to string (JSON only)
     // proto: repr(ast) -> str
     repr: function (ast) {return JSON.stringify(ast);},
-});
+}, lion.wrap);
 
 //// operators ////
 
-lion.addfuncauto(lionstd, {
+lion.addfunc(lionstd, {
     // unary operators
     // proto: op(a) -> op a (a op)
     positive: function (a) {return +a;},
     negative: function (a) {return -a;},
-    '++': function (a) {return ++a;},
-    '--': function (a) {return --a;},
-    '+++': function (a) {return a++;},
-    '---': function (a) {return a--;},
+    // '++': function (a) {return ++a;},
+    // '--': function (a) {return --a;},
+    // '+++': function (a) {return a++;},
+    // '---': function (a) {return a--;},
     '~': function (a) {return ~a;},
     typeof: function (a) {return typeof a;},
 
@@ -545,7 +540,7 @@ lion.addfuncauto(lionstd, {
     in: function (a, b) {return a in b;},
     is: function (a, b) {return (typeof a) == b;}, // custom
     instanceof: function (a, b) {return a instanceof b;},
-});
+}, lion.wrap);
 
 lion.addfunc(lionstd, {
     // unary operators
@@ -570,7 +565,7 @@ lion.addfunc(lionstd, {
 
 //// array ////
 
-lion.addfuncauto(lionstd, {
+lion.addfunc(lionstd, {
     // get the length of array
     // proto: length(arr) -> arr.length
     length: function (arr) {
@@ -585,7 +580,7 @@ lion.addfuncauto(lionstd, {
     },
 
     // indexset: function (arr, i, value) {arr[i] = value; return arr;}
-});
+}, lion.wrap);
 
 //// js built-in ////
 
