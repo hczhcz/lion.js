@@ -15,21 +15,21 @@ var lion = {
     // convert f([env, ]arg...) to g(env, ast) with calls
     wrap: function (func, option) {
         return function (env, ast) {
-            var arg = [];
+            var args = [];
 
             // scan arguments
             var l = ast.length;
             for (var i = 1; i < l; ++i) {
                 if (option & lion.W_DELAY) {
                     // make a function
-                    arg.push(function (target) {
+                    args.push(function (target) {
                         return function () {
                             return lion.call(env, target);
                         };
                     } (ast[i]));
                 } else {
                     // call directly
-                    arg.push(
+                    args.push(
                         lion.call(env, ast[i])
                     );
                 }
@@ -37,15 +37,15 @@ var lion = {
 
             if (option & lion.W_ARG_AS_ARR) {
                 if (option & lion.W_ARG_HAS_ENV) {
-                    return func(env, arg);
+                    return func(env, args);
                 } else {
-                    return func(arg);
+                    return func(args);
                 }
             } else {
                 if (option & lion.W_ARG_HAS_ENV) {
-                    arg.unshift(env);
+                    args.unshift(env);
                 }
-                return func.apply(this, arg);
+                return func.apply(this, args);
             }
         };
     },
