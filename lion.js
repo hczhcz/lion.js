@@ -25,7 +25,7 @@ var lion = {
                     arg.push(function (target) {
                         return function () {
                             return lion.call(env, target);
-                        }
+                        };
                     } (ast[i]));
                 } else {
                     // call directly
@@ -321,6 +321,10 @@ lion.addfunc(lionstd, {
             env,
             ['getq', 'caller']
         );
+        var callenv = lion.corefunc(
+            env,
+            ['getq', 'callenv']
+        );
 
         var func = arr[0];
 
@@ -329,7 +333,9 @@ lion.addfunc(lionstd, {
                 env,
                 ['setq', arr[i], (
                     func ?
-                    ['callenv', func, caller[i]] :
+                    // with wrap
+                    [callenv, func, caller[i]] :
+                    // raw
                     caller[i]
                 )]
             );
@@ -355,7 +361,7 @@ lion.addfunc(lionstd, {
             setparent,
             setarg,
             ast[ast.length - 1]
-        ]
+        ];
     },
 
     // make a lambda function (do not wrap arguments)
@@ -373,7 +379,7 @@ lion.addfunc(lionstd, {
             setparent,
             setarg,
             ast[ast.length - 1]
-        ]
+        ];
     },
 });
 
@@ -553,7 +559,9 @@ lion.addfunc(lionstd, {
     '||': function (a, b) {return a() || b();},
     ',': function (a, b) {return a() , b();},
     // '=': function (a, b) {return a() = b();}, // +=, -=, ...
-    // new, delete
+    // new
+    // delete
+    // '[]'
 
     // inline if
     // proto: ?:(a, b, c) -> a ? b : c

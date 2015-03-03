@@ -25,7 +25,7 @@ function test(ast, expected) {
 test('hello, world');
 test(123, 123);
 test(['+', ['-', ['/', 30000, 30], 100], 10], 910);
-test({a: 1, b: 2}, {a: 1, b: 2})
+test({a: 1, b: 2}, {a: 1, b: 2});
 test(['list',
     ['*', 3, 7],
     ['%', -10, 7]
@@ -131,7 +131,7 @@ test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
 
 // js built-in
 test(['math', 'floor', ['sqrt', 123456]], 351);
-test(['', ['abcd', 'efg']], ['abcd', 'efg'])
+test(['', ['abcd', 'efg']], ['abcd', 'efg']);
 test([['math', 'get', 'floor'], [['math', 'get', 'sqrt'], 123456]], 351);
 
 document.writeln('<hr><b>Finished.</b>');
