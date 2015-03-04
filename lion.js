@@ -137,6 +137,8 @@ lion.addfunc(lioncore, {
     // execute an AST with a given callee
     // proto: callq('callee, 'caller) -> result
     callq: function (env, ast) {
+        // TODO: move something to lion.call
+        //       and make this function overridable
         var callee = ast[1];
         var caller = ast[2];
 
@@ -179,8 +181,8 @@ lion.addfunc(lioncore, {
             return result;
         } else {
             // callee is not callable
-            return callee;
-            // throw '[LION] callee is not callable: ' + callee;
+            // return callee;
+            throw '[LION] callee is not callable: ' + callee;
         }
     },
 
@@ -324,14 +326,12 @@ lion.addfunc(lionstd, {
         var func = arr[0];
 
         for (var i = 1; i < arr.length; ++i) {
+            var arg = lion.call()
             lion.corefunc(
                 env,
                 ['setq', arr[i], (
-                    func ?
                     // with wrap
-                    [callenv, func, caller[i]] :
-                    // raw
-                    caller[i]
+                    [callenv, func, caller[i]]
                 )]
             );
         }
