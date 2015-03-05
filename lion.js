@@ -310,6 +310,24 @@ lion.addfunc(lionstd, {
 //// function ////
 
 lion.addfunc(lionstd, {
+    // execute and make quote
+    // proto: argcall(env, ast) -> ast
+    argcall: function (env, ast) {
+        return ['quote', lion.call(ast[1], ast[2])];
+    },
+    // execute later
+    // proto: argpass(env, ast) -> ast
+    argpass: function (env, ast) {
+        return [ast[1], 'pass', ast[2]];
+    },
+    // make quote
+    // proto: argquote(env, ast) -> ast
+    argquote: function (env, ast) {
+        return ['quote', ast[2]];
+    },
+});
+
+lion.addfunc(lionstd, {
     // give name to arguments with wrap
     // proto: setarg(wrapper, ...) -> caller
     setarg: function (env, arr) {
