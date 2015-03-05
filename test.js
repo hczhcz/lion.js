@@ -69,34 +69,34 @@ test([{
 }, 'x', 'y', 'get', 'z'], 2345);
 
 // function
-// test([
-//     ['quote', ['index', ['list',
-//         ['setarg', undefined, 'test'],
-//         ['test']
-//     ], 1]]
-// , ['+', 3, 4]], 7);
 test([
     ['quote', ['index', ['list',
-        ['setarg', 'quote', 'test'],
+        ['setarg', 'argquote', 'test'],
         ['test']
     ], 1]]
 , ['+', 3, 4]], ['+', 3, 4]);
-// test([
-//     ['quote', ['index', ['list',
-//         ['setarg', undefined, 'test'],
-//         ['test']
-//     ], 1]]
-// , 7], 7);
-test([['lambda',
-    'a', 'b', ['+', ['a'], ['b']]
-], 123, ['+', 230, ['*', 2, 2]]], 357);
 test([
-    {LIONJS:true, a: ['', 10], b: ['', 20]},
-    ['lambda',
-        'a', 'b', ['*', ['a'], ['b']]
-    ],
-    ['+', ['b'], 2], 3
-], 66);
+    ['quote', ['index', ['list',
+        ['setarg', 'argpass', 'test', 'test2'],
+        ['*', ['test'], ['test2']]
+    ], 1]]
+, ['+', 3, 4], 5], 35);
+test([
+    ['quote', ['index', ['list',
+        ['setarg', 'argcall', 'test', 'test2'],
+        ['*', ['test'], ['test2']]
+    ], 1]]
+, ['+', 3, 4], 5], 35);
+// test([['lambda',
+//     'a', 'b', ['+', ['a'], ['b']]
+// ], 123, ['+', 230, ['*', 2, 2]]], 357);
+// test([
+//     {LIONJS:true, a: ['', 10], b: ['', 20]},
+//     ['lambda',
+//         'a', 'b', ['*', ['a'], ['b']]
+//     ],
+//     ['+', ['b'], 2], 3
+// ], 66);
 // test([['\\',
 //     'a', 'b', ['index', ['getq', 'a'], ['b']]
 // ], ['r', 's'], 1], ['r', 's']);
