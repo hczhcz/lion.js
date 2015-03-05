@@ -311,7 +311,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // give name to arguments with wrap
-    // proto: setarg(func, ...) -> caller
+    // proto: setarg(wrapper, ...) -> caller
     setarg: function (env, arr) {
         // get arguments
         var caller = lion.corefunc(
@@ -323,16 +323,15 @@ lion.addfunc(lionstd, {
             ['getq', 'callenv']
         );
 
-        var func = arr[0];
+        var wrapper = arr[0];
 
         for (var i = 1; i < arr.length; ++i) {
-            var arg = lion.call()
+            var arg = lion.call(
+                env, [wrapper, callenv, caller[i]]
+            );
+
             lion.corefunc(
-                env,
-                ['setq', arr[i], (
-                    // with wrap
-                    [callenv, func, caller[i]]
-                )]
+                env, ['setq', arr[i], arg]
             );
         }
 
@@ -342,28 +341,10 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // make a lambda function
-    // proto: lambda(..., body)
+    // proto: lambda(wrapper, ..., body)
     lambda: function (env, ast) {
         var setparent = ['setq', 'parent', env];
-        var setarg = ['setarg', 'pass'];
-
-        for (var i = 1; i < ast.length - 1; ++i) {
-            setarg.push(ast[i]);
-        }
-
-        return [
-            'do',
-            setparent,
-            setarg,
-            ast[ast.length - 1]
-        ];
-    },
-
-    // make a lambda function (do not wrap arguments)
-    // proto: lambdar(..., body)
-    lambdar: function (env, ast) {
-        var setparent = ['setq', 'parent', env];
-        var setarg = ['setarg', ''];
+        var setarg = ['setarg'];
 
         for (var i = 1; i < ast.length - 1; ++i) {
             setarg.push(ast[i]);
