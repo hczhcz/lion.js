@@ -30,6 +30,7 @@ test(['list',
     ['*', 3, 7],
     ['%', -10, 7]
 ], [21, -3]);
+test(['', ['abcd', 'efg']], ['abcd', 'efg']);
 
 // access
 test(['get', 'test1'], undefined);
@@ -56,7 +57,7 @@ test([
         ['eval', ['index', ['get', 'caller'], 1]]
     ], ['+', 1, 2]
 ], 3);
-test([{LIONJS: true, x: 1234}, 'get', 'x'], 1234);
+test([{LIONJS: true, x: 1234}, ['get', 'x']], 1234);
 test([{
     LIONJS: true,
     x: {
@@ -66,7 +67,7 @@ test([{
             z: 2345
         }
     }
-}, 'x', 'y', 'get', 'z'], 2345);
+}, ['x', ['y', ['get', 'z']]]], 2345);
 
 // function
 test([
@@ -91,18 +92,16 @@ test([['lambda', 'argpass',
     'a', 'b', ['+', ['a'], ['b']]
 ], 123, ['+', 230, ['*', 2, 2]]], 357);
 test([
-    {LIONJS:true, a: ['', 10], b: ['', 20]},
-    ['lambda', 'argpass',
-        'a', 'b', ['*', ['a'], ['b']]
-    ],
-    ['+', ['b'], 2], 3
+    {LIONJS:true, a: ['', 10], b: ['', 20]}, [
+        ['lambda', 'argpass',
+            'a', 'b', ['*', ['a'], ['b']]
+        ],
+        ['+', ['b'], 2], 3
+    ]
 ], 66);
 test([['\\', 'argpass',
-    'a', 'b', ['index', ['getq', 'a'], ['b']]
-], ['r', 's'], 2], ['r', 's']);
-test([['\\', 'argpass',
-    'a', 'b', ['index', ['getq', 'a'], ['b']]
-], ['+', 3, 4], 1], 'pass');
+    'a', 'b', ['xindex', ['getq', 'a'], ['b']]
+], ['r', 's'], -1], ['pass', ['r', 's']]);
 test([['\\', 'argcall',
     'a', 'b', ['index', ['getq', 'a'], ['b']]
 ], ['+', 3, 4], 1], 7);
@@ -146,8 +145,7 @@ test(['parse', ['repr', ['quote', ['/', 2333, 10]]]], ['/', 2333, 10]);
 test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
 
 // js built-in
-test(['math', 'floor', ['sqrt', 123456]], 351);
-test(['', ['abcd', 'efg']], ['abcd', 'efg']);
-test([['math', 'get', 'floor'], [['math', 'get', 'sqrt'], 123456]], 351);
+test(['math', ['floor', ['sqrt', 123456]]], 351);
+test([['math', ['get', 'floor']], [['math', ['get', 'sqrt']], 123456]], 351);
 
 document.writeln('<hr><b>Finished.</b>');
