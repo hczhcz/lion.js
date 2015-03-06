@@ -423,6 +423,18 @@ lion.addfunc(lionstd, {
         }
     },
 
+    // try structure
+    // proto: try(body, except, finally) -> result
+    'try': function (body, except, finally_do) {
+        try {
+            return body();
+        } catch (e) {
+            return except();
+        } finally {
+            finally_do();
+        }
+    },
+
     // simple loop
     // proto: loop (count, body) -> all result
     loop: function (count, body) {
