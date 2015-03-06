@@ -488,6 +488,19 @@ lion.addfunc(lionstd, {
         }
         return all;
     },
+
+    // linear for loop
+    // proto: table (iter, begin, end, step, body) -> all result
+    table: function (env, iter, begin, end, step, body) {
+        var all = [];
+
+        var name = iter();
+        for (var i = begin(); i < end(); i += step()) {
+            lion.corefunc(env, ['setq', name, ['quote', i]]);
+            all.push(body());
+        }
+        return all;
+    },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
 //// JSON ////
@@ -575,7 +588,24 @@ lion.addfunc(lionstd, {
     // proto: index(arr, i) -> arr[i]
     index: function (arr, i) {
         // notice: the index should be an integer
-        return arr[Math.floor(i)];
+        if (arr instanceof Array) {
+            return arr[Math.floor(i)];
+        } else {
+            // TODO: error?
+            return undefined;
+        }
+    },
+
+    // get member from array (loop if out of range)
+    // proto: xindex(arr, i) -> arr[i]
+    xindex: function (arr, i) {
+        // notice: the index should be an integer
+        if (arr instanceof Array) {
+            return arr[Math.floor(i - Math.floor(i / arr.length) * arr.length)];
+        } else {
+            // TODO: error?
+            return undefined;
+        }
     },
 
     // indexset: function (arr, i, value) {arr[i] = value; return arr;}
