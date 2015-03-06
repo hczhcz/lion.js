@@ -176,7 +176,7 @@ lion.addfunc(lioncore, {
             // callee is an object
 
             // use callee as the new environment
-            var result = lion.call(callee, caller.slice(1));
+            var result = lion.call(callee, caller[1]);
 
             return result;
         } else {
@@ -318,7 +318,7 @@ lion.addfunc(lionstd, {
     // execute later
     // proto: argpass(env, ast) -> ast
     argpass: function (env, ast) {
-        return [ast[1], 'pass', ast[2]];
+        return [ast[1], ['pass', ast[2]]];
     },
     // make quote
     // proto: argquote(env, ast) -> ast
