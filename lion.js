@@ -436,7 +436,7 @@ lion.addfunc(lionstd, {
     },
 
     // simple loop
-    // proto: loop (count, body) -> all result
+    // proto: loop(count, body) -> all result
     loop: function (count, body) {
         var all = [];
         for (var i = count(); i != 0; --i) {
@@ -446,7 +446,7 @@ lion.addfunc(lionstd, {
     },
 
     // for loop
-    // proto: for (init, cond, step, body) -> all result
+    // proto: for(init, cond, step, body) -> all result
     'for': function (init, cond, step, body) {
         var all = [];
         for (init(); cond(); step()) {
@@ -478,7 +478,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // iteration loop (for-in loop) by index
-    // proto: each (iter, data, body) -> all result
+    // proto: each(iter, data, body) -> all result
     each: function (env, iter, data, body) {
         var all = [];
 
@@ -492,7 +492,7 @@ lion.addfunc(lionstd, {
     },
 
     // iteration loop (for-in loop) by value
-    // proto: apply (iter, data, body) -> all result
+    // proto: apply(iter, data, body) -> all result
     apply: function (env, iter, data, body) {
         var all = [];
 
@@ -506,7 +506,7 @@ lion.addfunc(lionstd, {
     },
 
     // linear for loop
-    // proto: table (iter, begin, end, step, body) -> all result
+    // proto: table(iter, begin, end, step, body) -> all result
     table: function (env, iter, begin, end, step, body) {
         var all = [];
 
