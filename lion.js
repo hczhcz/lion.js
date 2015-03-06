@@ -125,6 +125,7 @@ var lioncore = {};
 
 // core-level names:
 //     LIONJS
+//     LIONSTD
 //     callq
 //     getq
 //     setq
@@ -259,7 +260,7 @@ lion.addfunc(lioncore, {
 
 var lionstd = {LIONJS: true};
 
-//// access ////
+//// access & call ////
 
 lion.addfunc(lionstd, {
     // core functions
@@ -292,8 +293,6 @@ lion.addfunc(lionstd, {
         return lion.corefunc(env, ['setq', name, ['quote', value]]);
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
-
-//// call ////
 
 lion.addfunc(lionstd, {
     // return the AST

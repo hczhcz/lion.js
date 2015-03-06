@@ -3,11 +3,21 @@
 function test(ast, expected) {
     var env = {LIONJS: true};
 
-    var ret = lion.call(env, ast);
+    var ret;
+    try {
+        ret = lion.call(env, ast);
+    } catch (e) {
+        ret = 'ERROR: ' + e;
+    }
 
     var input = JSON.stringify(ast);
-    var retoutput = JSON.stringify(ret);
     var expoutput = JSON.stringify(expected);
+    var retoutput;
+    try {
+        retoutput = JSON.stringify(ret);
+    } catch (e) {
+        retoutput = 'ERROR: ret has loop';
+    }
 
     if (retoutput != expoutput) {
         document.writeln(
@@ -123,7 +133,7 @@ test([['\\', 'argcall', 'a', 'b',
 ], ['\\', 'argquote', 'a',
     ['a']
 ], ['+', 2, 5]], ['+', 7, 2]);
-test(['xindex', ['list',
+test(['do',
     ['set', 'f', ['\\', 'argcall', 'x',
         ['if', ['<=', ['x'], 0],
             1,
@@ -131,14 +141,7 @@ test(['xindex', ['list',
         ]
     ]],
     ['f', 10]
-], -1], 3628800);
-
-// test([
-//     ['quote', ['list',
-//         ['set', 'tmp', ['eval', ['index', ['get', 'caller'], 1]]],
-//         ['cond', ['get', 'tmp'], ['']]
-//     ]], 10
-// ]);
+], 3628800);
 
 // control flow
 test(['do',
