@@ -630,8 +630,26 @@ lion.addfunc(lionstd, {
 //// js built-in ////
 
 lion.addfunc(lionstd, {
-    'math': Math,
-    'json': JSON,
+    // TODO: ??
+    isFinite: isFinite,
+    isNaN: isNaN,
+
+    Array: Array,
+    Boolean: Boolean,
+    Number: Number,
+    String: String,
+    Date: Date,
+    RegExp: RegExp,
+    // Object: Object,
+    // Function: Function,
+    // Error: Error
+    Integer: parseInt,
+    Float: parseFloat,
+}, lion.wrap);
+
+lion.addfunc(lionstd, {
+    'Math': Math,
+    'JSON': JSON,
 }, lion.wrapobj);
 
 //// alias ////
