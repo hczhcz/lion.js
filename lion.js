@@ -93,9 +93,9 @@ var lion = {
 
             var callee = lion.call(env, ast[0]);
 
-            if (callee == undefined) {
+            if (callee == 'LIONSTD') {
                 // call with std
-                return lion.call(lionstd, caller[1]);
+                return lion.call(lionstd, ast[1]);
             } else {
                 // call via env.callq
                 return lion.corefunc(
@@ -130,6 +130,7 @@ var lioncore = {};
 
 // core-level names:
 //     LIONJS
+//     LIONSTD
 //     callq
 //     hasq
 //     getq
@@ -278,7 +279,9 @@ lion.addfunc(lioncore, {
 
 //////// the standard library ////////
 
-var lionstd = {LIONJS: true};
+var lionstd = {
+    LIONJS: true,
+};
 
 //// access & call ////
 
