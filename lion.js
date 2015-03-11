@@ -93,11 +93,16 @@ var lion = {
 
             var callee = lion.call(env, ast[0]);
 
-            // call it
-            return lion.corefunc(
-                env,
-                ['callq', callee, ast]
-            );
+            if (callee == undefined) {
+                // call with std
+                return lion.call(lionstd, caller[1]);
+            } else {
+                // call via env.callq
+                return lion.corefunc(
+                    env,
+                    ['callq', callee, ast]
+                );
+            }
         } else {
             // is an object
             return ast;
@@ -125,7 +130,6 @@ var lioncore = {};
 
 // core-level names:
 //     LIONJS
-//     LIONSTD
 //     callq
 //     getq
 //     setq
