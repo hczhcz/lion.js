@@ -198,10 +198,7 @@ lion.addfunc(lioncore, {
     hasq: function (env, ast) {
         var name = ast[1];
 
-        if (typeof name != 'string') {
-            // not a name
-            throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
+        if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
@@ -214,10 +211,7 @@ lion.addfunc(lioncore, {
     getq: function (env, ast) {
         var name = ast[1];
 
-        if (typeof name != 'string') {
-            // not a name
-            throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
+        if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
@@ -236,10 +230,7 @@ lion.addfunc(lioncore, {
     xgetq: function (env, ast) {
         var name = ast[1];
 
-        // if (typeof name != 'string') {
-        //     // not a name
-        //     throw '[LION] name is not string: ' + name;
-        // } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
+        // if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
         //     // js internal property
         //     throw '[LION] name is not acceptable: ' + name;
         // } else {
@@ -263,10 +254,7 @@ lion.addfunc(lioncore, {
         var name = ast[1];
         var value = ast[2];
 
-        if (typeof name != 'string') {
-            // not a name
-            throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
+        if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
@@ -279,11 +267,7 @@ lion.addfunc(lioncore, {
     delq: function (env, ast) {
         var name = ast[1];
 
-        // if (!(name instanceof String)) {
-        if (typeof name != 'string') {
-            // not a name
-            throw '[LION] name is not string: ' + name;
-        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
+        if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
             throw '[LION] name is not acceptable: ' + name;
         } else {
