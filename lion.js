@@ -131,6 +131,7 @@ var lioncore = {};
 // core-level names:
 //     LIONJS
 //     callq
+//     hasq
 //     getq
 //     xgetq
 //     setq
@@ -192,12 +193,27 @@ lion.addfunc(lioncore, {
         }
     },
 
-    // get value from the environment or its parent
+    // check if value is in current environment
+    // proto: hasq('name) -> result
+    hasq: function (env, ast) {
+        var name = ast[1];
+
+        if (typeof name != 'string') {
+            // not a name
+            throw '[LION] name is not string: ' + name;
+        } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
+            // js internal property
+            throw '[LION] name is not acceptable: ' + name;
+        } else {
+            return Object.hasOwnProperty.call(env, name);
+        }
+    },
+
+    // get value from current environment or call xgetq
     // proto: getq('name) -> value
     getq: function (env, ast) {
         var name = ast[1];
 
-        // if (!(name instanceof String)) {
         if (typeof name != 'string') {
             // not a name
             throw '[LION] name is not string: ' + name;
@@ -247,7 +263,6 @@ lion.addfunc(lioncore, {
         var name = ast[1];
         var value = ast[2];
 
-        // if (!(name instanceof String)) {
         if (typeof name != 'string') {
             // not a name
             throw '[LION] name is not string: ' + name;
@@ -259,7 +274,7 @@ lion.addfunc(lioncore, {
         }
     },
 
-    // delete value in the environment
+    // remove value from current environment
     // proto: delq('name) -> success
     delq: function (env, ast) {
         var name = ast[1];
@@ -286,16 +301,28 @@ var lionstd = {LIONJS: true};
 lion.addfunc(lionstd, {
     // core functions
     callq: function (env, ast) {return lioncore.callq(env, ast);},
+    hasq: function (env, ast) {return lioncore.hasq(env, ast);},
     getq: function (env, ast) {return lioncore.getq(env, ast);},
+    xgetq: function (env, ast) {return lioncore.xgetq(env, ast);},
     setq: function (env, ast) {return lioncore.setq(env, ast);},
     delq: function (env, ast) {return lioncore.delq(env, ast);},
 });
 
 lion.addfunc(lionstd, {
+    // hasq() with calling
+    // proto: has(name) -> value
+    has: function (env, name) {
+        return lion.corefunc(env, ['hasq', name]);
+    },
     // getq() with calling
     // proto: get(name) -> value
     get: function (env, name) {
         return lion.corefunc(env, ['getq', name]);
+    },
+    // xgetq() with calling
+    // proto: xget(name) -> value
+    xget: function (env, name) {
+        return lion.corefunc(env, ['xgetq', name]);
     },
     // setq() with calling
     // proto: set(name, value) -> value
