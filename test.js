@@ -228,5 +228,6 @@ test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
 // js built-in
 test(['Math', ['floor', ['sqrt', 123456]]], 351);
 test([['Math', [':', 'floor']], [['Math', [':', 'sqrt']], 123456]], 351);
+test([['eval', ['Math', ['envq']]], ['floor', 1.5]], 1);
 
 document.writeln('<hr><b>Finished.</b>');

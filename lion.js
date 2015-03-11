@@ -51,18 +51,23 @@ var lion = {
     },
 
     // convert a native object to an environment
-    wrapobj: function (obj, option) {
+    wrapobj: function (obj, option, envname) {
         return {
             LIONJS: true,
 
-            // see lioncore.getq
-            getq: function (env, ast) {
+            // see lioncore.envq
+            envq: function (env, ast) {
+                return ['LIONSTD', ['getq', envname]];
+            },
+
+            // see lioncore.xgetq
+            xgetq: function (env, ast) {
                 var name = ast[1];
 
                 if (Object.hasOwnProperty.call(obj, name)) {
                     return lion.wrap(obj[name], option);
                 } else {
-                    return lioncore.getq(env, ast); // TODO: ?
+                    return lioncore.xgetq(env, ast); // TODO: ?
                 }
             },
         };
@@ -82,7 +87,7 @@ var lion = {
     // add library functions
     addfunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
-            env[i] = hook ? hook(pkg[i], option) : pkg[i];
+            env[i] = hook ? hook(pkg[i], option, i) : pkg[i];
         }
     },
 
@@ -132,6 +137,7 @@ var lioncore = {};
 //     LIONJS
 //     LIONSTD
 //     callq
+//     envq
 //     hasq
 //     getq
 //     xgetq
@@ -176,7 +182,7 @@ lion.addfunc(lioncore, {
             var newenv = {
                 LIONJS: true,
                 caller: caller,
-                callenv: env,
+                callenv: lion.corefunc(env, ['envq']),
             };
 
             return lion.call(newenv, callee);
@@ -192,6 +198,12 @@ lion.addfunc(lioncore, {
             // return callee;
             throw '[LION] callee is not callable: ' + callee;
         }
+    },
+
+    // get current environment
+    // proto: envq() -> env
+    envq: function (env, ast) {
+        return env;
     },
 
     // check if value is in current environment
@@ -288,6 +300,7 @@ var lionstd = {
 lion.addfunc(lionstd, {
     // core functions
     callq: function (env, ast) {return lioncore.callq(env, ast);},
+    envq: function (env, ast) {return 'LIONSTD';},
     hasq: function (env, ast) {return lioncore.hasq(env, ast);},
     getq: function (env, ast) {return lioncore.getq(env, ast);},
     xgetq: function (env, ast) {return lioncore.xgetq(env, ast);},
@@ -400,7 +413,7 @@ lion.addfunc(lionstd, {
     // make a lambda function
     // proto: lambda(wrapper, ..., body)
     lambda: function (env, ast) {
-        var setparent = ['setq', 'parent', env];
+        var setparent = ['setq', 'parent', lion.corefunc(env, ['envq'])];
         var setarg = ['setarg'];
 
         for (var i = 1; i < ast.length - 1; ++i) {
