@@ -43,18 +43,20 @@ test(['list',
 test(['', ['abcd', 'efg']], ['abcd', 'efg']);
 
 // access
-test(['get', 'test1'], undefined);
+test(['has', 'test1'], false);
 test(['list',
+    ['hasq', 'test1'],
     ['setq', 'test1', ['+', 100, 23]],
     ['getq', 'test1'],
+    ['hasq', 'test1'],
     ['test1']
-], [['+', 100, 23], ['+', 100, 23], 123]);
+], [false, ['+', 100, 23], ['+', 100, 23], true, 123]);
 test(['list',
     ['set', 'test2', ['+', 100, 23]],
     ['get', ['+', 'test', '2']],
-    ['get', 'test1'],
+    ['hasq', 'test1'],
     ['getq', 'test2']
-], [123, 123, undefined , 123]);
+], [123, 123, false, 123]);
 
 // call
 test([['+', 'qu', 'ote'], ['hello', 'world']], ['hello', 'world']);
@@ -71,16 +73,42 @@ test([{
     LIONJS: true,
     x: 1234
 }, ['get', 'x']], 1234);
-test([{
-    LIONJS: true,
-    x: {
+test([
+    {
         LIONJS: true,
-        y: {
+        x: {
             LIONJS: true,
-            z: 2345
+            y: {
+                LIONJS: true,
+                z: 2345
+            }
         }
-    }
-}, ['x', ['y', [':', 'z']]]], 2345);
+    },
+    ['list',
+        ['x', ['has', 'x']],
+        ['x', ['has', 'y']],
+        ['x', ['has', 'z']],
+        ['x', ['y', ['has', 'x']]],
+        ['x', ['y', ['has', 'y']]],
+        ['x', ['y', ['has', 'z']]],
+        ['x', ['y', [':', 'z']]]
+    ]
+], [false, true, false, false, false, true, 2345]);
+test([
+    {
+        LIONJS: true,
+        parent: {
+            LIONJS: true,
+            a: 2
+        },
+        a: 1
+    },
+    ['list',
+        ['get', 'a'],
+        ['parent', ['get', 'a']],
+        ['xget', 'a']
+    ]
+],[1, 2, 2]);
 
 // function
 test([['quote',

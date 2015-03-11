@@ -242,8 +242,8 @@ lion.addfunc(lioncore, {
                 return lion.corefunc(lionstd, ['getq', name]);
             } else {
                 // not found
-                return undefined;
-                // throw '[LION] value not found: ' + name;
+                // return undefined;
+                throw '[LION] value not found: ' + name;
             }
         // }
     },
