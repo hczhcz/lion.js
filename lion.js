@@ -132,6 +132,7 @@ var lioncore = {};
 //     LIONJS
 //     callq
 //     getq
+//     xgetq
 //     setq
 //     delq
 //     parent
@@ -209,22 +210,38 @@ lion.addfunc(lioncore, {
                 return env[name];
             } else {
                 // not found
-                if (Object.hasOwnProperty.call(env, 'parent')) {
-                    // find from env's parent
-                    return lion.corefunc(env.parent, ['getq', name]);
-                } else if (env != lionstd) {
-                    // find from standard library
-                    return lion.corefunc(lionstd, ['getq', name]);
-                } else {
-                    // not found
-                    return undefined;
-                    // throw '[LION] value not found: ' + name;
-                }
+                return lion.corefunc(env, ['xgetq', name]);
             }
         }
     },
 
-    // set value in the environment
+    // get value from the parent of current environment
+    // proto: xgetq('name) -> value
+    xgetq: function (env, ast) {
+        var name = ast[1];
+
+        // if (typeof name != 'string') {
+        //     // not a name
+        //     throw '[LION] name is not string: ' + name;
+        // } else if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
+        //     // js internal property
+        //     throw '[LION] name is not acceptable: ' + name;
+        // } else {
+            if (Object.hasOwnProperty.call(env, 'parent')) {
+                // find from env's parent
+                return lion.corefunc(env.parent, ['getq', name]);
+            } else if (env != lionstd) {
+                // find from standard library
+                return lion.corefunc(lionstd, ['getq', name]);
+            } else {
+                // not found
+                return undefined;
+                // throw '[LION] value not found: ' + name;
+            }
+        // }
+    },
+
+    // set value in current environment
     // proto: setq('name, 'value) -> value
     setq: function (env, ast) {
         var name = ast[1];
