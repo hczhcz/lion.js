@@ -432,24 +432,6 @@ lion.addfunc(lionstd, {
 //// control flow ////
 
 lion.addfunc(lionstd, {
-    // return arguments as a list
-    // proto: listq(...) -> [...]
-    listq: function (env, ast) {
-        return ast.slice(1);
-    },
-});
-
-lion.addfunc(lionstd, {
-    // call and return arguments as a list
-    // proto: list(...) -> [...]
-    list: function (arr) {return arr;},
-
-    // call and return the last argument
-    // proto: do(...) -> [...]
-    do: function (arr) {return arr[arr.length - 1];},
-}, lion.wrap, lion.W_ARG_AS_ARR);
-
-lion.addfunc(lionstd, {
     // conditional branch
     // proto: cond(cond, action, ...) -> result
     cond: function () {
@@ -567,17 +549,6 @@ lion.addfunc(lionstd, {
     },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
-//// JSON ////
-
-lion.addfunc(lionstd, {
-    // string to AST (JSON only)
-    // proto: parse(str) -> ast
-    parse: function (json) {return JSON.parse(json);},
-    // AST to string (JSON only)
-    // proto: repr(ast) -> str
-    repr: function (ast) {return JSON.stringify(ast);},
-}, lion.wrap);
-
 //// operators ////
 
 lion.addfunc(lionstd, {
@@ -639,7 +610,25 @@ lion.addfunc(lionstd, {
     '?:': function (a, b, c) {return a() ? b() : c();},
 }, lion.wrap, lion.W_DELAY);
 
-//// array ////
+//// list & dict ////
+
+lion.addfunc(lionstd, {
+    // return arguments as a list
+    // proto: listq(...) -> [...]
+    listq: function (env, ast) {
+        return ast.slice(1);
+    },
+});
+
+lion.addfunc(lionstd, {
+    // call and return arguments as a list
+    // proto: list(...) -> [...]
+    list: function (arr) {return arr;},
+
+    // call and return the last argument
+    // proto: do(...) -> [...]
+    do: function (arr) {return arr[arr.length - 1];},
+}, lion.wrap, lion.W_ARG_AS_ARR);
 
 lion.addfunc(lionstd, {
     // get the length of array
@@ -673,6 +662,17 @@ lion.addfunc(lionstd, {
     },
 
     // indexset: function (arr, i, value) {arr[i] = value; return arr;}
+}, lion.wrap);
+
+//// JSON ////
+
+lion.addfunc(lionstd, {
+    // string to AST (JSON only)
+    // proto: parse(str) -> ast
+    parse: function (json) {return JSON.parse(json);},
+    // AST to string (JSON only)
+    // proto: repr(ast) -> str
+    repr: function (ast) {return JSON.stringify(ast);},
 }, lion.wrap);
 
 //// js built-in ////
