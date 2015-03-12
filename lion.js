@@ -672,7 +672,17 @@ lion.addfunc(lionstd, {
         }
     },
 
-    // indexset: function (arr, i, value) {arr[i] = value; return arr;}
+    // set member in array
+    // proto: indexset(arr, i, value) -> arr
+    indexset: function (arr, i, value) {
+        if (arr instanceof Array) {
+            arr[Math.floor(i)] = value;
+            return arr;
+        } else {
+            // TODO: error?
+            return undefined;
+        }
+    },
 }, lion.wrap);
 
 //// JSON ////
