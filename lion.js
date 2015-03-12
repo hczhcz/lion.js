@@ -175,9 +175,11 @@ lion.addfunc(lioncore, {
             }
         } else if (callee instanceof Function) {
             // callee is a builtin function
+
             return callee(env, caller);
         } else if (callee instanceof Array) {
             // callee is an AST
+
             // call with a new environment
             var newenv = {
                 LIONJS: true,
@@ -190,11 +192,10 @@ lion.addfunc(lioncore, {
             // callee is an object
 
             // use callee as the new environment
-            var result = lion.call(callee, caller[1]);
-
-            return result;
+            return lion.call(callee, caller[1]);
         } else {
             // callee is not callable
+
             // return callee;
             throw '[LION] callee is not callable: ' + callee;
         }
@@ -411,7 +412,7 @@ lion.addfunc(lionstd, {
 
 lion.addfunc(lionstd, {
     // make a lambda function
-    // proto: lambda(wrapper, ..., body)
+    // proto: lambda(wrapper, ..., body) -> function
     lambda: function (env, ast) {
         var setparent = ['setq', 'parent', lion.corefunc(env, ['envq'])];
         var setarg = ['setarg'];
@@ -613,21 +614,31 @@ lion.addfunc(lionstd, {
 //// list & dict ////
 
 lion.addfunc(lionstd, {
-    // return arguments as a list
-    // proto: listq(...) -> [...]
-    listq: function (env, ast) {
-        return ast.slice(1);
-    },
-});
-
-lion.addfunc(lionstd, {
     // call and return arguments as a list
     // proto: list(...) -> [...]
-    list: function (arr) {return arr;},
+    list: function (arr) {
+        return arr;
+    },
 
     // call and return the last argument
     // proto: do(...) -> [...]
-    do: function (arr) {return arr[arr.length - 1];},
+    do: function (arr) {
+        return arr[arr.length - 1];
+    },
+
+    // make a dict (object)
+    // proto: dict(key, value, ...) -> {key: value, ...}
+    dict: function (arr) {
+        var newenv = {
+            LIONJS: true,
+        };
+
+        for (var i = 0; i < arr.length; i += 2) {
+            lion.corefunc(newenv, ['setq', arr[i], arr[i + 1]]);
+        }
+
+        return newenv;
+    },
 }, lion.wrap, lion.W_ARG_AS_ARR);
 
 lion.addfunc(lionstd, {
