@@ -655,8 +655,7 @@ lion.addfunc(lionstd, {
         if (arr instanceof Array) {
             return arr[Math.floor(i)];
         } else {
-            // TODO: error?
-            return undefined;
+            throw '[LION] bad type of index: ' + i;
         }
     },
 
@@ -667,8 +666,7 @@ lion.addfunc(lionstd, {
         if (arr instanceof Array) {
             return arr[Math.floor(i - Math.floor(i / arr.length) * arr.length)];
         } else {
-            // TODO: error?
-            return undefined;
+            throw '[LION] bad type of index: ' + i;
         }
     },
 
@@ -679,8 +677,7 @@ lion.addfunc(lionstd, {
             arr[Math.floor(i)] = value;
             return arr;
         } else {
-            // TODO: error?
-            return undefined;
+            throw '[LION] bad type of index: ' + i;
         }
     },
 }, lion.wrap);
@@ -717,8 +714,8 @@ lion.addfunc(lionstd, {
 }, lion.wrap);
 
 lion.addfunc(lionstd, {
-    'Math': Math,
-    'JSON': JSON,
+    Math: Math,
+    JSON: JSON,
 }, lion.wrapobj);
 
 //// alias ////
@@ -728,6 +725,6 @@ lion.addfunc(lionstd, {
     ':=': 'set',
     // '=': 'var',
     '': 'quote',
-    'neg': 'negative',
+    neg: 'negative',
     '\\': 'lambda',
 });
