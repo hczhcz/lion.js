@@ -9,6 +9,7 @@ var lion = {
     W_DELAY: 1,
     W_ARG_HAS_ENV: 2,
     W_ARG_AS_ARR: 4,
+    W_METHOD: 8,
 
     //////// helper functions ////////
 
@@ -65,7 +66,20 @@ var lion = {
                 var name = ast[1];
 
                 if (Object.hasOwnProperty.call(obj, name)) {
-                    return lion.wrap(obj[name], option);
+                    if (option & lion.W_METHOD) {
+                        return lion.wrap(function (args) {
+                            var target = args.shift();
+
+                            // if (target instanceof obj) {
+                            if (Object.isPrototypeOf.call(obj, target)) {
+                                return obj[name].apply(target, args);
+                            } else {
+                                throw '[LION] bad access to object method: ' + ast[0];
+                            }
+                        }, option | lion.W_ARG_AS_ARR);
+                    } else {
+                        return lion.wrap(obj[name], option);
+                    }
                 } else {
                     return lioncore.xgetq(env, ast); // TODO: ?
                 }
@@ -700,23 +714,33 @@ lion.addfunc(lionstd, {
     isFinite: isFinite,
     isNaN: isNaN,
 
-    Array: Array,
-    Boolean: Boolean,
-    Number: Number,
-    String: String,
-    Date: Date,
-    RegExp: RegExp,
-    // Object: Object,
-    // Function: Function,
-    // Error: Error
-    Integer: parseInt,
-    Float: parseFloat,
+    array: Array,
+    boolean: Boolean,
+    number: Number,
+    string: String,
+    date: Date,
+    regExp: RegExp,
+    // object: Object,
+    // function: Function,
+    // error: Error
+    integer: parseInt,
+    float: parseFloat,
 }, lion.wrap);
 
 lion.addfunc(lionstd, {
     Math: Math,
     JSON: JSON,
 }, lion.wrapobj);
+
+lion.addfunc(lionstd, {
+    Array: Array.prototype,
+    Boolean: Boolean.prototype,
+    Number: Number.prototype,
+    String: String.prototype,
+    Date: Date.prototype,
+    RegExp: RegExp.prototype,
+    // lion.call(lionstd, ['Array', ['slice', ['list', 1, 2, 3], 1]]) // ???
+}, lion.wrapobj, lion.W_METHOD);
 
 //// alias ////
 

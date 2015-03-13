@@ -229,5 +229,7 @@ test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
 test(['Math', ['floor', ['sqrt', 123456]]], 351);
 test([['Math', [':', 'floor']], [['Math', [':', 'sqrt']], 123456]], 351);
 test([['eval', ['Math', ['envq']]], ['floor', 1.5]], 1);
+test(['Array', ['slice', ['list', 1, 2, 3], 1]], [2, 3]); // TODO: more test cases
+
 
 document.writeln('<hr><b>Finished.</b>');
