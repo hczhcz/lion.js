@@ -468,18 +468,6 @@ lion.addfunc(lionstd, {
         }
     },
 
-    // try structure
-    // proto: try(body, except, finally) -> result
-    'try': function (body, except, finally_do) {
-        try {
-            return body();
-        } catch (e) {
-            return except();
-        } finally {
-            finally_do();
-        }
-    },
-
     // simple loop
     // proto: loop(count, body) -> all result
     loop: function (count, body) {
@@ -561,6 +549,25 @@ lion.addfunc(lionstd, {
             all.push(body());
         }
         return all;
+    },
+
+    // try structure
+    // proto: try(body, except, finally) -> result
+    'try': function (env, body, except, finally_do) {
+        try {
+            return body();
+        } catch (e) {
+            lion.corefunc(env, ['setq', 'exception', ['quote', e]]);
+            return except();
+        } finally {
+            finally_do();
+        }
+    },
+
+    // throw statement
+    // proto: throw(err) -> never return
+    'throw': function (env, err) {
+        throw err();
     },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
