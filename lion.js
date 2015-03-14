@@ -101,7 +101,11 @@ var lion = {
     // add library functions
     addfunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
-            env[i] = hook ? hook(pkg[i], option, i) : pkg[i];
+            if (i in env) {
+                throw '[LION] naming conflict in the library: ' + i;
+            } else {
+                env[i] = hook ? hook(pkg[i], option, i) : pkg[i];
+            }
         }
     },
 
