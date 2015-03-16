@@ -454,7 +454,7 @@ lion.addfunc(lionstd, {
 
     // simple branch (if branch)
     // proto: if(cond, then, else) -> result
-    'if': function (cond, then_br, else_br) {
+    if: function (cond, then_br, else_br) {
         if (cond()) {
             return then_br();
         } else if (else_br) {
@@ -474,7 +474,7 @@ lion.addfunc(lionstd, {
 
     // for loop
     // proto: for(init, cond, step, body) -> all result
-    'for': function (init, cond, step, body) {
+    for: function (init, cond, step, body) {
         var all = [];
         for (init(); cond(); step()) {
             all.push(body());
@@ -484,7 +484,7 @@ lion.addfunc(lionstd, {
 
     // while loop
     // proto: while(cond, body) -> all result
-    'while': function (cond, body) {
+    while: function (cond, body) {
         var all = [];
         while (cond()) {
             all.push(body());
@@ -512,10 +512,9 @@ lion.addfunc(lionstd, {
         var name = iter();
         var list = data();
 
-        // TODO: ???
-        // if (!list instanceof Array) {
-        //     throw '[LION] bad type of list: ' + list;
-        // }
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
 
         for (var i in list) {
             lion.corefunc(env, ['setq', name, ['quote', i]]);
@@ -562,7 +561,7 @@ lion.addfunc(lionstd, {
 
     // try structure
     // proto: try(body, except, finally) -> result
-    'try': function (env, body, except, finally_do) {
+    try: function (env, body, except, finally_do) {
         try {
             return body();
         } catch (e) {
@@ -575,7 +574,7 @@ lion.addfunc(lionstd, {
 
     // throw statement
     // proto: throw(err) -> never return
-    'throw': function (env, err) {
+    throw: function (env, err) {
         throw err();
     },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
