@@ -521,10 +521,17 @@ lion.addfunc(lionstd, {
 
         var name = iter();
         var list = data();
+
+        // TODO: ???
+        // if (!list instanceof Array) {
+        //     throw '[LION] bad type of list: ' + list;
+        // }
+
         for (var i in list) {
             lion.corefunc(env, ['setq', name, ['quote', i]]);
             all.push(body());
         }
+
         return all;
     },
 
@@ -535,10 +542,16 @@ lion.addfunc(lionstd, {
 
         var name = iter();
         var list = data();
+
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
+
         for (var i in list) {
-            lion.corefunc(env, ['setq', name, ['quote', list[i]]]);
+            lion.corefunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
             all.push(body());
         }
+
         return all;
     },
 
@@ -548,10 +561,12 @@ lion.addfunc(lionstd, {
         var all = [];
 
         var name = iter();
+
         for (var i = begin(); i < end(); i += step()) {
             lion.corefunc(env, ['setq', name, ['quote', i]]);
             all.push(body());
         }
+
         return all;
     },
 
@@ -741,6 +756,17 @@ lion.addfunc(lionstd, {
 lion.addfunc(lionstd, {
     Math: Math,
     JSON: JSON,
+
+    // TODO: add necessary functions in them
+    // array: Array,
+    // boolean: Boolean,
+    // number: Number,
+    // string: String,
+    // date: Date,
+    // regExp: RegExp,
+    // object: Object,
+    // function: Function,
+    // error: Error
 }, lion.wrapobj);
 
 lion.addfunc(lionstd, {
