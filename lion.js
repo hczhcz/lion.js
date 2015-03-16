@@ -156,7 +156,6 @@ var lioncore = {};
 //     LIONSTD
 //     callq
 //     envq
-//     hasq
 //     getq
 //     xgetq
 //     setq
@@ -223,19 +222,6 @@ lion.addfunc(lioncore, {
     // proto: envq() -> env
     envq: function (env, ast) {
         return env;
-    },
-
-    // check if value is in current environment
-    // proto: hasq('name) -> result
-    hasq: function (env, ast) {
-        var name = ast[1];
-
-        if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
-            // js internal property
-            throw '[LION] name is not acceptable: ' + name;
-        } else {
-            return Object.hasOwnProperty.call(env, name);
-        }
     },
 
     // get value from current environment or call xgetq
@@ -320,7 +306,6 @@ lion.addfunc(lionstd, {
     // core functions
     callq: function (env, ast) {return lioncore.callq(env, ast);},
     envq: function (env, ast) {return 'LIONSTD';},
-    hasq: function (env, ast) {return lioncore.hasq(env, ast);},
     getq: function (env, ast) {return lioncore.getq(env, ast);},
     xgetq: function (env, ast) {return lioncore.xgetq(env, ast);},
     setq: function (env, ast) {return lioncore.setq(env, ast);},
@@ -328,10 +313,15 @@ lion.addfunc(lionstd, {
 });
 
 lion.addfunc(lionstd, {
-    // hasq() with calling
-    // proto: has(name) -> value
-    has: function (env, name) {
-        return lion.corefunc(env, ['hasq', name]);
+    // callq() with calling
+    // proto: callq(callee, caller) -> result
+    call: function (env, callee, caller) {
+        return lion.corefunc(env, ['callq', callee, caller]);
+    },
+    // envq() with calling
+    // proto: env() -> env
+    env: function (env) {
+        return lion.corefunc(env, ['envq']);
     },
     // getq() with calling
     // proto: get(name) -> value

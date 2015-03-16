@@ -43,18 +43,18 @@ test(['list',
 test(['', ['abcd', 'efg']], ['abcd', 'efg']);
 
 // access
-test(['has', 'test1'], false);
+test(['in', 'test1', ['env']], false);
 test(['list',
-    ['hasq', 'test1'],
+    ['in', 'test1', ['env']],
     ['setq', 'test1', ['+', 100, 23]],
     ['getq', 'test1'],
-    ['hasq', 'test1'],
+    ['in', 'test1', ['env']],
     ['test1']
 ], [false, ['+', 100, 23], ['+', 100, 23], true, 123]);
 test(['list',
     ['set', 'test2', ['+', 100, 23]],
     ['get', ['+', 'test', '2']],
-    ['hasq', 'test1'],
+    ['in', 'test1', ['env']],
     ['getq', 'test2']
 ], [123, 123, false, 123]);
 
@@ -85,12 +85,12 @@ test([
         }
     },
     ['list',
-        ['x', ['has', 'x']],
-        ['x', ['has', 'y']],
-        ['x', ['has', 'z']],
-        ['x', ['y', ['has', 'x']]],
-        ['x', ['y', ['has', 'y']]],
-        ['x', ['y', ['has', 'z']]],
+        ['x', ['in', 'x', ['env']]],
+        ['x', ['in', 'y', ['env']]],
+        ['x', ['in', 'z', ['env']]],
+        ['x', ['y', ['in', 'x', ['env']]]],
+        ['x', ['y', ['in', 'y', ['env']]]],
+        ['x', ['y', ['in', 'z', ['env']]]],
         ['x', ['y', [':', 'z']]]
     ]
 ], [false, true, false, false, false, true, 2345]);
