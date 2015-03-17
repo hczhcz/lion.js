@@ -64,12 +64,12 @@ var lion = {
         return {
             LIONJS: true,
 
-            // see lion.core.envq
+            // see envq in lion.core
             envq: function (env, ast) {
                 return ['LIONSTD', ['getq', envname]];
             },
 
-            // see lion.core.xgetq
+            // see xgetq in lion.core
             xgetq: function (env, ast) {
                 var name = ast[1];
 
@@ -89,7 +89,8 @@ var lion = {
                         return lion.wrap(obj[name], option);
                     }
                 } else {
-                    return lion.core.xgetq(env, ast); // TODO: ?
+                    // find from lion.std
+                    return lion.corefunc(lion.std, ['getq', name]);
                 }
             },
         };
@@ -305,13 +306,19 @@ lion.addfunc(lion.core, {
 //// access & call ////
 
 lion.addfunc(lion.std, {
-    // core functions
-    callq: function (env, ast) {return lion.core.callq(env, ast);},
-    envq: function (env, ast) {return 'LIONSTD';},
-    getq: function (env, ast) {return lion.core.getq(env, ast);},
-    xgetq: function (env, ast) {return lion.core.xgetq(env, ast);},
-    setq: function (env, ast) {return lion.core.setq(env, ast);},
-    delq: function (env, ast) {return lion.core.delq(env, ast);},
+    // see envq in lion.core
+    envq: function (env, ast) {
+        return 'LIONSTD';
+    },
+
+    // see xgetq in lion.core
+    xgetq: function (env, ast) {
+        var name = ast[1];
+
+        if (Object.hasOwnProperty.call(lion.core, name)) {
+            return lion.core[name];
+        }
+    },
 });
 
 lion.addfunc(lion.std, {
