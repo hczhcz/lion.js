@@ -4,6 +4,14 @@
 
 var lion = {
 
+    //////// builtin libraries ////////
+
+    core: {},
+
+    std: {
+        LIONJS: true,
+    },
+
     //////// constants ////////
 
     W_DELAY: 1,
@@ -56,12 +64,12 @@ var lion = {
         return {
             LIONJS: true,
 
-            // see lioncore.envq
+            // see lion.core.envq
             envq: function (env, ast) {
                 return ['LIONSTD', ['getq', envname]];
             },
 
-            // see lioncore.xgetq
+            // see lion.core.xgetq
             xgetq: function (env, ast) {
                 var name = ast[1];
 
@@ -81,13 +89,13 @@ var lion = {
                         return lion.wrap(obj[name], option);
                     }
                 } else {
-                    return lioncore.xgetq(env, ast); // TODO: ?
+                    return lion.core.xgetq(env, ast); // TODO: ?
                 }
             },
         };
     },
 
-    // add checker to a function (for lioncore)
+    // add checker to a function (for lion.core)
     wrapcore: function (func, option) {
         return function (env, ast) {
             if (Object.hasOwnProperty.call(env, 'LIONJS')) {
@@ -118,7 +126,7 @@ var lion = {
 
             if (callee == 'LIONSTD') {
                 // call with std
-                return lion.call(lionstd, ast[1]);
+                return lion.call(lion.std, ast[1]);
             } else {
                 // call via env.callq
                 return lion.corefunc(
@@ -132,15 +140,15 @@ var lion = {
         }
     },
 
-    // search core function in env and lioncore
+    // search core function in env and lion.core
     corefunc: function (env, ast) {
         var name = ast[0];
         var func;
 
         if (Object.hasOwnProperty.call(env, name)) {
             func = env[name];
-        } else if (Object.hasOwnProperty.call(lioncore, name)) {
-            func = lioncore[name];
+        } else if (Object.hasOwnProperty.call(lion.core, name)) {
+            func = lion.core[name];
         }
 
         return func(env, ast);
@@ -148,8 +156,6 @@ var lion = {
 };
 
 //////// core functions ////////
-
-var lioncore = {};
 
 // core-level names:
 //     LIONJS
@@ -164,7 +170,7 @@ var lioncore = {};
 //     caller
 //     callenv
 
-lion.addfunc(lioncore, {
+lion.addfunc(lion.core, {
     // execute an AST with a given callee
     // proto: callq('callee, 'caller) -> result
     callq: function (env, ast) {
@@ -255,9 +261,9 @@ lion.addfunc(lioncore, {
             if (Object.hasOwnProperty.call(env, 'parent')) {
                 // find from env's parent
                 return lion.corefunc(env.parent, ['getq', name]);
-            } else if (env != lionstd) {
+            } else if (env != lion.std) {
                 // find from standard library
-                return lion.corefunc(lionstd, ['getq', name]);
+                return lion.corefunc(lion.std, ['getq', name]);
             } else {
                 // not found
                 // return undefined;
@@ -296,23 +302,19 @@ lion.addfunc(lioncore, {
 
 //////// the standard library ////////
 
-var lionstd = {
-    LIONJS: true,
-};
-
 //// access & call ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // core functions
-    callq: function (env, ast) {return lioncore.callq(env, ast);},
+    callq: function (env, ast) {return lion.core.callq(env, ast);},
     envq: function (env, ast) {return 'LIONSTD';},
-    getq: function (env, ast) {return lioncore.getq(env, ast);},
-    xgetq: function (env, ast) {return lioncore.xgetq(env, ast);},
-    setq: function (env, ast) {return lioncore.setq(env, ast);},
-    delq: function (env, ast) {return lioncore.delq(env, ast);},
+    getq: function (env, ast) {return lion.core.getq(env, ast);},
+    xgetq: function (env, ast) {return lion.core.xgetq(env, ast);},
+    setq: function (env, ast) {return lion.core.setq(env, ast);},
+    delq: function (env, ast) {return lion.core.delq(env, ast);},
 });
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // callq() with calling
     // proto: callq(callee, caller) -> result
     call: function (env, callee, caller) {
@@ -351,7 +353,7 @@ lion.addfunc(lionstd, {
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // return the AST
     // proto: quote('ast) -> 'ast
     quote: function (env, ast) {return ast[1];},
@@ -365,7 +367,7 @@ lion.addfunc(lionstd, {
 
 //// function ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // execute and make quote
     // proto: argcall('env, 'ast) -> 'called
     argcall: function (env, ast) {
@@ -388,7 +390,7 @@ lion.addfunc(lionstd, {
     },
 });
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // give name to arguments with wrap
     // proto: setarg(wrapper, ...) -> caller
     setarg: function (env, arr) {
@@ -418,7 +420,7 @@ lion.addfunc(lionstd, {
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV | lion.W_ARG_AS_ARR);
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // make a lambda function
     // proto: lambda(wrapper, ..., body) -> function
     lambda: function (env, ast) {
@@ -440,7 +442,7 @@ lion.addfunc(lionstd, {
 
 //// control flow ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // conditional branch
     // proto: cond(cond, action, ...) -> result
     cond: function () {
@@ -503,7 +505,7 @@ lion.addfunc(lionstd, {
     },
 }, lion.wrap, lion.W_DELAY);
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // iteration loop (for-in loop) by index
     // proto: each(iter, data, body) -> all result
     each: function (env, iter, data, body) {
@@ -581,7 +583,7 @@ lion.addfunc(lionstd, {
 
 //// operators ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // unary operators
     // proto: op(a) -> op a (a op)
     positive: function (a) {return +a;},
@@ -619,7 +621,7 @@ lion.addfunc(lionstd, {
     instanceof: function (a, b) {return a instanceof b;},
 }, lion.wrap);
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // unary operators
     // proto: op(a) -> op a (a op)
     '!': function (a) {return !a();},
@@ -642,7 +644,7 @@ lion.addfunc(lionstd, {
 
 //// list & dict ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // call and return arguments as a list
     // proto: list(...) -> [...]
     list: function (arr) {
@@ -670,7 +672,7 @@ lion.addfunc(lionstd, {
     },
 }, lion.wrap, lion.W_ARG_AS_ARR);
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // get the length of array
     // proto: length(arr) -> arr.length
     length: function (arr) {
@@ -713,7 +715,7 @@ lion.addfunc(lionstd, {
 
 //// JSON ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // string to AST (JSON only)
     // proto: parse(str) -> ast
     parse: function (json) {return JSON.parse(json);},
@@ -724,7 +726,7 @@ lion.addfunc(lionstd, {
 
 //// js built-in ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     // TODO: ??
     isFinite: isFinite,
     isNaN: isNaN,
@@ -742,7 +744,7 @@ lion.addfunc(lionstd, {
     float: parseFloat,
 }, lion.wrap);
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     Math: Math,
     JSON: JSON,
 
@@ -758,19 +760,18 @@ lion.addfunc(lionstd, {
     // error: Error
 }, lion.wrapobj);
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     Array: Array.prototype,
     Boolean: Boolean.prototype,
     Number: Number.prototype,
     String: String.prototype,
     Date: Date.prototype,
     RegExp: RegExp.prototype,
-    // lion.call(lionstd, ['Array', ['slice', ['list', 1, 2, 3], 1]]) // ???
 }, lion.wrapobj, lion.W_METHOD);
 
 //// alias ////
 
-lion.addfunc(lionstd, {
+lion.addfunc(lion.std, {
     ':': 'get',
     ':=': 'set',
     // '=': 'var',
