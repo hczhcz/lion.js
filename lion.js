@@ -10,6 +10,20 @@ var lion = {
 
     std: {
         LIONJS: true,
+
+        // see envq in lion.core
+        envq: function (env, ast) {
+            return 'LIONSTD';
+        },
+
+        // see xgetq in lion.core
+        xgetq: function (env, ast) {
+            var name = ast[1];
+
+            if (Object.hasOwnProperty.call(lion.core, name)) {
+                return lion.core[name];
+            }
+        },
     },
 
     //////// constants ////////
@@ -304,22 +318,6 @@ lion.addfunc(lion.core, {
 //////// the standard library ////////
 
 //// access & call ////
-
-lion.addfunc(lion.std, {
-    // see envq in lion.core
-    envq: function (env, ast) {
-        return 'LIONSTD';
-    },
-
-    // see xgetq in lion.core
-    xgetq: function (env, ast) {
-        var name = ast[1];
-
-        if (Object.hasOwnProperty.call(lion.core, name)) {
-            return lion.core[name];
-        }
-    },
-});
 
 lion.addfunc(lion.std, {
     // callq() with calling
