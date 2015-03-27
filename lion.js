@@ -725,8 +725,8 @@ lion.addfunc(lion.std, {
     // proto: parse(str) -> ast
     parse: function (json) {return JSON.parse(json);},
     // AST to string (JSON only)
-    // proto: repr(ast) -> str
-    repr: function (ast) {return JSON.stringify(ast);},
+    // proto: stringify(ast) -> str
+    stringify: function (ast) {return JSON.stringify(ast);},
 }, lion.wrap);
 
 //// js built-in ////
@@ -751,7 +751,6 @@ lion.addfunc(lion.std, {
 
 lion.addfunc(lion.std, {
     Math: Math,
-    JSON: JSON,
 
     // TODO: add necessary functions in them
     // array: Array,
@@ -782,5 +781,6 @@ lion.addfunc(lion.std, {
     // '=': 'var',
     '': 'quote',
     neg: 'negative',
+    repr: 'stringify',
     '\\': 'lambda',
 });
