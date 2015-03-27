@@ -732,21 +732,41 @@ lion.addfunc(lion.std, {
 //// js built-in ////
 
 lion.addfunc(lion.std, {
-    // TODO: ??
-    isFinite: isFinite,
-    isNaN: isNaN,
+    NaN: ['quote', NaN],
+    Infinity: ['quote', Infinity],
+    undefined: ['quote', undefined],
 
-    array: Array,
-    boolean: Boolean,
-    number: Number,
-    string: String,
-    date: Date,
-    regExp: RegExp,
+    E: ['quote', Math.E],
+    LN10: ['quote', Math.LN10],
+    LN2: ['quote', Math.LN2],
+    LOG2E: ['quote', Math.LOG2E],
+    LOG10E: ['quote', Math.LOG10E],
+    PI: ['quote', Math.PI],
+    SQRT1_2: ['quote', Math.SQRT1_2],
+    SQRT2: ['quote', Math.SQRT2],
+});
+
+lion.addfunc(lion.std, {
+    isNaN: isNaN,
+    isFinite: isFinite,
+
     // object: Object,
     // function: Function,
+    array: Array,
+    string: String,
+    boolean: Boolean,
+    number: Number,
+    date: Date,
+    regExp: RegExp,
     // error: Error
-    integer: parseInt,
+    // someError ...
+    int: parseInt,
     float: parseFloat,
+
+    decodeURI: decodeURI,
+    decodeURIComponent: decodeURIComponent,
+    encodeURI: encodeURI,
+    encodeURIComponent: encodeURIComponent
 }, lion.wrap);
 
 lion.addfunc(lion.std, {
