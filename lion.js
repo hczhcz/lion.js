@@ -166,7 +166,9 @@ var lion = {
             func = lion.core[name];
         }
 
-        return func(env, ast);
+        if (func instanceof Function) { // TODO: ???
+            return func(env, ast);
+        }
     },
 };
 
@@ -688,7 +690,7 @@ lion.addfunc(lion.std, {
     // proto: index(arr, i) -> arr[i]
     index: function (arr, i) {
         // notice: the index should be an integer
-        if (arr instanceof Array) {
+        if (arr instanceof Array) { // TODO: string index
             return arr[Math.floor(i)];
         } else {
             throw '[LION] bad type of index: ' + i;
@@ -699,7 +701,7 @@ lion.addfunc(lion.std, {
     // proto: xindex(arr, i) -> arr[i]
     xindex: function (arr, i) {
         // notice: the index should be an integer
-        if (arr instanceof Array) {
+        if (arr instanceof Array) { // TODO: string xindex
             return arr[Math.floor(i - Math.floor(i / arr.length) * arr.length)];
         } else {
             throw '[LION] bad type of index: ' + i;
@@ -766,22 +768,13 @@ lion.addfunc(lion.std, {
     decodeURI: decodeURI,
     decodeURIComponent: decodeURIComponent,
     encodeURI: encodeURI,
-    encodeURIComponent: encodeURIComponent
+    encodeURIComponent: encodeURIComponent,
+    // escape: escape,
+    // unescape: unescape,
 }, lion.wrap);
 
 lion.addfunc(lion.std, {
     Math: Math,
-
-    // TODO: add necessary functions in them
-    // array: Array,
-    // boolean: Boolean,
-    // number: Number,
-    // string: String,
-    // date: Date,
-    // regExp: RegExp,
-    // object: Object,
-    // function: Function,
-    // error: Error
 }, lion.wrapobj);
 
 lion.addfunc(lion.std, {
