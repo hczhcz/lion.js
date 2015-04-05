@@ -158,16 +158,14 @@ var lion = {
     // search core function in env and lion.core
     corefunc: function (env, ast) {
         var name = ast[0];
-        var func;
 
         if (Object.hasOwnProperty.call(env, name)) {
-            func = env[name];
+            return lion.core['callq'](
+                env,
+                ['callq', env[name], ast]
+            );
         } else if (Object.hasOwnProperty.call(lion.core, name)) {
-            func = lion.core[name];
-        }
-
-        if (func instanceof Function) { // TODO: ???
-            return func(env, ast);
+            return lion.core[name](env, ast);
         }
     },
 };
