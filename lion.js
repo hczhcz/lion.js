@@ -625,7 +625,29 @@ lion.addfunc(lion.std, {
     '|': function (a, b) {return a | b;},
     in: function (a, b) {return a in b;},
     is: function (a, b) {return (typeof a) == b;}, // custom
-    instanceof: function (a, b) {return a instanceof b;},
+    instanceof: function (a, b) {
+        var map = {
+            Object: Object,
+            Function: Function,
+            Array: Array,
+            String: String,
+            Boolean: Boolean,
+            Number: Number,
+            Date: Date,
+            RegExp: RegExp,
+            Error: Error,
+            EvalError: EvalError,
+            RangeError: RangeError,
+            ReferenceError: ReferenceError,
+            SyntaxError: SyntaxError,
+            TypeError: TypeError,
+            URIError: URIError,
+        };
+
+        if (Object.hasOwnProperty.call(map, b)) {
+            return a instanceof map[b];
+        }
+    },
 }, lion.wrap);
 
 lion.addfunc(lion.std, {
