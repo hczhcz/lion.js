@@ -746,11 +746,33 @@ lion.addfunc(lion.std, {
     PI: ['quote', Math.PI],
     SQRT1_2: ['quote', Math.SQRT1_2],
     SQRT2: ['quote', Math.SQRT2],
+
+    NUMMAX: ['quote', Number.MAX_VALUE],
+    NUMMIN: ['quote', Number.MIN_VALUE],
 });
 
 lion.addfunc(lion.std, {
     isNaN: isNaN,
     isFinite: isFinite,
+    isArray: Array.isArray,
+
+    int: parseInt,
+    float: parseFloat,
+    date: Date.parse,
+    chr: String.fromCharCode,
+
+    decodeURI: decodeURI,
+    decodeURIComponent: decodeURIComponent,
+    encodeURI: encodeURI,
+    encodeURIComponent: encodeURIComponent,
+    // escape: escape,
+    // unescape: unescape,
+
+    utc: Date.UTC,
+    now: Date.now,
+
+    // TODO: more
+    // TODO: add instanceof
 
     // object: Object,
     // function: Function,
@@ -760,17 +782,6 @@ lion.addfunc(lion.std, {
     number: Number,
     date: Date,
     regExp: RegExp,
-    // error: Error
-    // someError ...
-    int: parseInt,
-    float: parseFloat,
-
-    decodeURI: decodeURI,
-    decodeURIComponent: decodeURIComponent,
-    encodeURI: encodeURI,
-    encodeURIComponent: encodeURIComponent,
-    // escape: escape,
-    // unescape: unescape,
 }, lion.wrap);
 
 lion.addfunc(lion.std, {
@@ -778,12 +789,15 @@ lion.addfunc(lion.std, {
 }, lion.wrapobj);
 
 lion.addfunc(lion.std, {
+    // Object
+    // Function
     Array: Array.prototype,
+    String: String.prototype,
     Boolean: Boolean.prototype,
     Number: Number.prototype,
-    String: String.prototype,
     Date: Date.prototype,
     RegExp: RegExp.prototype,
+    Error: Error.prototype,
 }, lion.wrapobj, lion.W_METHOD);
 
 //// alias ////
@@ -794,6 +808,8 @@ lion.addfunc(lion.std, {
     // '=': 'var',
     '': 'quote',
     neg: 'negative',
-    repr: 'stringify',
     '\\': 'lambda',
+    repr: 'stringify',
+    unescape: 'decodeURIComponent',
+    escape: 'encodeURIComponent',
 });
