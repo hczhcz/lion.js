@@ -243,5 +243,13 @@ test([['Math', [':', 'floor']], [['Math', [':', 'sqrt']], 123456]], 351);
 test([['eval', ['Math', ['envq']]], ['floor', 1.5]], 1);
 test(['Array', ['slice', ['list', 1, 2, 3], 1]], [2, 3]); // TODO: more test cases
 
+// fun
+test(['do',
+    ['setq', '╯°□°╯', 'throw'],
+    ['setq', 'v°□°v', 'try'],
+    ['setq', '┻━┻', ['', 'lalala~']],
+    ['setq', '┬─┬', 'exception'],
+    ['v°□°v', ['╯°□°╯', ['┻━┻']], ['┬─┬']]
+], 'lalala~');
 
 document.writeln('<hr><b>Finished.</b>');

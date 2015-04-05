@@ -577,16 +577,39 @@ lion.addfunc(lion.std, {
             lion.corefunc(env, ['setq', 'exception', ['quote', e]]);
             return except();
         } finally {
-            finally_do();
+            if (finally_do) {
+                finally_do();
+            }
         }
     },
+}, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
+lion.addfunc(lion.std, {
     // throw statement
     // proto: throw(err) -> never return
-    throw: function (env, err) {
-        throw err();
+    throw: function (err) {
+        throw err;
     },
-}, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
+
+    // error constructor
+    // proto: error(message, type) -> error object
+    error: function (message, type) {
+        var map = {
+            eval: EvalError,
+            range: RangeError,
+            reference: ReferenceError,
+            syntax: SyntaxError,
+            type: TypeError,
+            URI: URIError,
+        };
+
+        if (Object.hasOwnProperty.call(map, type)) {
+            return map[type](message);
+        } else {
+            return Error(message);
+        }
+    },
+}, lion.wrap);
 
 //// operators ////
 
