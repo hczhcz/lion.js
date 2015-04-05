@@ -41,6 +41,10 @@ test(['list',
     ['%', -10, 7]
 ], [21, -3]);
 test(['', ['abcd', 'efg']], ['abcd', 'efg']);
+test(['<<', -1, 5], -32);
+test(['is', ['-', 3, '5'], 'number'], true);
+test(['is', ['+', 3, '5'], 'number'], false);
+test(['typeof', ['env']], 'object');
 
 // access
 test(['in', 'test1', ['env']], false);
@@ -57,18 +61,11 @@ test(['list',
     ['in', 'test1', ['env']],
     ['getq', 'test2']
 ], [123, 123, false, 123]);
-
-// call
-test([['+', 'qu', 'ote'], ['hello', 'world']], ['hello', 'world']);
-test(['eval',['quote', ['pass', ['+', 100, 23]]]], 123);
-test([['quote',
-    ['get', 'caller']
-], ['+', 1, 2]], [['quote',
-    ['get', 'caller']
-], ['+', 1, 2]]);
-test([['quote',
-    ['eval', ['index', ['get', 'caller'], 1]]
-], ['+', 1, 2]], 3);
+test(['do',
+    ['var', 'a', ['+', 1, 1]],
+    ['var', 'a', ['+', ['a'], ['a']]],
+    ['var', 'a', ['+', ['a'], 1]]
+], ['quote', 5]);
 test([{
     LIONJS: true,
     x: 1234
@@ -109,6 +106,27 @@ test([
         ['xget', 'a']
     ]
 ],[1, 2, 2]);
+
+// call
+test([['+', 'qu', 'ote'], ['hello', 'world']], ['hello', 'world']);
+test(['eval',['quote', ['pass', ['+', 100, 23]]]], 123);
+test([['quote',
+    ['get', 'caller']
+], ['+', 1, 2]], [['quote',
+    ['get', 'caller']
+], ['+', 1, 2]]);
+test([['quote',
+    ['eval', ['index', ['get', 'caller'], 1]]
+], ['+', 1, 2]], 3);
+test(['eval', ['list',
+    'callq',
+    ['getq', '+'],
+    ['list', '', 1, 2]
+]], 3);
+test(['quote',['/', 2333, 10]], ['/', 2333, 10]);
+test(['repr', ['quote', ['/', 2333, 10]]], '["/",2333,10]');
+test(['parse', ['repr', ['quote', ['/', 2333, 10]]]], ['/', 2333, 10]);
+test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
 
 // function
 test([['quote',
@@ -230,20 +248,10 @@ test(['apply', 'x', ['list', 2, 3, 4],
 test(['table', 'x', -5, 5, 1,
     ['xindex', ['list', 1, 2, 3], ['x']]
 ], [2, 3, 1, 2, 3, 1, 2, 3, 1, 2]);
-
-// JSON
-test(['quote',['/', 2333, 10]], ['/', 2333, 10]);
-test(['repr', ['quote', ['/', 2333, 10]]], '["/",2333,10]');
-test(['parse', ['repr', ['quote', ['/', 2333, 10]]]], ['/', 2333, 10]);
-test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
-
-// js built-in
-test(['Math', ['floor', ['sqrt', 123456]]], 351);
-test([['Math', [':', 'floor']], [['Math', [':', 'sqrt']], 123456]], 351);
-test([['eval', ['Math', ['envq']]], ['floor', 1.5]], 1);
-test(['Array', ['slice', ['list', 1, 2, 3], 1]], [2, 3]); // TODO: more test cases
-
-// fun
+test(['try',
+    ['throw', ['error', 'test']],
+    ['string', ['exception']]
+], 'Error: test');
 test(['do',
     ['setq', '╯°□°╯', 'throw'],
     ['setq', 'v°□°v', 'try'],
@@ -251,5 +259,11 @@ test(['do',
     ['setq', '┬─┬', 'exception'],
     ['v°□°v', ['╯°□°╯', ['┻━┻']], ['┬─┬']]
 ], 'lalala~');
+
+// js built-in
+test(['Math', ['floor', ['sqrt', 123456]]], 351);
+test([['Math', [':', 'floor']], [['Math', [':', 'sqrt']], 123456]], 351);
+test([['eval', ['Math', ['envq']]], ['floor', 1.5]], 1);
+test(['Array', ['slice', ['list', 1, 2, 3], 1]], [2, 3]); // TODO: more test cases
 
 document.writeln('<hr><b>Finished.</b>');

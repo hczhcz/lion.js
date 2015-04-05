@@ -325,26 +325,31 @@ lion.addfunc(lion.std, {
     call: function (env, callee, caller) {
         return lion.corefunc(env, ['callq', callee, caller]);
     },
+
     // envq() with calling
     // proto: env() -> env
     env: function (env) {
         return lion.corefunc(env, ['envq']);
     },
+
     // getq() with calling
     // proto: get(name) -> value
     get: function (env, name) {
         return lion.corefunc(env, ['getq', name]);
     },
+
     // xgetq() with calling
     // proto: xget(name) -> value
     xget: function (env, name) {
         return lion.corefunc(env, ['xgetq', name]);
     },
+
     // setq() with calling
     // proto: set(name, value) -> value
     set: function (env, name, value) {
         return lion.corefunc(env, ['setq', name, value]);
     },
+
     // delq() with calling
     // proto: del(name) -> success
     del: function (env, name) {
@@ -362,13 +367,25 @@ lion.addfunc(lion.std, {
     // return the AST
     // proto: quote('ast) -> 'ast
     quote: function (env, ast) {return ast[1];},
+
     // just calling
     // proto: pass(ast) -> (call)^1 -> result
     pass: function (env, ast) {return lion.call(env, ast[1]);},
+
     // lion.call() with wrap
     // proto: eval($ast) -> (call)^2 -> result
     eval: function (env, ast) {return lion.call(env, lion.call(env, ast[1]));},
 });
+
+lion.addfunc(lion.std, {
+    // string to AST (JSON only)
+    // proto: parse(str) -> ast
+    parse: function (json) {return JSON.parse(json);},
+
+    // AST to string (JSON only)
+    // proto: stringify(ast) -> str
+    stringify: function (ast) {return JSON.stringify(ast);},
+}, lion.wrap);
 
 //// function ////
 
@@ -378,16 +395,19 @@ lion.addfunc(lion.std, {
     argcall: function (env, ast) {
         return ['quote', lion.call(ast[1], ast[2])];
     },
+
     // execute later
     // proto: argpass('env, 'ast) -> 'pass(ast)
     argpass: function (env, ast) {
         return [ast[1], ['pass', ast[2]]];
     },
+
     // make quote
     // proto: argquote('env, 'ast) -> 'ast
     argquote: function (env, ast) {
         return ['quote', ast[2]];
     },
+
     // do nothing
     // proto: argraw('env, 'ast) -> ast
     argraw: function (env, ast) {
@@ -593,6 +613,7 @@ lion.addfunc(lion.std, {
     // proto: error(message, type) -> error object
     error: function (message, type) {
         var map = {
+            error: Error,
             eval: EvalError,
             range: RangeError,
             reference: ReferenceError,
@@ -763,17 +784,6 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap);
 
-//// JSON ////
-
-lion.addfunc(lion.std, {
-    // string to AST (JSON only)
-    // proto: parse(str) -> ast
-    parse: function (json) {return JSON.parse(json);},
-    // AST to string (JSON only)
-    // proto: stringify(ast) -> str
-    stringify: function (ast) {return JSON.stringify(ast);},
-}, lion.wrap);
-
 //// js built-in ////
 
 lion.addfunc(lion.std, {
@@ -801,7 +811,7 @@ lion.addfunc(lion.std, {
 
     int: parseInt,
     float: parseFloat,
-    date: Date.parse,
+    dateParse: Date.parse, // TODO: ?
     chr: String.fromCharCode,
 
     decodeURI: decodeURI,
@@ -848,9 +858,9 @@ lion.addfunc(lion.std, {
 lion.addfunc(lion.std, {
     ':': 'get',
     ':=': 'set',
-    // '=': 'var',
+    '=': 'var',
     '': 'quote',
-    neg: 'negative',
+    '~~': 'negative',
     '\\': 'lambda',
     repr: 'stringify',
     unescape: 'decodeURIComponent',
