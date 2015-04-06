@@ -786,6 +786,54 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap);
 
+//// regexp ////
+
+lion.addfunc(lion.std, {
+    // get the source of a regular expression
+    // proto: restr(re) -> str
+    restr: function (re) {
+        if (re instanceof RegExp) {
+            return re.source;
+        }
+    },
+
+    // get the attributes of a regular expression
+    // proto: reattr(re) -> ['g', 'i', 'm']
+    reattr: function (re) {
+        if (re instanceof RegExp) {
+            var result = [];
+
+            if (re.global) {
+                result.append('g');
+            }
+            if (re.ignoreCase) {
+                result.append('i');
+            }
+            if (re.multiline) {
+                result.append('m');
+            }
+
+            return result;
+        }
+    },
+
+    // get the match position of a regular expression
+    // proto: reindex(re) -> RegExp.lastIndex
+    reindex: function (re) {
+        if (re instanceof RegExp) {
+            return re.lastIndex;
+        }
+    },
+
+    // set the match position of a regular expression
+    // proto: reindex(re, index) -> RegExp.lastIndex
+    reindexset: function (re, index) {
+        if (re instanceof RegExp) {
+            return re.lastIndex = index;
+        }
+    },
+}, lion.wrap);
+
 //// js built-in ////
 
 lion.addfunc(lion.std, {
@@ -836,7 +884,7 @@ lion.addfunc(lion.std, {
     boolean: Boolean,
     number: Number,
     date: Date,
-    regExp: RegExp,
+    regexp: RegExp,
 }, lion.wrap);
 
 lion.addfunc(lion.std, {
