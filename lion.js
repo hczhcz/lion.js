@@ -861,23 +861,32 @@ lion.addfunc(lion.std, {
 
     int: parseInt,
     float: parseFloat,
-    dateParse: Date.parse, // TODO: ?
     chr: String.fromCharCode,
 
     decodeURI: decodeURI,
     decodeURIComponent: decodeURIComponent,
     encodeURI: encodeURI,
     encodeURIComponent: encodeURIComponent,
-    // escape: escape,
-    // unescape: unescape,
+
+    // getPrototypeOf: Object.getPrototypeOf,
+    getOwnPropertyDescriptor: Object.getOwnPropertyDescriptor,
+    getOwnPropertyNames: Object.getOwnPropertyNames,
+    // create: Object.create,
+    // defineProperty: Object.defineProperty,
+    // defineProperties: Object.defineProperties,
+    // seal: Object.seal,
+    // freeze: Object.freeze,
+    // preventExtensions: Object.preventExtensions,
+    isSealed: Object.isSealed,
+    isFrozen: Object.isFrozen,
+    isExtensible: Object.isExtensible,
+    keys: Object.keys,
 
     utc: Date.UTC,
     now: Date.now,
+    dateparse: Date.parse,
 
-    // TODO: more
-    // TODO: add instanceof
-
-    // object: Object,
+    object: Object,
     // function: Function,
     array: Array,
     string: String,
@@ -892,8 +901,8 @@ lion.addfunc(lion.std, {
 }, lion.wrapobj);
 
 lion.addfunc(lion.std, {
-    // Object
-    // Function
+    Object: Object.prototype,
+    // Function: Function.prototype,
     Array: Array.prototype,
     String: String.prototype,
     Boolean: Boolean.prototype,
