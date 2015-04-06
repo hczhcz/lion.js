@@ -713,7 +713,7 @@ lion.addfunc(lion.std, {
     '?:': function (a, b, c) {return a() ? b() : c();},
 }, lion.wrap, lion.W_DELAY);
 
-//// list & dict ////
+//// list & dict & string ////
 
 lion.addfunc(lion.std, {
     // call and return arguments as a list
@@ -747,14 +747,16 @@ lion.addfunc(lion.std, {
     // get the length of array
     // proto: length(arr) -> arr.length
     length: function (arr) {
-        return arr.length;
+        if (arr instanceof Array || typeof arr == 'string') {
+            return arr.length;
+        }
     },
 
     // get member from array
     // proto: index(arr, i) -> arr[i]
     index: function (arr, i) {
         // notice: the index should be an integer
-        if (arr instanceof Array) { // TODO: string index
+        if (arr instanceof Array || typeof arr == 'string') {
             return arr[Math.floor(i)];
         } else {
             throw '[LION] bad type of index: ' + i;
@@ -765,7 +767,7 @@ lion.addfunc(lion.std, {
     // proto: xindex(arr, i) -> arr[i]
     xindex: function (arr, i) {
         // notice: the index should be an integer
-        if (arr instanceof Array) { // TODO: string xindex
+        if (arr instanceof Array || typeof arr == 'string') {
             return arr[Math.floor(i - Math.floor(i / arr.length) * arr.length)];
         } else {
             throw '[LION] bad type of index: ' + i;
