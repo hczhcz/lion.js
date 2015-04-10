@@ -1,11 +1,9 @@
 'use strict';
 
 function test(ast, expected) {
-    var env = {LIONJS: true};
-
     var ret;
     try {
-        ret = lion.call(env, ast);
+        ret = lion.boot(ast);
     } catch (e) {
         ret = 'ERROR: ' + e;
     }

@@ -168,6 +168,11 @@ var lion = {
             return lion.core[name](env, ast);
         }
     },
+
+    // execute an AST in a new environment
+    boot: function (ast) {
+        return lion.call({LIONJS: true}, ast);
+    }
 };
 
 //////// core functions ////////
