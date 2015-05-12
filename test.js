@@ -17,7 +17,7 @@ function test(ast, expected) {
         retoutput = 'ERROR: ret has loop';
     }
 
-    if (retoutput != expoutput) {
+    if (retoutput != expoutput || ret == undefined) {
         document.writeln(
             '<hr>' +
             '<b>Input:</b>' + '<pre>' + input + '</pre>' +
@@ -202,6 +202,33 @@ test(['do',
 ], 'asdf');
 
 // control flow
+test(['~~', ['cond',
+    0, 100,
+    '', 200,
+    1, 300,
+    true, 400
+]], -300);
+test(['typeof', ['cond',
+    0, 100,
+    '', 200,
+    false, 300,
+    ['-', '2', '2'], 400
+]], 'undefined');
+test(['case', 'aaa', 100,
+    'aab', 200
+], 100);
+test(['case', 'aaa', 100,
+    'aab', 200,
+    'aaa', 300,
+    'aaa', 400
+], 300);
+test(['apply', 'i', ['list', 1, 2, 3, 4, 5],
+    ['case', ['i'], 100,
+        ['list', 2, 3], 200,
+        4, 300,
+        ['list', 5], 400
+    ]
+], [100, 200, 200, 300, 400]);
 test(['do',
     ['var', 'x', 1],
     ['var', 'sum', 0],

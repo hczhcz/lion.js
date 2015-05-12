@@ -491,15 +491,42 @@ lion.addfunc(lion.std, {
 lion.addfunc(lion.std, {
     // conditional branch
     // proto: cond(cond, action, ...) -> result
-    cond: function () {
-        var l = arguments.length;
+    cond: function (arr) {
+        var l = arr.length;
         for (var i = 0; i + 1 < l; i += 2) {
-            if (arguments[i]()) {
-                return arguments[i + 1]();
+            if (arr[i]()) {
+                return arr[i + 1]();
             }
         }
     },
 
+    // switch-like branch
+    // proto: case(value, default, case, action, ...) -> result
+    case: function (arr) {
+        var l = arr.length;
+        var value = arr[0]();
+        for (var i = 2; i + 1 < l; i += 2) {
+            var target = arr[i]();
+            if (target instanceof Array) {
+                // multi cases
+                for (var j in target) {
+                    if (value == target[j]) {
+                        return arr[i + 1]();
+                    }
+                }
+            } else {
+                // one case
+                if (value == target) {
+                    return arr[i + 1]();
+                }
+            }
+        }
+        // default branch
+        return arr[1]();
+    },
+}, lion.wrap, lion.W_DELAY | lion.W_ARG_AS_ARR);
+
+lion.addfunc(lion.std, {
     // simple branch (if branch)
     // proto: if(cond, then, else) -> result
     if: function (cond, then_br, else_br) {
@@ -940,6 +967,7 @@ lion.addfunc(lion.std, {
     ':=': 'set',
     '=': 'var',
     '': 'quote',
+    // '#': 'list',
     '~~': 'negative',
     '\\': 'lambda',
     repr: 'stringify',
