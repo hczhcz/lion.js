@@ -451,7 +451,7 @@ lion.addfunc(lion.std, {
 }, lion.wrap, lion.W_ARG_HAS_ENV | lion.W_ARG_AS_ARR);
 
 lion.addfunc(lion.std, {
-    // make a lambda function
+    // make an anonymous function with closure
     // proto: lambda(wrapper, ..., body) -> function
     lambda: function (env, ast) {
         var setparent = ['setq', 'parent', lion.corefunc(env, ['envq'])];
@@ -464,6 +464,22 @@ lion.addfunc(lion.std, {
         return [
             'do',
             setparent,
+            setarg,
+            ast[ast.length - 1]
+        ];
+    },
+
+    // make an anonymous function without closure
+    // proto: macro(wrapper, ..., body) -> function
+    macro: function (env, ast) {
+        var setarg = ['setarg'];
+
+        for (var i = 1; i < ast.length - 1; ++i) {
+            setarg.push(ast[i]);
+        }
+
+        return [
+            'do',
             setarg,
             ast[ast.length - 1]
         ];

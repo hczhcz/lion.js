@@ -190,6 +190,16 @@ test(['do',
     ]],
     ['f', 10]
 ], 3628800);
+test([{
+    LIONJS: true,
+    xgetq: ['\\', 'argquote', 'name', ['name']]
+},
+    ['getq', 'asdf']
+], 'asdf');
+test(['do',
+    ['set', 'xgetq', ['macro', 'argquote', 'name', ['name']]],
+    ['xgetq', 'asdf']
+], 'asdf');
 
 // control flow
 test(['do',
