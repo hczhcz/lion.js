@@ -701,19 +701,87 @@ lion.addfunc(lion.std, {
 
         return all;
     },
+
+    // left folding by value
+    // proto: foldl(iter1, iter2, data, body) -> result
+    foldl: function (env, iter1, iter2, data, body) {
+        var name1 = iter1();
+        var name2 = iter2();
+        var list = data();
+
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
+
+        var value = list[0];
+
+        for (var i = 1; i < list.length; ++i) {
+            lion.corefunc(env, ['setq', name1, ['quote', value]]);
+            lion.corefunc(env, ['setq', name2, ['quote', list[Math.floor(i)]]]);
+
+            value = body();
+        }
+
+        return value;
+    },
+
+    // right folding by value
+    // proto: foldr(iter1, iter2, data, body) -> result
+    foldr: function (env, iter1, iter2, data, body) {
+        var name1 = iter1();
+        var name2 = iter2();
+        var list = data();
+
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
+
+        var value = list[list.length - 1];
+
+        for (var i = list.length - 2; i >= 0; --i) {
+            lion.corefunc(env, ['setq', name1, ['quote', list[Math.floor(i)]]]);
+            lion.corefunc(env, ['setq', name2, ['quote', value]]);
+
+            value = body();
+        }
+
+        return value;
+    },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
 lion.addfunc(lion.std, {
-    // left folding using a function
-    // proto: foldl(func, value, ...) -> result
-    foldl: function (env, ast) {
-        var func = ast[1];
-        var value = ast[2];
+    // pass each value in a list to a function
+    // proto: map(func, list) -> all result
+    map: function (env, func, list) {
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
 
-        for (var i = 3; i < ast.length; ++i) {
+        var all = [];
+
+        for (var i in list) {
+            all.push(lion.call(
+                env,
+                [['quote', func], ['quote', list[Math.floor(i)]]]
+            ));
+        }
+
+        return all;
+    },
+
+    // left folding using a function
+    // proto: reducel(func, list) -> result
+    reducel: function (env, func, list) {
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
+
+        var value = list[0];
+
+        for (var i = 1; i < list.length; ++i) {
             value = lion.call(
                 env,
-                [func, ['quote', value], ast[i]]
+                [['quote', func], ['quote', value], ['quote', list[Math.floor(i)]]]
             );
         }
 
@@ -721,21 +789,24 @@ lion.addfunc(lion.std, {
     },
 
     // right folding using a function
-    // proto: foldr(func, value, ...) -> result
-    foldr: function (env, ast) {
-        var func = ast[1];
-        var value = ast[ast.length - 1];
+    // proto: reducer(func, list) -> result
+    reducer: function (env, func, list) {
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
 
-        for (var i = ast.length - 2; i > 1; --i) {
+        var value = list[list.length - 1];
+
+        for (var i = list.length - 2; i >= 0; --i) {
             value = lion.call(
                 env,
-                [func, ast[i], ['quote', value]]
+                [['quote', func], ['quote', list[Math.floor(i)]], ['quote', value]]
             );
         }
 
         return value;
     },
-});
+}, lion.wrap, lion.W_ARG_HAS_ENV);
 
 //// exception ////
 
