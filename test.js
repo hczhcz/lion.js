@@ -42,6 +42,9 @@ test(['', ['abcd', 'efg']], ['abcd', 'efg']);
 test(['<<', -1, 5], -32);
 test(['is', ['-', 3, '5'], 'number'], true);
 test(['is', ['+', 3, '5'], 'number'], false);
+test(['is', 1, 'Object'], false);
+test(['is', ['', []], 'Array'], true);
+test(['is', ['', []], 'Object'], true);
 test(['typeof', ['env']], 'object');
 
 // access
