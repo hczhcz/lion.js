@@ -564,9 +564,11 @@ lion.addfunc(lion.std, {
     // proto: loop(count, body) -> all result
     loop: function (count, body) {
         var all = [];
+
         for (var i = count(); i != 0; --i) {
             all.push(body());
         }
+
         return all;
     },
 
@@ -574,9 +576,11 @@ lion.addfunc(lion.std, {
     // proto: for(init, cond, step, body) -> all result
     for: function (init, cond, step, body) {
         var all = [];
+
         for (init(); cond(); step()) {
             all.push(body());
         }
+
         return all;
     },
 
@@ -584,9 +588,11 @@ lion.addfunc(lion.std, {
     // proto: while(cond, body) -> all result
     while: function (cond, body) {
         var all = [];
+
         while (cond()) {
             all.push(body());
         }
+
         return all;
     },
 
@@ -594,9 +600,11 @@ lion.addfunc(lion.std, {
     // proto: until(cond, body) -> all result
     until: function (cond, body) {
         var all = [];
+
         do {
             all.push(body());
         } while (cond());
+
         return all;
     },
 }, lion.wrap, lion.W_DELAY);
@@ -607,14 +615,14 @@ lion.addfunc(lion.std, {
     // iteration loop (for-in loop) by index
     // proto: forin(iter, data, body) -> all result
     forin: function (env, iter, data, body) {
-        var all = [];
-
         var name = iter();
         var list = data();
 
         if (!list instanceof Array) {
             throw '[LION] bad type of list: ' + list;
         }
+
+        var all = [];
 
         for (var i in list) {
             lion.corefunc(env, ['setq', name, ['quote', i]]);
@@ -627,14 +635,14 @@ lion.addfunc(lion.std, {
     // iteration loop (for-in loop) by value
     // proto: each(iter, data, body) -> all result
     each: function (env, iter, data, body) {
-        var all = [];
-
         var name = iter();
         var list = data();
 
         if (!list instanceof Array) {
             throw '[LION] bad type of list: ' + list;
         }
+
+        var all = [];
 
         for (var i in list) {
             lion.corefunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
@@ -647,14 +655,14 @@ lion.addfunc(lion.std, {
     // filter values
     // proto: filter(iter, data, cond) -> result list
     filter: function (env, iter, data, cond) {
-        var all = [];
-
         var name = iter();
         var list = data();
 
         if (!list instanceof Array) {
             throw '[LION] bad type of list: ' + list;
         }
+
+        var all = [];
 
         for (var i in list) {
             lion.corefunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
@@ -669,9 +677,9 @@ lion.addfunc(lion.std, {
     // linear for loop
     // proto: table(iter, begin, end, step, body) -> all result
     table: function (env, iter, begin, end, step, body) {
-        var all = [];
-
         var name = iter();
+
+        var all = [];
 
         for (var i = begin(); i != end(); i += step()) {
             lion.corefunc(env, ['setq', name, ['quote', i]]);
@@ -686,6 +694,7 @@ lion.addfunc(lion.std, {
     range: function (env, begin, end, step) {
         var all = [];
 
+        // notice: arguments are called dynamically
         for (var i = begin(); i != end(); i += step()) {
             all.push(i);
         }
