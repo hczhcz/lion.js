@@ -486,7 +486,7 @@ lion.addfunc(lion.std, {
     },
 });
 
-//// control flow ////
+//// control flows ////
 
 lion.addfunc(lion.std, {
     // conditional branch
@@ -578,6 +578,8 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap, lion.W_DELAY);
 
+//// iteration ////
+
 lion.addfunc(lion.std, {
     // iteration loop (for-in loop) by index
     // proto: each(iter, data, body) -> all result
@@ -600,8 +602,8 @@ lion.addfunc(lion.std, {
     },
 
     // iteration loop (for-in loop) by value
-    // proto: apply(iter, data, body) -> all result
-    apply: function (env, iter, data, body) {
+    // proto: map(iter, data, body) -> all result
+    map: function (env, iter, data, body) {
         var all = [];
 
         var name = iter();
@@ -633,7 +635,11 @@ lion.addfunc(lion.std, {
 
         return all;
     },
+}, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
+//// exception ////
+
+lion.addfunc(lion.std, {
     // try structure
     // proto: try(body, except, finally) -> result
     try: function (env, body, except, finally_do) {
@@ -882,7 +888,7 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap);
 
-//// js built-in ////
+//// js built-ins ////
 
 lion.addfunc(lion.std, {
     NaN: ['quote', NaN],
@@ -960,7 +966,7 @@ lion.addfunc(lion.std, {
     Error: Error.prototype,
 }, lion.wrapobj, lion.W_METHOD);
 
-//// alias ////
+//// aliases ////
 
 lion.addfunc(lion.std, {
     ':': 'get',

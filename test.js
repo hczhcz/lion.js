@@ -201,7 +201,7 @@ test(['do',
     ['xgetq', 'asdf']
 ], 'asdf');
 
-// control flow
+// control flows
 test(['~~', ['cond',
     0, 100,
     '', 200,
@@ -222,7 +222,7 @@ test(['case', 'aaa', 100,
     'aaa', 300,
     'aaa', 400
 ], 300);
-test(['apply', 'i', ['list', 1, 2, 3, 4, 5],
+test(['map', 'i', ['list', 1, 2, 3, 4, 5],
     ['case', ['i'], 100,
         ['list', 2, 3], 200,
         4, 300,
@@ -238,6 +238,25 @@ test(['do',
     ]],
     ['sum']
 ], 5050);
+
+// iteration
+test([',',
+    ['var', 'arr', ['', [2, 3, 4]]],
+    ['each', 'x', ['arr'],
+        ['*', ['x'], ['index', ['arr'], ['x']]]
+    ]
+], [0, 3, 8]);
+test(['map', 'x', ['', [2, 3, 4]],
+    ['+', ['x'], 3]
+], [5, 6, 7]);
+test(['map', 'x', ['list', 2, 3, 4],
+    ['+', ['x'], 3]
+], [5, 6, 7]);
+test(['table', 'x', -5, 5, 1,
+    ['xindex', ['list', 1, 2, 3], ['x']]
+], [2, 3, 1, 2, 3, 1, 2, 3, 1, 2]);
+
+// exception
 test(['do',
     ['var', 'a', 3],
     ['try',
@@ -268,21 +287,6 @@ test(['do',
     ],
     ['a']
 ], 225);
-test([',',
-    ['var', 'arr', ['', [2, 3, 4]]],
-    ['each', 'x', ['arr'],
-        ['*', ['x'], ['index', ['arr'], ['x']]]
-    ]
-], [0, 3, 8]);
-test(['apply', 'x', ['', [2, 3, 4]],
-    ['+', ['x'], 3]
-], [5, 6, 7]);
-test(['apply', 'x', ['list', 2, 3, 4],
-    ['+', ['x'], 3]
-], [5, 6, 7]);
-test(['table', 'x', -5, 5, 1,
-    ['xindex', ['list', 1, 2, 3], ['x']]
-], [2, 3, 1, 2, 3, 1, 2, 3, 1, 2]);
 test(['try',
     ['throw', ['error', 'test']],
     ['string', ['exception']]
@@ -295,7 +299,7 @@ test(['do',
     ['v°□°v', ['╯°□°╯', ['┻━┻']], ['┬─┬']]
 ], 'lalala~');
 
-// js built-in
+// js built-ins
 test(['Math', ['floor', ['sqrt', 123456]]], 351);
 test([['Math', [':', 'floor']], [['Math', [':', 'sqrt']], 123456]], 351);
 test([['eval', ['Math', ['envq']]], ['floor', 1.5]], 1);
