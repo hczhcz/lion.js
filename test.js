@@ -303,6 +303,23 @@ test(['do',
 test(['Math', ['floor', ['sqrt', 123456]]], 351);
 test([['Math', [':', 'floor']], [['Math', [':', 'sqrt']], 123456]], 351);
 test([['eval', ['Math', ['envq']]], ['floor', 1.5]], 1);
-test(['Array', ['slice', ['list', 1, 2, 3], 1]], [2, 3]); // TODO: more test cases
+test(['Array', ['slice', ['list', 1, 2, 3], 1]], [2, 3]);
+test([['Array', [':', 'slice']], ['list', 1, 2, 3], 1], [2, 3]);
+test([['String', [':', 'substr']], 'hello!', 0, 5], 'hello');
+test(['do',
+    ['=', 'a', ['date']],
+    ['=', 'b', [['Date', [':', 'getFullYear']], ['a']]],
+    ['=', 'c', [['Date', [':', 'getYear']], ['a']]],
+    ['-', ['b'], ['c']]
+], 1900);
+test(['do',
+    ['=', 'obj', ['re', 'h\\w(.)\\1o']],
+    [['String', [':', 'match']], 'hello', ['obj']]
+], ['hello', 'l']);
+test(['do',
+    ['=', 'obj', ['re', '.{3}']],
+    ['=', 'str', ['restr', ['obj']]],
+    [['String', [':', 'match']], ['str'], ['obj']]
+], ['.{3']);
 
 document.writeln('<hr><b>Finished.</b>');

@@ -863,9 +863,31 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap);
 
+//// date ////
+
+lion.addfunc(lion.std, {
+    // generate a date object
+    // proto: date(...) -> new Date(...)
+    date: function (arr) {
+        return new Date(Date.apply(arr));
+    },
+
+    // generate a date string
+    // proto: date(...) -> Date(...)
+    datestr: function (arr) {
+        return Date.apply(arr);
+    },
+}, lion.wrap, lion.W_ARG_AS_ARR);
+
 //// regexp ////
 
 lion.addfunc(lion.std, {
+    // generate a regular expression object
+    // proto: re(pattern, flags) -> regexp object
+    re: function (pattern, flags) {
+        return RegExp(pattern, flags);
+    },
+
     // get the source of a regular expression
     // proto: restr(re) -> str
     restr: function (re) {
@@ -963,14 +985,14 @@ lion.addfunc(lion.std, {
     now: Date.now,
     dateparse: Date.parse,
 
-    object: Object,
+    // object: Object,
     // function: Function,
-    array: Array,
+    // array: Array,
     string: String,
     boolean: Boolean,
     number: Number,
-    date: Date,
-    regexp: RegExp,
+    // date: Date,
+    // regexp: RegExp,
 }, lion.wrap);
 
 lion.addfunc(lion.std, {
