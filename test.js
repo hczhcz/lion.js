@@ -332,11 +332,11 @@ test(['do',
     ['-', ['b'], ['c']]
 ], 1900);
 test(['do',
-    ['=', 'obj', ['re', 'h\\w(.)\\1o']],
+    ['=', 'obj', ['regexp', 'h\\w(.)\\1o']],
     [['String', [':', 'match']], 'hello', ['obj']]
 ], ['hello', 'l']);
 test(['do',
-    ['=', 'obj', ['re', '.{3}']],
+    ['=', 'obj', ['regexp', '.{3}']],
     ['=', 'str', ['restr', ['obj']]],
     [['String', [':', 'match']], ['str'], ['obj']]
 ], ['.{3']);

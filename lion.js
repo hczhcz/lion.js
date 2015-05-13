@@ -964,6 +964,66 @@ lion.addfunc(lion.std, {
     '?:': function (a, b, c) {return a() ? b() : c();},
 }, lion.wrap, lion.W_DELAY);
 
+//// object & raw ////
+
+lion.addfunc(lion.std, {
+    // convert to an object
+    // proto: object(value) -> new Object(value)
+    object: function (value) {
+        return new Object(value);
+    },
+
+    // convert to a string object
+    // proto: strobj(value) -> new String(value)
+    strobj: function (value) {
+        return new String(value);
+    },
+
+    // convert to a boolean object
+    // proto: boolobj(value) -> new Boolean(value)
+    boolobj: function (value) {
+        return new Boolean(value);
+    },
+
+    // convert to a number object
+    // proto: numobj(value) -> new Number(value)
+    numobj: function (value) {
+        return new Number(value);
+    },
+
+    // convert to a raw value
+    // proto: raw(object) -> value
+    raw: function (object) {
+        if (
+            object instanceof String
+            || object instanceof Boolean
+            || object instanceof Number
+        ) {
+            return object.valueOf();
+        } else {
+            return object;
+        }
+    },
+
+    // convert to a raw string
+    // proto: string(object) -> string
+    string: function (object) {
+        return String(object);
+    },
+
+    // convert to a raw boolean
+    // proto: boolean(object) -> boolean
+    boolean: function (object) {
+        return Boolean(object);
+    },
+
+    // convert to a raw number
+    // proto: number(object) -> number
+    number: function (object) {
+        return Number(object);
+    },
+}, lion.wrap);
+
 //// list & dict & string ////
 
 lion.addfunc(lion.std, {
@@ -1063,8 +1123,8 @@ lion.addfunc(lion.std, {
 
 lion.addfunc(lion.std, {
     // generate a regular expression object
-    // proto: re(pattern, flags) -> regexp object
-    re: function (pattern, flags) {
+    // proto: regexp(pattern, flags) -> regexp object
+    regexp: function (pattern, flags) {
         return RegExp(pattern, flags);
     },
 
@@ -1165,12 +1225,12 @@ lion.addfunc(lion.std, {
     now: Date.now,
     dateparse: Date.parse,
 
-    object: Object, // new String, new Boolean, new Number
+    // object: Object, // new String, new Boolean, new Number
     // function: Function,
     // array: Array,
-    string: String,
-    boolean: Boolean,
-    number: Number,
+    // string: String,
+    // boolean: Boolean,
+    // number: Number,
     // date: Date,
     // regexp: RegExp,
 }, lion.wrap);
