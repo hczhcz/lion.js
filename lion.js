@@ -973,8 +973,14 @@ lion.addfunc(lion.std, {
         return arr;
     },
 
+    // call and return the first argument
+    // proto: head(first, ...) -> first
+    head: function (arr) {
+        return arr[0];
+    },
+
     // call and return the last argument
-    // proto: do(...) -> [...]
+    // proto: do(..., last) -> last
     do: function (arr) {
         return arr[arr.length - 1];
     },
@@ -1159,7 +1165,7 @@ lion.addfunc(lion.std, {
     now: Date.now,
     dateparse: Date.parse,
 
-    // object: Object,
+    object: Object, // new String, new Boolean, new Number
     // function: Function,
     // array: Array,
     string: String,
