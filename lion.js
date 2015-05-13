@@ -533,7 +533,7 @@ lion.addfunc(lion.std, {
             if (target instanceof Array) {
                 // multi cases
                 for (var j in target) {
-                    if (value == target[j]) {
+                    if (value == target[Math.floor(j)]) {
                         return arr[i + 1]();
                     }
                 }
@@ -651,9 +651,21 @@ lion.addfunc(lion.std, {
 
         var name = iter();
 
-        for (var i = begin(); i < end(); i += step()) {
+        for (var i = begin(); i != end(); i += step()) {
             lion.corefunc(env, ['setq', name, ['quote', i]]);
             all.push(body());
+        }
+
+        return all;
+    },
+
+    // generate linear values
+    // proto: range(begin, end, step)
+    range: function (env, begin, end, step) {
+        var all = [];
+
+        for (var i = begin(); i != end(); i += step()) {
+            all.push(i);
         }
 
         return all;
