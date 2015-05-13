@@ -157,14 +157,14 @@ test([{
     ],
     ['+', ['b'], 2], 3
 ]], 66);
-test([['\\', 'argpass',
-    'a', 'b', ['xindex', ['getq', 'a'], ['b']]
+test([['\\', 'argpass', 'a', 'b',
+    ['xindex', ['getq', 'a'], ['b']]
 ], ['r', 's'], -1], ['pass', ['r', 's']]);
-test([['\\', 'argcall',
-    'a', 'b', ['index', ['getq', 'a'], ['b']]
+test([['\\', 'argcall', 'a', 'b',
+    ['index', ['getq', 'a'], ['b']]
 ], ['+', 3, 4], 1], 7);
-test([['\\', 'argraw',
-    'a', 'b', ['list', ['getq', 'a'], ['getq', 'b']]
+test([['\\', 'argraw', 'a', 'b',
+    ['list', ['getq', 'a'], ['getq', 'b']]
 ], ['+', 3, 4], 1], [['+', 3, 4], 1]);
 test([['\\', 'argquote', 'a', 'b', 'c',
     ['eval', ['list', ['a'], ['b'], ['c']]]
@@ -255,6 +255,14 @@ test(['map', 'x', ['list', 2, 3, 4],
 test(['table', 'x', -5, 5, 1,
     ['xindex', ['list', 1, 2, 3], ['x']]
 ], [2, 3, 1, 2, 3, 1, 2, 3, 1, 2]);
+test(['foldl', '-', 1000, 100, 10, 1], 889);
+test(['foldr', '-', 1000, 100, 10, 1], 909);
+test(['foldl', ['\\', 'argpass', 'a', 'b',
+    ['+', ['a'], ['b']]
+], 1000, 100, 10, 1], 1111);
+test(['foldr', ['\\', 'argpass', 'a', 'b',
+    ['+', ['string', ['a']], ['string', ['b']]]
+], 1000, 100, 10, 1], '1000100101');
 
 // exception
 test(['do',

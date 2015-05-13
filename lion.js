@@ -626,7 +626,7 @@ lion.addfunc(lion.std, {
 
     // iteration loop (for-in loop) by value
     // proto: map(iter, data, body) -> all result
-    map: function (env, iter, data, body) {
+    map: function (env, iter, data, body) { // TODO: map using function?
         var all = [];
 
         var name = iter();
@@ -659,6 +659,40 @@ lion.addfunc(lion.std, {
         return all;
     },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
+
+lion.addfunc(lion.std, {
+    // left folding using a function
+    // proto: foldl(func, value, ...) -> result
+    foldl: function (env, ast) {
+        var func = ast[1];
+        var value = ast[2];
+
+        for (var i = 3; i < ast.length; ++i) {
+            value = lion.call(
+                env,
+                [func, ['quote', value], ast[i]]
+            );
+        }
+
+        return value;
+    },
+
+    // right folding using a function
+    // proto: foldr(func, value, ...) -> result
+    foldr: function (env, ast) {
+        var func = ast[1];
+        var value = ast[ast.length - 1];
+
+        for (var i = ast.length - 2; i > 1; --i) {
+            value = lion.call(
+                env,
+                [func, ast[i], ['quote', value]]
+            );
+        }
+
+        return value;
+    },
+});
 
 //// exception ////
 
