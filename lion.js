@@ -31,7 +31,6 @@ var lion = {
     W_DELAY: 1,
     W_ARG_HAS_ENV: 2,
     W_ARG_AS_ARR: 4,
-    W_METHOD: 8,
 
     //////// helper functions ////////
 
@@ -73,43 +72,6 @@ var lion = {
         };
     },
 
-    // convert a native object to an environment
-    wrapobj: function (obj, option, envname) {
-        return {
-            LIONJS: true,
-
-            // see envq in lion.core
-            envq: function (env, ast) {
-                return ['LIONSTD', ['getq', envname]];
-            },
-
-            // see xgetq in lion.core
-            xgetq: function (env, ast) {
-                var name = ast[1];
-
-                if (Object.hasOwnProperty.call(obj, name)) {
-                    if (option & lion.W_METHOD) {
-                        return lion.wrap(function (args) {
-                            var target = args.shift();
-
-                            // if (target instanceof obj) {
-                            if (Object.isPrototypeOf.call(obj, target)) {
-                                return obj[name].apply(target, args);
-                            } else {
-                                throw '[LION] bad access to object method: ' + ast[0];
-                            }
-                        }, option | lion.W_ARG_AS_ARR);
-                    } else {
-                        return lion.wrap(obj[name], option);
-                    }
-                } else {
-                    // find from lion.std
-                    return lion.corefunc(lion.std, ['getq', name]);
-                }
-            },
-        };
-    },
-
     // add checker to a function (for lion.core)
     wrapcore: function (func, option) {
         return function (env, ast) {
@@ -118,6 +80,67 @@ var lion = {
             } else {
                 throw '[LION] core function is not allowed: ' + ast[0];
             }
+        };
+    },
+
+    // convert a native object to an environment
+    wrapobj: function (obj, option, envname) {
+        return {
+            LIONJS: true,
+
+            // see envq in lion.core
+            envq: function (env, ast) {
+                // return ['LIONSTD', ['getq', envname]];
+                return envname;
+            },
+
+            // see xgetq in lion.core
+            xgetq: function (env, ast) {
+                var name = ast[1];
+
+                if (Object.hasOwnProperty.call(obj, name)) {
+                    return lion.wrap(obj[name], option);
+                } else {
+                    // find from lion.std
+                    return lion.corefunc(lion.std, ['getq', name]);
+                }
+            },
+        };
+    },
+
+    // convert an object with prototype (a class-like object) to an environment
+    wrapclass: function (obj, option, envname) {
+        return {
+            LIONJS: true,
+
+            // see envq in lion.core
+            envq: function (env, ast) {
+                // return ['LIONSTD', ['getq', envname]];
+                return envname;
+            },
+
+            // see xgetq in lion.core
+            xgetq: function (env, ast) {
+                var name = ast[1];
+
+                if (Object.hasOwnProperty.call(obj.prototype, name)) {
+                    return lion.wrap(function (args) {
+                        var target = args.shift();
+
+                        if (
+                            target instanceof Object ?
+                            target instanceof obj : typeof target == typeof obj()
+                        ) {
+                            return obj.prototype[name].apply(target, args);
+                        } else {
+                            throw '[LION] bad access to object method: ' + ast[0];
+                        }
+                    }, option | lion.W_ARG_AS_ARR);
+                } else {
+                    // find from lion.std
+                    return lion.corefunc(lion.std, ['getq', name]);
+                }
+            },
         };
     },
 
@@ -172,7 +195,7 @@ var lion = {
     // execute an AST in a new environment
     boot: function (ast) {
         return lion.call({LIONJS: true}, ast);
-    }
+    },
 };
 
 //////// core functions ////////
@@ -955,16 +978,16 @@ lion.addfunc(lion.std, {
 }, lion.wrapobj);
 
 lion.addfunc(lion.std, {
-    Object: Object.prototype,
-    // Function: Function.prototype,
-    Array: Array.prototype,
-    String: String.prototype,
-    Boolean: Boolean.prototype,
-    Number: Number.prototype,
-    Date: Date.prototype,
-    RegExp: RegExp.prototype,
-    Error: Error.prototype,
-}, lion.wrapobj, lion.W_METHOD);
+    Object: Object,
+    // Function: Function,
+    Array: Array,
+    String: String,
+    Boolean: Boolean,
+    Number: Number,
+    Date: Date,
+    RegExp: RegExp,
+    Error: Error,
+}, lion.wrapclass);
 
 //// aliases ////
 
