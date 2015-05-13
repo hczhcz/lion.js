@@ -605,8 +605,8 @@ lion.addfunc(lion.std, {
 
 lion.addfunc(lion.std, {
     // iteration loop (for-in loop) by index
-    // proto: each(iter, data, body) -> all result
-    each: function (env, iter, data, body) {
+    // proto: forin(iter, data, body) -> all result
+    forin: function (env, iter, data, body) {
         var all = [];
 
         var name = iter();
@@ -625,8 +625,8 @@ lion.addfunc(lion.std, {
     },
 
     // iteration loop (for-in loop) by value
-    // proto: map(iter, data, body) -> all result
-    map: function (env, iter, data, body) { // TODO: map using function?
+    // proto: each(iter, data, body) -> all result
+    each: function (env, iter, data, body) {
         var all = [];
 
         var name = iter();
@@ -639,6 +639,28 @@ lion.addfunc(lion.std, {
         for (var i in list) {
             lion.corefunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
             all.push(body());
+        }
+
+        return all;
+    },
+
+    // filter values
+    // proto: filter(iter, data, cond) -> result list
+    filter: function (env, iter, data, cond) {
+        var all = [];
+
+        var name = iter();
+        var list = data();
+
+        if (!list instanceof Array) {
+            throw '[LION] bad type of list: ' + list;
+        }
+
+        for (var i in list) {
+            lion.corefunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
+            if (cond()) {
+                all.push(list[Math.floor(i)]);
+            }
         }
 
         return all;
