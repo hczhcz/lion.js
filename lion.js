@@ -101,7 +101,7 @@ var lion = {
                 if (Object.hasOwnProperty.call(obj, name)) {
                     return lion.wrap(obj[name], option);
                 } else {
-                    // find from lion.std
+                    // find from the standard library
                     return lion.corefunc(lion.std, ['getq', name]);
                 }
             },
@@ -137,7 +137,7 @@ var lion = {
                         }
                     }, option | lion.W_ARG_AS_ARR);
                 } else {
-                    // find from lion.std
+                    // find from the standard library
                     return lion.corefunc(lion.std, ['getq', name]);
                 }
             },
@@ -194,6 +194,8 @@ var lion = {
 
     // execute an AST in a new environment
     boot: function (ast) {
+        // TODO: protect the global object
+        // return lion.call.call(???, {LIONJS: true}, ast);
         return lion.call({LIONJS: true}, ast);
     },
 };
@@ -305,7 +307,7 @@ lion.addfunc(lion.core, {
                 // find from env's parent
                 return lion.corefunc(env.parent, ['getq', name]);
             } else if (env != lion.std) {
-                // find from standard library
+                // find from the standard library
                 return lion.corefunc(lion.std, ['getq', name]);
             } else {
                 // not found
