@@ -13,7 +13,7 @@ var lion = {
 
         // see envq in lion.core
         envq: function (env, ast) {
-            return 'LIONSTD';
+            throw '[LION] can not call envq in the standard library';
         },
 
         // see xgetq in lion.core
@@ -162,16 +162,16 @@ var lion = {
 
             var callee = lion.call(env, ast[0]);
 
-            if (callee == 'LIONSTD') {
-                // call with std
-                return lion.call(lion.std, ast[1]);
-            } else {
+            // if (callee == 'LIONSTD') {
+            //     // call with std
+            //     return lion.call(lion.std, ast[1]);
+            // } else {
                 // call via env.callq
                 return lion.corefunc(
                     env,
                     ['callq', callee, ast]
                 );
-            }
+            // }
         } else {
             // is an object
             return ast;
@@ -204,7 +204,6 @@ var lion = {
 
 // core-level names:
 //     LIONJS
-//     LIONSTD
 //     callq
 //     envq
 //     getq
