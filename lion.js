@@ -621,7 +621,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var all = [];
@@ -641,7 +641,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var all = [];
@@ -661,7 +661,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var all = [];
@@ -712,7 +712,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var value = list[0];
@@ -735,7 +735,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var value = list[list.length - 1];
@@ -756,7 +756,7 @@ lion.addfunc(lion.std, {
     // proto: map(func, list) -> all result
     map: function (env, func, list) {
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var all = [];
@@ -775,7 +775,7 @@ lion.addfunc(lion.std, {
     // proto: reducel(func, list) -> result
     reducel: function (env, func, list) {
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var value = list[0];
@@ -794,7 +794,7 @@ lion.addfunc(lion.std, {
     // proto: reducer(func, list) -> result
     reducer: function (env, func, list) {
         if (!list instanceof Array) {
-            throw '[LION] bad type of list: ' + list;
+            throw '[LION] bad type of list';
         }
 
         var value = list[list.length - 1];
@@ -915,6 +915,8 @@ lion.addfunc(lion.std, {
 
             if (Object.hasOwnProperty.call(map, b)) {
                 return a instanceof map[b];
+            } else {
+                return false;
             }
         } else {
             return typeof a == b;
@@ -941,6 +943,8 @@ lion.addfunc(lion.std, {
 
         if (Object.hasOwnProperty.call(map, b)) {
             return a instanceof map[b];
+        } else {
+            return false;
         }
     },
 }, lion.wrap);
@@ -1068,6 +1072,8 @@ lion.addfunc(lion.std, {
     length: function (arr) {
         if (arr instanceof Array || typeof arr == 'string') {
             return arr.length;
+        } else {
+            throw '[LION] object does not have index';
         }
     },
 
@@ -1078,7 +1084,7 @@ lion.addfunc(lion.std, {
         if (arr instanceof Array || typeof arr == 'string') {
             return arr[Math.floor(i)];
         } else {
-            throw '[LION] bad type of index: ' + i;
+            throw '[LION] object does not have index';
         }
     },
 
@@ -1089,7 +1095,7 @@ lion.addfunc(lion.std, {
         if (arr instanceof Array || typeof arr == 'string') {
             return arr[Math.floor(i - Math.floor(i / arr.length) * arr.length)];
         } else {
-            throw '[LION] bad type of index: ' + i;
+            throw '[LION] object does not have index';
         }
     },
 
@@ -1099,8 +1105,10 @@ lion.addfunc(lion.std, {
         if (arr instanceof Array) {
             arr[Math.floor(i)] = value;
             return arr;
+        } else if (typeof arr == 'string') {
+            throw '[LION] string is atomic';
         } else {
-            throw '[LION] bad type of index: ' + i;
+            throw '[LION] object does not have index';
         }
     },
 }, lion.wrap);
@@ -1129,45 +1137,53 @@ lion.addfunc(lion.std, {
     // get the source of a regular expression
     // proto: restr(re) -> str
     restr: function (re) {
-        if (re instanceof RegExp) {
-            return re.source;
+        if (!re instanceof RegExp) {
+            throw '[LION] bad type of regexp';
         }
+
+        return re.source;
     },
 
     // get the attributes of a regular expression
     // proto: reattr(re) -> ['g', 'i', 'm']
     reattr: function (re) {
-        if (re instanceof RegExp) {
-            var result = [];
-
-            if (re.global) {
-                result.append('g');
-            }
-            if (re.ignoreCase) {
-                result.append('i');
-            }
-            if (re.multiline) {
-                result.append('m');
-            }
-
-            return result;
+        if (!re instanceof RegExp) {
+            throw '[LION] bad type of regexp';
         }
+
+        var result = [];
+
+        if (re.global) {
+            result.append('g');
+        }
+        if (re.ignoreCase) {
+            result.append('i');
+        }
+        if (re.multiline) {
+            result.append('m');
+        }
+
+        return result;
     },
 
     // get the match position of a regular expression
     // proto: reindex(re) -> RegExp.lastIndex
     reindex: function (re) {
-        if (re instanceof RegExp) {
-            return re.lastIndex;
+        if (!re instanceof RegExp) {
+            throw '[LION] bad type of regexp';
         }
+
+        return re.lastIndex;
     },
 
     // set the match position of a regular expression
     // proto: reindex(re, index) -> RegExp.lastIndex
     reindexset: function (re, index) {
-        if (re instanceof RegExp) {
-            return re.lastIndex = index;
+        if (!re instanceof RegExp) {
+            throw '[LION] bad type of regexp';
         }
+
+        return re.lastIndex = index;
     },
 }, lion.wrap);
 
