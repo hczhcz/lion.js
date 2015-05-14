@@ -1111,13 +1111,9 @@ lion.addfunc(lion.std, {
     // generate a date object
     // proto: date(...) -> new Date(...)
     date: function (arr) {
-        return new Date(Date.apply(arr));
-    },
-
-    // generate a date string
-    // proto: date(...) -> Date(...)
-    datestr: function (arr) {
-        return Date.apply(arr);
+        arr.unshift(undefined);
+        var factory = Date.bind.apply(Date, arr);
+        return new factory();
     },
 }, lion.wrap, lion.W_ARG_AS_ARR);
 
