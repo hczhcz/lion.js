@@ -2,7 +2,35 @@
 
 //////// test cases ////////
 
-var lion_test = function (test) {
+var lion_test = function (lion, handler) {
+    var test = function (ast_in, ast_out) {
+        var input;
+        var expected;
+        var result;
+
+        try {
+            input = JSON.stringify(ast_in);
+            expected = JSON.stringify(ast_out);
+        } catch (e) {
+            input = 'null';
+            expected = e;
+        }
+
+        try {
+            result = lion.bootstr(input);
+        } catch (e) {
+            result = e;
+        }
+
+        if (
+            result !== expected
+            || ast_in == undefined
+            || ast_out == undefined
+        ) {
+            handler(input, expected, result, ast_in, ast_out);
+        }
+    };
+
     // basic
     test('hello, world');
     test(123, 123);
