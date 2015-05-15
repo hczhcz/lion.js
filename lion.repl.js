@@ -1,4 +1,4 @@
-var lion = require('./lion').lion;
+var lion = require('./lion');
 
 process.stdout.write('Lion.js REPL\n\n');
 

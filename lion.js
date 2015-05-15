@@ -208,13 +208,13 @@ if (
     && typeof module.exports == 'object'
 ) {
     // CommonJS / NodeJS
-    module.exports.lion = lion;
+    module.exports = lion;
 } else if (
     typeof define == 'function'
     // && define['amd']
 ) {
     // AMD / CMD
-    define({lion: lion});
+    define(lion);
 }
 
 //////// core functions ////////
