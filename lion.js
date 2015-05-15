@@ -13,7 +13,7 @@ var lion = {
 
         // see envq in lion.core
         envq: function (env, ast) {
-            throw '[LION] can not call envq in the standard library';
+            throw Error('[LION] can not call envq in the standard library');
         },
 
         // see xgetq in lion.core
@@ -78,7 +78,7 @@ var lion = {
             if (Object.hasOwnProperty.call(env, 'LIONJS')) {
                 return func(env, ast);
             } else {
-                throw '[LION] core function is not allowed: ' + ast[0];
+                throw Error('[LION] core function is not allowed: ' + ast[0]);
             }
         };
     },
@@ -133,7 +133,7 @@ var lion = {
                         ) {
                             return obj.prototype[name].apply(target, args);
                         } else {
-                            throw '[LION] bad access to object method: ' + ast[0];
+                            throw Error('[LION] bad access to object method: ' + ast[0]);
                         }
                     }, option | lion.W_ARG_AS_ARR);
                 } else {
@@ -148,7 +148,7 @@ var lion = {
     addfunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
             if (i in env) {
-                throw '[LION] naming conflict in the library: ' + i;
+                throw Error('[LION] naming conflict in the library: ' + i);
             } else {
                 env[i] = hook ? hook(pkg[i], option, i) : pkg[i];
             }
@@ -255,7 +255,7 @@ lion.addfunc(lion.core, {
                 );
             } else {
                 // callee not found
-                throw '[LION] callee not found: ' + callee;
+                throw Error('[LION] callee not found: ' + callee);
             }
         } else if (callee instanceof Function) {
             // callee is a builtin function
@@ -281,7 +281,7 @@ lion.addfunc(lion.core, {
             // callee is not callable
 
             // return callee;
-            throw '[LION] callee is not callable: ' + callee;
+            throw Error('[LION] callee is not callable: ' + callee);
         }
     },
 
@@ -298,7 +298,7 @@ lion.addfunc(lion.core, {
 
         if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
-            throw '[LION] name is not acceptable: ' + name;
+            throw Error('[LION] name is not acceptable: ' + name);
         } else {
             if (Object.hasOwnProperty.call(env, name)) {
                 // found
@@ -317,7 +317,7 @@ lion.addfunc(lion.core, {
 
         // if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
         //     // js internal property
-        //     throw '[LION] name is not acceptable: ' + name;
+        //     throw Error('[LION] name is not acceptable: ' + name);
         // } else {
             if (Object.hasOwnProperty.call(env, 'parent')) {
                 // find from env's parent
@@ -328,7 +328,7 @@ lion.addfunc(lion.core, {
             } else {
                 // not found
                 // return undefined;
-                throw '[LION] value not found: ' + name;
+                throw Error('[LION] value not found: ' + name);
             }
         // }
     },
@@ -341,7 +341,7 @@ lion.addfunc(lion.core, {
 
         if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
-            throw '[LION] name is not acceptable: ' + name;
+            throw Error('[LION] name is not acceptable: ' + name);
         } else {
             return env[name] = value;
         }
@@ -354,7 +354,7 @@ lion.addfunc(lion.core, {
 
         if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
             // js internal property
-            throw '[LION] name is not acceptable: ' + name;
+            throw Error('[LION] name is not acceptable: ' + name);
         } else {
             return delete env[name];
         }
@@ -637,7 +637,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var all = [];
@@ -657,7 +657,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var all = [];
@@ -677,7 +677,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var all = [];
@@ -728,7 +728,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var value = list[0];
@@ -751,7 +751,7 @@ lion.addfunc(lion.std, {
         var list = data();
 
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var value = list[list.length - 1];
@@ -772,7 +772,7 @@ lion.addfunc(lion.std, {
     // proto: map(func, list) -> all result
     map: function (env, func, list) {
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var all = [];
@@ -791,7 +791,7 @@ lion.addfunc(lion.std, {
     // proto: reducel(func, list) -> result
     reducel: function (env, func, list) {
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var value = list[0];
@@ -810,7 +810,7 @@ lion.addfunc(lion.std, {
     // proto: reducer(func, list) -> result
     reducer: function (env, func, list) {
         if (!list instanceof Array) {
-            throw '[LION] bad type of list';
+            throw Error('[LION] bad type of list');
         }
 
         var value = list[list.length - 1];
@@ -1089,7 +1089,7 @@ lion.addfunc(lion.std, {
         if (arr instanceof Array || typeof arr == 'string') {
             return arr.length;
         } else {
-            throw '[LION] object does not have index';
+            throw Error('[LION] object does not have index');
         }
     },
 
@@ -1100,7 +1100,7 @@ lion.addfunc(lion.std, {
         if (arr instanceof Array || typeof arr == 'string') {
             return arr[Math.floor(i)];
         } else {
-            throw '[LION] object does not have index';
+            throw Error('[LION] object does not have index');
         }
     },
 
@@ -1111,7 +1111,7 @@ lion.addfunc(lion.std, {
         if (arr instanceof Array || typeof arr == 'string') {
             return arr[Math.floor(i - Math.floor(i / arr.length) * arr.length)];
         } else {
-            throw '[LION] object does not have index';
+            throw Error('[LION] object does not have index');
         }
     },
 
@@ -1122,9 +1122,9 @@ lion.addfunc(lion.std, {
             arr[Math.floor(i)] = value;
             return arr;
         } else if (typeof arr == 'string') {
-            throw '[LION] string is atomic';
+            throw Error('[LION] string is atomic');
         } else {
-            throw '[LION] object does not have index';
+            throw Error('[LION] object does not have index');
         }
     },
 }, lion.wrap);
@@ -1154,7 +1154,7 @@ lion.addfunc(lion.std, {
     // proto: restr(re) -> str
     restr: function (re) {
         if (!re instanceof RegExp) {
-            throw '[LION] bad type of regexp';
+            throw Error('[LION] bad type of regexp');
         }
 
         return re.source;
@@ -1164,7 +1164,7 @@ lion.addfunc(lion.std, {
     // proto: reattr(re) -> ['g', 'i', 'm']
     reattr: function (re) {
         if (!re instanceof RegExp) {
-            throw '[LION] bad type of regexp';
+            throw Error('[LION] bad type of regexp');
         }
 
         var result = [];
@@ -1186,7 +1186,7 @@ lion.addfunc(lion.std, {
     // proto: reindex(re) -> RegExp.lastIndex
     reindex: function (re) {
         if (!re instanceof RegExp) {
-            throw '[LION] bad type of regexp';
+            throw Error('[LION] bad type of regexp');
         }
 
         return re.lastIndex;
@@ -1196,7 +1196,7 @@ lion.addfunc(lion.std, {
     // proto: reindex(re, index) -> RegExp.lastIndex
     reindexset: function (re, index) {
         if (!re instanceof RegExp) {
-            throw '[LION] bad type of regexp';
+            throw Error('[LION] bad type of regexp');
         }
 
         return re.lastIndex = index;
