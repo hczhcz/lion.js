@@ -198,6 +198,11 @@ var lion = {
         // return lion.call.call(???, {LIONJS: true}, ast);
         return lion.call({LIONJS: true}, ast);
     },
+
+    // execute a string using lion.boot and return a string
+    bootstr: function (str) {
+        return JSON.stringify(lion.boot(JSON.parse(str)));
+    },
 };
 
 //////// modularization support ////////

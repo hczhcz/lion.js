@@ -1,5 +1,5 @@
 var lion = require('./lion');
-var lion_test = require('./lion_test').test;
+var lion_test = require('./lion.test').test;
 
 process.stdout.write('Lion.js REPL\n\n');
 
@@ -26,15 +26,44 @@ process.stdin.on(
                     process.stdout.write(JSON.stringify(keys) + '\n');
                 };
 
+                handlers['test'] = handlers['t'] = function () {
+                    lion_test(function (ast_in, ast_out) {
+                        var input;
+                        var expected;
+                        var result;
+
+                        try {
+                            input = JSON.stringify(ast_in);
+                            expected = JSON.stringify(ast_out);
+                        } catch (e) {
+                            input = 'null';
+                            expected = e;
+                        }
+
+                        try {
+                            result = lion.bootstr(input);
+                        } catch (e) {
+                            result = e;
+                        }
+
+                        if (result !== expected || result === 'null') {
+                            process.stdout.write('================\n');
+                            process.stdout.write('input: ' + '\n');
+                            process.stdout.write('    ' + input + '\n');
+                            process.stdout.write('result: ' + '\n');
+                            process.stdout.write('    ' + result + '\n');
+                        }
+                    });
+
+                    process.stdout.write('================\n');
+                    process.stdout.write('test finished\n');
+                };
+
                 if (handlers[text]) {
                     handlers[text]();
                 } else {
                     try {
-                        var result = JSON.stringify(
-                            lion.boot(
-                                JSON.parse(text)
-                            )
-                        );
+                        var result = lion.bootstr(text);
 
                         process.stdout.write(result + '\n');
                     } catch (e) {
