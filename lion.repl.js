@@ -1,3 +1,5 @@
+'use strict';
+
 var lion = require('./lion');
 var lion_test = require('./lion.test').test;
 
@@ -46,12 +48,21 @@ process.stdin.on(
                             result = e;
                         }
 
-                        if (result !== expected || result === 'null') {
+                        if (
+                            result !== expected
+                            || ast_in == undefined
+                            || ast_out == undefined
+                        ) {
                             process.stdout.write('================\n');
                             process.stdout.write('input: ' + '\n');
                             process.stdout.write('    ' + input + '\n');
                             process.stdout.write('result: ' + '\n');
                             process.stdout.write('    ' + result + '\n');
+
+                            if (ast_out != undefined) {
+                                process.stdout.write('expected: ' + '\n');
+                                process.stdout.write('    ' + expected + '\n');
+                            }
                         }
                     });
 
