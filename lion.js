@@ -200,6 +200,23 @@ var lion = {
     },
 };
 
+//////// modularization support ////////
+
+if (
+    typeof require == 'function'
+    && typeof module == 'object'
+    && typeof module.exports == 'object'
+) {
+    // CommonJS / NodeJS
+    module.exports.lion = lion;
+} else if (
+    typeof define == 'function'
+    // && define['amd']
+) {
+    // AMD / CMD
+    define({lion: lion});
+}
+
 //////// core functions ////////
 
 // core-level names:
