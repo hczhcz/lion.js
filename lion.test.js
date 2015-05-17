@@ -243,6 +243,13 @@ var lion_test = function (lion, handler) {
         ]],
         ['sum']
     ], 5050);
+    test(['do',
+        ['var', 'x', 5],
+        ['loop', 10,
+            ['var', 'x', ['+', ['x'], 1]]
+        ],
+        ['x']
+    ], 15);
 
     // iteration
     test([',',
@@ -349,14 +356,14 @@ var lion_test = function (lion, handler) {
 //////// modularization support ////////
 
 if (
-    typeof require == 'function'
-    && typeof module == 'object'
-    && typeof module.exports == 'object'
+    typeof require === 'function'
+    && typeof module === 'object'
+    && typeof module.exports === 'object'
 ) {
     // CommonJS / NodeJS
     module.exports['test'] = lion_test;
 } else if (
-    typeof define == 'function'
+    typeof define === 'function'
     // && define['amd']
 ) {
     // AMD / CMD

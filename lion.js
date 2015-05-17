@@ -129,7 +129,7 @@ var lion = {
 
                         if (
                             target instanceof Object ?
-                            target instanceof obj : typeof target == typeof obj()
+                            target instanceof obj : typeof target === typeof obj()
                         ) {
                             return obj.prototype[name].apply(target, args);
                         } else {
@@ -162,7 +162,7 @@ var lion = {
 
             var callee = lion.call(env, ast[0]);
 
-            // if (callee == 'LIONSTD') {
+            // if (callee === 'LIONSTD') {
             //     // call with std
             //     return lion.call(lion.std, ast[1]);
             // } else {
@@ -208,14 +208,14 @@ var lion = {
 //////// modularization support ////////
 
 if (
-    typeof require == 'function'
-    && typeof module == 'object'
-    && typeof module.exports == 'object'
+    typeof require === 'function'
+    && typeof module === 'object'
+    && typeof module.exports === 'object'
 ) {
     // CommonJS / NodeJS
     module.exports = lion;
 } else if (
-    typeof define == 'function'
+    typeof define === 'function'
     // && define['amd']
 ) {
     // AMD / CMD
@@ -245,7 +245,7 @@ lion.addfunc(lion.core, {
         var callee = ast[1];
         var caller = ast[2];
 
-        if (typeof callee == 'string') {
+        if (typeof callee === 'string') {
             // get the callee from the environment
             var newcallee = lion.corefunc(
                 env,
@@ -327,7 +327,7 @@ lion.addfunc(lion.core, {
             if (Object.hasOwnProperty.call(env, 'parent')) {
                 // find from env's parent
                 return lion.corefunc(env.parent, ['getq', name]);
-            } else if (env != lion.std) {
+            } else if (env !== lion.std) {
                 // find from the standard library
                 return lion.corefunc(lion.std, ['getq', name]);
             } else {
@@ -588,7 +588,7 @@ lion.addfunc(lion.std, {
     loop: function (count, body) {
         var all = [];
 
-        for (var i = count(); i != 0; --i) {
+        for (var i = Math.floor(count()); i > 0; --i) {
             all.push(body());
         }
 
@@ -1091,7 +1091,7 @@ lion.addfunc(lion.std, {
     // get the length of array
     // proto: length(arr) -> arr.length
     length: function (arr) {
-        if (arr instanceof Array || typeof arr == 'string') {
+        if (arr instanceof Array || typeof arr === 'string') {
             return arr.length;
         } else {
             throw Error('[LION] object does not have index');
@@ -1102,7 +1102,7 @@ lion.addfunc(lion.std, {
     // proto: index(arr, i) -> arr[i]
     index: function (arr, i) {
         // notice: the index should be an integer
-        if (arr instanceof Array || typeof arr == 'string') {
+        if (arr instanceof Array || typeof arr === 'string') {
             return arr[Math.floor(i)];
         } else {
             throw Error('[LION] object does not have index');
@@ -1113,7 +1113,7 @@ lion.addfunc(lion.std, {
     // proto: xindex(arr, i) -> arr[i]
     xindex: function (arr, i) {
         // notice: the index should be an integer
-        if (arr instanceof Array || typeof arr == 'string') {
+        if (arr instanceof Array || typeof arr === 'string') {
             return arr[Math.floor(i - Math.floor(i / arr.length) * arr.length)];
         } else {
             throw Error('[LION] object does not have index');
@@ -1126,7 +1126,7 @@ lion.addfunc(lion.std, {
         if (arr instanceof Array) {
             arr[Math.floor(i)] = value;
             return arr;
-        } else if (typeof arr == 'string') {
+        } else if (typeof arr === 'string') {
             throw Error('[LION] string is atomic');
         } else {
             throw Error('[LION] object does not have index');
