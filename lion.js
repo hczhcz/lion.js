@@ -22,6 +22,9 @@ var lion = {
 
             if (Object.hasOwnProperty.call(lion.core, name)) {
                 return lion.core[name];
+            } else {
+                // not found
+                throw Error('[LION] value not found: ' + name);
             }
         },
     },
@@ -318,27 +321,18 @@ lion.addfunc(lion.core, {
         }
     },
 
-    // get value from the parent of current environment
+    // get value outside of current environment
     // proto: xgetq('name) -> value
     xgetq: function (env, ast) {
         var name = ast[1];
 
-        // if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
-        //     // js internal property
-        //     throw Error('[LION] name is not acceptable: ' + name);
-        // } else {
-            if (Object.hasOwnProperty.call(env, 'parent')) {
-                // find from env's parent
-                return lion.corefunc(env.parent, ['getq', name]);
-            } else if (env !== lion.std) {
-                // find from the standard library
-                return lion.corefunc(lion.std, ['getq', name]);
-            } else {
-                // not found
-                // return undefined;
-                throw Error('[LION] value not found: ' + name);
-            }
-        // }
+        if (Object.hasOwnProperty.call(env, 'parent')) {
+            // find from env's parent
+            return lion.corefunc(env.parent, ['getq', name]);
+        } else if (env !== lion.std) {
+            // find from the standard library
+            return lion.corefunc(lion.std, ['getq', name]);
+        }
     },
 
     // set value in current environment
