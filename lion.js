@@ -130,13 +130,23 @@ var lion = {
                     return lion.wrap(function (args) {
                         var target = args.shift();
 
+                        var map = {
+                            String: 'string',
+                            Boolean: 'boolean',
+                            Number: 'number',
+                        };
+
                         if (
                             target instanceof Object ?
-                            target instanceof obj : typeof target === typeof obj()
+                            // target instanceof obj : typeof target === typeof obj()
+                            target instanceof obj : (
+                                Object.hasOwnProperty.call(map, envname)
+                                && typeof target === typeof envname
+                            )
                         ) {
                             return obj.prototype[name].apply(target, args);
                         } else {
-                            throw Error('[LION] bad access to object method: ' + ast[0]);
+                            throw Error('[LION] bad access to object method: ' + name);
                         }
                     }, option | lion.W_ARG_AS_ARR);
                 } else {
@@ -307,17 +317,12 @@ lion.addfunc(lion.core, {
     getq: function (env, ast) {
         var name = ast[1];
 
-        if ((name in env) && !Object.hasOwnProperty.call(env, name)) {
-            // js internal property
-            throw Error('[LION] name is not acceptable: ' + name);
+        if (Object.hasOwnProperty.call(env, name)) {
+            // found
+            return env[name];
         } else {
-            if (Object.hasOwnProperty.call(env, name)) {
-                // found
-                return env[name];
-            } else {
-                // not found
-                return lion.corefunc(env, ['xgetq', name]);
-            }
+            // not found
+            return lion.corefunc(env, ['xgetq', name]);
         }
     },
 
@@ -329,7 +334,7 @@ lion.addfunc(lion.core, {
         if (Object.hasOwnProperty.call(env, 'parent')) {
             // find from env's parent
             return lion.corefunc(env.parent, ['getq', name]);
-        } else if (env !== lion.std) {
+        } else {
             // find from the standard library
             return lion.corefunc(lion.std, ['getq', name]);
         }
@@ -358,7 +363,13 @@ lion.addfunc(lion.core, {
             // js internal property
             throw Error('[LION] name is not acceptable: ' + name);
         } else {
-            return delete env[name];
+            if (Object.hasOwnProperty.call(env, name)) {
+                // found
+                return delete env[name];
+            } else {
+                // not found
+                throw Error('[LION] value not found: ' + name);
+            }
         }
     },
 }, lion.wrapcore);
@@ -1272,7 +1283,7 @@ lion.addfunc(lion.std, {
 }, lion.wrapobj);
 
 lion.addfunc(lion.std, {
-    Object: Object,
+    // Object: Object,
     // Function: Function,
     Array: Array,
     String: String,
