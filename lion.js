@@ -192,16 +192,19 @@ var lion = {
         }
     },
 
-    // execute an AST in a new environment
-    boot: function (ast) {
-        // TODO: protect the global object
-        // return lion.call.call(???, {LIONJS: true}, ast);
-        return lion.call({LIONJS: true}, ast);
+    // create a new environment
+    init: function () {
+        return {LIONJS: true};
     },
 
-    // execute a string using lion.boot and return a string
-    bootstr: function (str) {
-        return JSON.stringify(lion.boot(JSON.parse(str)));
+    // parse a string, execute it and return a string
+    exec: function (env, str) {
+        return JSON.stringify(lion.call(env, JSON.parse(str)));
+    },
+
+    // call lion.init and lion.exec
+    boot: function (str) {
+        return lion.exec(lion.init(), str);
     },
 };
 

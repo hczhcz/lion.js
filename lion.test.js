@@ -17,7 +17,7 @@ var lion_test = function (lion, handler) {
         }
 
         try {
-            result = lion.bootstr(input);
+            result = lion.boot(input);
         } catch (e) {
             result = e;
         }
