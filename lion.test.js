@@ -48,6 +48,12 @@ var lion_test = function (lion, handler) {
     test(['is', ['', []], 'Array'], true);
     test(['is', ['', []], 'Object'], true);
     test(['typeof', ['env']], 'object');
+    test(['in', 'a', ['', {a: 1}]], true);
+    test(['in', 'b', ['', {a: 1}]], false);
+    test(['in', '__proto__', ['', {a: 1}]], true);
+    test(['has', ['', {a: 1}], 'a'], true);
+    test(['has', ['', {a: 1}], 'b'], false);
+    test(['has', ['', {a: 1}], '__proto__'], false);
 
     // access
     test(['in', 'test1', ['env']], false);
@@ -337,6 +343,21 @@ var lion_test = function (lion, handler) {
         ['setq', '┬─┬', 'exception'],
         ['v°□°v', ['╯°□°╯', ['┻━┻']], ['┬─┬']]
     ], 'lalala~');
+
+    // types
+    test(['raw', ['strobj', 'aaa']], 'aaa');
+    test(['dict', 'a', 1, 'b', ['+', 1, 1]], {
+        LIONJS: true,
+        a: 1,
+        b: 2
+    });
+    test(['do',
+        ['var', 'arr', ['list', 2, 3, 4]],
+        ['indexset', ['arr'], 1, 5],
+        ['arr']
+    ], [2, 5, 4]);
+    test(['objstr', 'hello'], '[object String]');
+    test(['objstr', 'hello', true], 'hello');
 
     // js built-ins
     test(['Math', ['floor', ['sqrt', 123456]]], 351);
