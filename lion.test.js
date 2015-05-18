@@ -205,6 +205,17 @@ var lion_test = function (lion, handler) {
         ['set', 'xgetq', ['macro', 'argquote', 'name', ['name']]],
         ['xgetq', 'asdf']
     ], 'asdf');
+    // test(['do',
+    //     ['set', 'test', ['\\', 'argpass', ['envq']]],
+    //     ['test']
+    // ]);
+    test(['do',
+        ['set', 'test', 123],
+        [['\\', 'argpass', ['getq', 'callenv']]]
+    ], {
+        LIONJS: true,
+        test: 123
+    });
 
     // control flows
     test(['~~', ['cond',

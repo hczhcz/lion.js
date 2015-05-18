@@ -16,12 +16,16 @@ var lion = {
             throw Error('[LION] can not call envq in the standard library');
         },
 
-        // see xgetq in lion.core
-        xgetq: function (env, ast) {
+        // see getq in lion.core
+        getq: function (env, ast) {
             var name = ast[1];
 
             if (Object.hasOwnProperty.call(lion.core, name)) {
+                // found in lion.core
                 return lion.core[name];
+            } else if (Object.hasOwnProperty.call(lion.std, name)) {
+                // found in lion.std
+                return lion.std[name];
             } else {
                 // not found
                 throw Error('[LION] value not found: ' + name);
