@@ -926,6 +926,7 @@ lion.addfunc(lion.std, {
     '^': function (a, b) {return a ^ b;},
     '|': function (a, b) {return a | b;},
     in: function (a, b) {return a in b;},
+
     is: function (a, b) {
         if (a instanceof Object) {
             var map = {
@@ -955,6 +956,11 @@ lion.addfunc(lion.std, {
             return typeof a == b;
         }
     },
+
+    has: function (a, b) {
+        return Object.hasOwnProperty.call(a, b);
+    },
+
     instanceof: function (a, b) {
         var map = {
             Object: Object,
@@ -1144,6 +1150,16 @@ lion.addfunc(lion.std, {
             throw Error('[LION] object does not have index');
         }
     },
+
+    // convert an object to a string
+    // proto: objstr(object, locale) -> string
+    objstr: function (object, locale) {
+        if (locale) {
+            return Object.prototype.toLocaleString.call(object);
+        } else {
+            return Object.prototype.toString.call(object);
+        }
+    },
 }, lion.wrap);
 
 //// date ////
@@ -1267,6 +1283,13 @@ lion.addfunc(lion.std, {
     isFrozen: Object.isFrozen,
     isExtensible: Object.isExtensible,
     keys: Object.keys,
+
+    // toString: Object.prototype.toString,
+    // toLocaleString: Object.prototype.toLocaleString,
+    // valueOf: Object.prototype.valueOf, // TODO
+    // hasOwnProperty: Object.prototype.hasOwnProperty,
+    // isPrototypeOf: Object.prototype.isPrototypeOf, // TODO
+    // propertyIsEnumerable: Object.prototype.propertyIsEnumerable, // TODO
 
     utc: Date.UTC,
     now: Date.now,
