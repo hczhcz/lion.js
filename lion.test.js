@@ -201,6 +201,21 @@ var lion_test = function (lion, handler) {
         ]],
         ['f', 10]
     ], 3628800);
+    test(['do',
+        ['set', 'f', ['\\', 'argcall', 'x',
+            ['if', ['<=', ['x'], 0],
+                1,
+                ['*', ['x'], ['callee', ['-', ['x'], 1]]]
+            ]
+        ]],
+        ['f', 10]
+    ], 3628800);
+    test([['\\', 'argcall', 'x',
+        ['if', ['<=', ['x'], 0],
+            1,
+            ['*', ['x'], ['callee', ['-', ['x'], 1]]]
+        ]
+    ], 10], 3628800);
     test([{
         LIONJS: true,
         xgetq: ['\\', 'argquote', 'name', ['name']]

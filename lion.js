@@ -254,6 +254,7 @@ if (
 //     delq
 //     parent
 //     caller
+//     callee
 //     callenv
 
 lion.addfunc(lion.core, {
@@ -293,6 +294,7 @@ lion.addfunc(lion.core, {
             var newenv = {
                 LIONJS: true,
                 caller: caller,
+                callee: callee,
                 callenv: lion.corefunc(env, ['envq']),
             };
 
