@@ -80,7 +80,7 @@ var lion = {
     },
 
     // add checker to a function (for lion.core)
-    wrapcore: function (func, option) {
+    wrapCore: function (func, option) {
         return function (env, ast) {
             if (Object.hasOwnProperty.call(env, 'LIONJS')) {
                 return func(env, ast);
@@ -91,7 +91,7 @@ var lion = {
     },
 
     // convert a native object to an environment
-    wrapobj: function (obj, option, envname) {
+    wrapObj: function (obj, option, envname) {
         return {
             LIONJS: true,
 
@@ -109,14 +109,14 @@ var lion = {
                     return lion.wrap(obj[name], option);
                 } else {
                     // find from the standard library
-                    return lion.corefunc(lion.std, ['getq', name]);
+                    return lion.coreFunc(lion.std, ['getq', name]);
                 }
             },
         };
     },
 
     // convert an object with prototype (a class-like object) to an environment
-    wrapclass: function (obj, option, envname) {
+    wrapClass: function (obj, option, envname) {
         return {
             LIONJS: true,
 
@@ -155,14 +155,14 @@ var lion = {
                     }, option | lion.W_ARG_AS_ARR);
                 } else {
                     // find from the standard library
-                    return lion.corefunc(lion.std, ['getq', name]);
+                    return lion.coreFunc(lion.std, ['getq', name]);
                 }
             },
         };
     },
 
     // add library functions
-    addfunc: function (env, pkg, hook, option) {
+    addFunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
             if (i in env) {
                 throw Error('[LION] naming conflict in the library: ' + i);
@@ -184,7 +184,7 @@ var lion = {
             //     return lion.call(lion.std, ast[1]);
             // } else {
                 // call via env.callq
-                return lion.corefunc(
+                return lion.coreFunc(
                     env,
                     ['callq', callee, ast]
                 );
@@ -196,7 +196,7 @@ var lion = {
     },
 
     // search core function in env and lion.core
-    corefunc: function (env, ast) {
+    coreFunc: function (env, ast) {
         var name = ast[0];
 
         if (Object.hasOwnProperty.call(env, name)) {
@@ -257,7 +257,7 @@ if (
 //     callee
 //     callenv
 
-lion.addfunc(lion.core, {
+lion.addFunc(lion.core, {
     // execute an AST with a given callee
     // proto: callq('callee, 'caller) -> result
     callq: function (env, ast) {
@@ -268,14 +268,14 @@ lion.addfunc(lion.core, {
 
         if (typeof callee === 'string') {
             // get the callee from the environment
-            var newcallee = lion.corefunc(
+            var newcallee = lion.coreFunc(
                 env,
                 ['getq', callee]
             );
 
             if (newcallee) {
                 // apply the callee
-                return lion.corefunc(
+                return lion.coreFunc(
                     env,
                     ['callq', newcallee, caller]
                 );
@@ -295,7 +295,7 @@ lion.addfunc(lion.core, {
                 LIONJS: true,
                 caller: caller,
                 callee: callee,
-                callenv: lion.corefunc(env, ['envq']),
+                callenv: lion.coreFunc(env, ['envq']),
             };
 
             return lion.call(newenv, callee);
@@ -328,7 +328,7 @@ lion.addfunc(lion.core, {
             return env[name];
         } else {
             // not found
-            return lion.corefunc(env, ['xgetq', name]);
+            return lion.coreFunc(env, ['xgetq', name]);
         }
     },
 
@@ -339,10 +339,10 @@ lion.addfunc(lion.core, {
 
         if (Object.hasOwnProperty.call(env, 'parent')) {
             // find from env's parent
-            return lion.corefunc(env.parent, ['getq', name]);
+            return lion.coreFunc(env.parent, ['getq', name]);
         } else {
             // find from the standard library
-            return lion.corefunc(lion.std, ['getq', name]);
+            return lion.coreFunc(lion.std, ['getq', name]);
         }
     },
 
@@ -378,57 +378,57 @@ lion.addfunc(lion.core, {
             }
         }
     },
-}, lion.wrapcore);
+}, lion.wrapCore);
 
 //////// the standard library ////////
 
 //// access & call ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // callq() with calling
     // proto: callq(callee, caller) -> result
     call: function (env, callee, caller) {
-        return lion.corefunc(env, ['callq', callee, caller]);
+        return lion.coreFunc(env, ['callq', callee, caller]);
     },
 
     // envq() with calling
     // proto: env() -> env
     env: function (env) {
-        return lion.corefunc(env, ['envq']);
+        return lion.coreFunc(env, ['envq']);
     },
 
     // getq() with calling
     // proto: get(name) -> value
     get: function (env, name) {
-        return lion.corefunc(env, ['getq', name]);
+        return lion.coreFunc(env, ['getq', name]);
     },
 
     // xgetq() with calling
     // proto: xget(name) -> value
     xget: function (env, name) {
-        return lion.corefunc(env, ['xgetq', name]);
+        return lion.coreFunc(env, ['xgetq', name]);
     },
 
     // setq() with calling
     // proto: set(name, value) -> value
     set: function (env, name, value) {
-        return lion.corefunc(env, ['setq', name, value]);
+        return lion.coreFunc(env, ['setq', name, value]);
     },
 
     // delq() with calling
     // proto: del(name) -> success
     del: function (env, name) {
-        return lion.corefunc(env, ['delq', name]);
+        return lion.coreFunc(env, ['delq', name]);
     },
 
     // set quoted value
     // proto: var(name, value) -> 'value
     var: function (env, name, value) {
-        return lion.corefunc(env, ['setq', name, ['quote', value]]);
+        return lion.coreFunc(env, ['setq', name, ['quote', value]]);
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // return the AST
     // proto: quote('ast) -> 'ast
     quote: function (env, ast) {return ast[1];},
@@ -442,7 +442,7 @@ lion.addfunc(lion.std, {
     eval: function (env, ast) {return lion.call(env, lion.call(env, ast[1]));},
 });
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // string to AST (JSON only)
     // proto: parse(str) -> ast
     parse: function (json) {return JSON.parse(json);},
@@ -454,7 +454,7 @@ lion.addfunc(lion.std, {
 
 //// function ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // execute and make quote
     // proto: argcall('env, 'ast) -> 'called
     argcall: function (env, ast) {
@@ -480,16 +480,16 @@ lion.addfunc(lion.std, {
     },
 });
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // give name to arguments with wrap
     // proto: setarg(wrapper, ...) -> caller
     setarg: function (env, arr) {
         // get arguments
-        var caller = lion.corefunc(
+        var caller = lion.coreFunc(
             env,
             ['getq', 'caller']
         );
-        var callenv = lion.corefunc(
+        var callenv = lion.coreFunc(
             env,
             ['getq', 'callenv']
         );
@@ -501,7 +501,7 @@ lion.addfunc(lion.std, {
                 env, [wrapper, callenv, caller[i]]
             );
 
-            lion.corefunc(
+            lion.coreFunc(
                 env, ['setq', arr[i], arg]
             );
         }
@@ -510,11 +510,11 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap, lion.W_ARG_HAS_ENV | lion.W_ARG_AS_ARR);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // make an anonymous function with closure
     // proto: lambda(wrapper, ..., body) -> function
     lambda: function (env, ast) {
-        var setparent = ['setq', 'parent', lion.corefunc(env, ['envq'])];
+        var setparent = ['setq', 'parent', lion.coreFunc(env, ['envq'])];
         var setarg = ['setarg'];
 
         for (var i = 1; i < ast.length - 1; ++i) {
@@ -548,7 +548,7 @@ lion.addfunc(lion.std, {
 
 //// control flows ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // conditional branch
     // proto: cond(cond, action, ...) -> result
     cond: function (arr) {
@@ -586,7 +586,7 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_AS_ARR);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // simple branch (if branch)
     // proto: if(cond, then, else) -> result
     if: function (cond, then_br, else_br) {
@@ -648,7 +648,7 @@ lion.addfunc(lion.std, {
 
 //// iteration ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // iteration loop (for-in loop) by index
     // proto: forin(iter, data, body) -> all result
     forin: function (env, iter, data, body) {
@@ -662,7 +662,7 @@ lion.addfunc(lion.std, {
         var all = [];
 
         for (var i in list) {
-            lion.corefunc(env, ['setq', name, ['quote', i]]);
+            lion.coreFunc(env, ['setq', name, ['quote', i]]);
             all.push(body());
         }
 
@@ -682,7 +682,7 @@ lion.addfunc(lion.std, {
         var all = [];
 
         for (var i in list) {
-            lion.corefunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
+            lion.coreFunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
             all.push(body());
         }
 
@@ -702,7 +702,7 @@ lion.addfunc(lion.std, {
         var all = [];
 
         for (var i in list) {
-            lion.corefunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
+            lion.coreFunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
             if (cond()) {
                 all.push(list[Math.floor(i)]);
             }
@@ -719,7 +719,7 @@ lion.addfunc(lion.std, {
         var all = [];
 
         for (var i = begin(); i != end(); i += step()) {
-            lion.corefunc(env, ['setq', name, ['quote', i]]);
+            lion.coreFunc(env, ['setq', name, ['quote', i]]);
             all.push(body());
         }
 
@@ -753,8 +753,8 @@ lion.addfunc(lion.std, {
         var value = list[0];
 
         for (var i = 1; i < list.length; ++i) {
-            lion.corefunc(env, ['setq', name1, ['quote', value]]);
-            lion.corefunc(env, ['setq', name2, ['quote', list[Math.floor(i)]]]);
+            lion.coreFunc(env, ['setq', name1, ['quote', value]]);
+            lion.coreFunc(env, ['setq', name2, ['quote', list[Math.floor(i)]]]);
 
             value = body();
         }
@@ -776,8 +776,8 @@ lion.addfunc(lion.std, {
         var value = list[list.length - 1];
 
         for (var i = list.length - 2; i >= 0; --i) {
-            lion.corefunc(env, ['setq', name1, ['quote', list[Math.floor(i)]]]);
-            lion.corefunc(env, ['setq', name2, ['quote', value]]);
+            lion.coreFunc(env, ['setq', name1, ['quote', list[Math.floor(i)]]]);
+            lion.coreFunc(env, ['setq', name2, ['quote', value]]);
 
             value = body();
         }
@@ -786,7 +786,7 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // pass each value in a list to a function
     // proto: map(func, list) -> all result
     map: function (env, func, list) {
@@ -847,14 +847,14 @@ lion.addfunc(lion.std, {
 
 //// exception ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // try structure
     // proto: try(body, except, finally) -> result
     try: function (env, body, except, finally_do) {
         try {
             return body();
         } catch (e) {
-            lion.corefunc(env, ['setq', 'exception', ['quote', e]]);
+            lion.coreFunc(env, ['setq', 'exception', ['quote', e]]);
             return except();
         } finally {
             if (finally_do) {
@@ -864,7 +864,7 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap, lion.W_DELAY | lion.W_ARG_HAS_ENV);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // throw statement
     // proto: throw(err) -> never return
     throw: function (err) {
@@ -894,7 +894,7 @@ lion.addfunc(lion.std, {
 
 //// operators ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // unary operators
     // proto: op(a) -> op a (a op)
     positive: function (a) {return +a;},
@@ -990,7 +990,7 @@ lion.addfunc(lion.std, {
     },
 }, lion.wrap);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // unary operators
     // proto: op(a) -> op a (a op)
     '!': function (a) {return !a();},
@@ -1013,7 +1013,7 @@ lion.addfunc(lion.std, {
 
 //// object & raw ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // convert to an object
     // proto: object(value) -> new Object(value)
     object: function (value) {
@@ -1073,7 +1073,7 @@ lion.addfunc(lion.std, {
 
 //// list & dict & string ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // call and return arguments as a list
     // proto: list(...) -> [...]
     list: function (arr) {
@@ -1100,14 +1100,14 @@ lion.addfunc(lion.std, {
         };
 
         for (var i = 0; i < arr.length; i += 2) {
-            lion.corefunc(newenv, ['setq', arr[i], arr[i + 1]]);
+            lion.coreFunc(newenv, ['setq', arr[i], arr[i + 1]]);
         }
 
         return newenv;
     },
 }, lion.wrap, lion.W_ARG_AS_ARR);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // get the length of array
     // proto: length(arr) -> arr.length
     length: function (arr) {
@@ -1166,7 +1166,7 @@ lion.addfunc(lion.std, {
 
 //// date ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // generate a date object
     // proto: date(...) -> new Date(...)
     date: function (arr) {
@@ -1178,7 +1178,7 @@ lion.addfunc(lion.std, {
 
 //// regexp ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // generate a regular expression object
     // proto: regexp(pattern, flags) -> regexp object
     regexp: function (pattern, flags) {
@@ -1240,7 +1240,7 @@ lion.addfunc(lion.std, {
 
 //// js built-ins ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     NaN: ['quote', NaN],
     Infinity: ['quote', Infinity],
     undefined: ['quote', undefined],
@@ -1258,7 +1258,7 @@ lion.addfunc(lion.std, {
     NUMMIN: ['quote', Number.MIN_VALUE],
 });
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     isNaN: isNaN,
     isFinite: isFinite,
     isArray: Array.isArray,
@@ -1307,11 +1307,11 @@ lion.addfunc(lion.std, {
     // regexp: RegExp,
 }, lion.wrap);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     Math: Math,
-}, lion.wrapobj);
+}, lion.wrapObj);
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     // Object: Object,
     // Function: Function,
     Array: Array,
@@ -1321,11 +1321,11 @@ lion.addfunc(lion.std, {
     Date: Date,
     RegExp: RegExp,
     Error: Error,
-}, lion.wrapclass);
+}, lion.wrapClass);
 
 //// aliases ////
 
-lion.addfunc(lion.std, {
+lion.addFunc(lion.std, {
     ':': 'get',
     ':=': 'set',
     '=': 'var',
