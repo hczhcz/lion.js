@@ -8,6 +8,20 @@
     <script>
         'use strict';
 
+        var lion_run = function (ast) {
+            return lion.call(lion.std, ast);
+        };
+
+        var lion_profile = function (count) {
+            // start
+            console.profile('lion.js');
+
+            lion_test_repeat(lion, count ? count : 100);
+
+            // finish
+            console.profileEnd();
+        };
+
         lion_test(
             lion,
             function (input, expected, result, ast_in, ast_out) {
@@ -21,6 +35,8 @@
             }
         );
 
+        var time = lion_test_timing(lion, 100);
+        document.writeln('<hr>Time * 100 = ' + time);
         document.writeln('<hr><b>Finished.</b>');
     </script>
 </head>

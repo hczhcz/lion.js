@@ -1,7 +1,11 @@
 'use strict';
 
 var lion = require('./lion');
-var lion_test = require('./lion.test').test;
+var lion_test_all = require('./lion.test');
+
+var lion_test = lion_test_all.test;
+var lion_test_repeat = lion_test_all.test_repeat;
+var lion_test_timing = lion_test_all.test_timing;
 
 // initialize the environment
 
@@ -49,8 +53,12 @@ process.stdin.on(
                         }
                     );
 
+                    var time = lion_test_timing(lion, 100);
                     process.stdout.write('================\n');
-                    process.stdout.write('test finished\n');
+                    process.stdout.write('Time * 100 = ' + time + '\n');
+
+                    process.stdout.write('================\n');
+                    process.stdout.write('Finished.\n');
                 };
 
                 // reset the environment
