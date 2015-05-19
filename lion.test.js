@@ -50,10 +50,10 @@ var lion_test = function (lion, handler) {
     test(['typeof', ['env']], 'object');
     test(['in', 'a', ['', {a: 1}]], true);
     test(['in', 'b', ['', {a: 1}]], false);
-    test(['in', '__proto__', ['', {a: 1}]], true);
+    test(['in', 'valueOf', ['', {a: 1}]], true);
     test(['has', ['', {a: 1}], 'a'], true);
     test(['has', ['', {a: 1}], 'b'], false);
-    test(['has', ['', {a: 1}], '__proto__'], false);
+    test(['has', ['', {a: 1}], 'valueOf'], false);
 
     // access
     test(['in', 'test1', ['env']], false);
@@ -400,6 +400,26 @@ var lion_test = function (lion, handler) {
     ], ['.{3']);
 };
 
+//////// tools ////////
+
+var lion_test_repeat = function (lion, count) {
+    for (; count > 0; --count) {
+        lion_test(lion, function () {});
+    }
+};
+
+var lion_test_timing = function (lion, count) {
+    // start
+    var t1 = new Date();
+
+    lion_test_repeat(lion, count);
+
+    // finish
+    var t2 = new Date();
+
+    return t2 - t1;
+};
+
 //////// modularization support ////////
 
 if (
@@ -409,10 +429,16 @@ if (
 ) {
     // CommonJS / NodeJS
     module.exports['test'] = lion_test;
+    module.exports['test_repeat'] = lion_test_repeat;
+    module.exports['test_timing'] = lion_test_timing;
 } else if (
     typeof define === 'function'
     // && define['amd']
 ) {
     // AMD / CMD
-    define({test: lion_test});
+    define({
+        test: lion_test,
+        test_repeat: lion_test_repeat,
+        test_timing: lion_test_timing,
+    });
 }
