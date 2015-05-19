@@ -39,7 +39,37 @@ var lion = {
     W_ARG_HAS_ENV: 2,
     W_ARG_AS_ARR: 4,
 
-    //////// helper functions ////////
+    //////// maps ////////
+
+    typeMap: {
+        Object: Object,
+        Function: Function,
+        Array: Array,
+        String: String,
+        Boolean: Boolean,
+        Number: Number,
+        Date: Date,
+        RegExp: RegExp,
+        Error: Error,
+        EvalError: EvalError,
+        RangeError: RangeError,
+        ReferenceError: ReferenceError,
+        SyntaxError: SyntaxError,
+        TypeError: TypeError,
+        URIError: URIError,
+    },
+
+    errorMap: {
+        Error: Error,
+        EvalError: EvalError,
+        RangeError: RangeError,
+        ReferenceError: ReferenceError,
+        SyntaxError: SyntaxError,
+        TypeError: TypeError,
+        URIError: URIError,
+    },
+
+    //////// wrapper functions ////////
 
     // convert f([env, ]arg...) to g(env, ast) with calls
     wrap: function (func, option) {
@@ -161,6 +191,8 @@ var lion = {
         };
     },
 
+    //////// helper functions ////////
+
     // add library functions
     addFunc: function (env, pkg, hook, option) {
         for (var i in pkg) {
@@ -208,6 +240,8 @@ var lion = {
             return lion.core[name](env, ast);
         }
     },
+
+    //////// interface functions ////////
 
     // create a new environment
     init: function () {
@@ -874,18 +908,8 @@ lion.addFunc(lion.std, {
     // error constructor
     // proto: error(message, type) -> error object
     error: function (message, type) {
-        var map = {
-            error: Error,
-            eval: EvalError,
-            range: RangeError,
-            reference: ReferenceError,
-            syntax: SyntaxError,
-            type: TypeError,
-            URI: URIError,
-        };
-
-        if (Object.hasOwnProperty.call(map, type)) {
-            return map[type](message);
+        if (Object.hasOwnProperty.call(lion.errorMap, type)) {
+            return lion.errorMap[type](message);
         } else {
             return Error(message);
         }
@@ -931,26 +955,8 @@ lion.addFunc(lion.std, {
 
     is: function (a, b) {
         if (a instanceof Object) {
-            var map = {
-                Object: Object,
-                Function: Function,
-                Array: Array,
-                String: String,
-                Boolean: Boolean,
-                Number: Number,
-                Date: Date,
-                RegExp: RegExp,
-                Error: Error,
-                EvalError: EvalError,
-                RangeError: RangeError,
-                ReferenceError: ReferenceError,
-                SyntaxError: SyntaxError,
-                TypeError: TypeError,
-                URIError: URIError,
-            };
-
-            if (Object.hasOwnProperty.call(map, b)) {
-                return a instanceof map[b];
+            if (Object.hasOwnProperty.call(lion.typeMap, b)) {
+                return a instanceof lion.typeMap[b];
             } else {
                 return false;
             }
@@ -964,26 +970,8 @@ lion.addFunc(lion.std, {
     },
 
     instanceof: function (a, b) {
-        var map = {
-            Object: Object,
-            Function: Function,
-            Array: Array,
-            String: String,
-            Boolean: Boolean,
-            Number: Number,
-            Date: Date,
-            RegExp: RegExp,
-            Error: Error,
-            EvalError: EvalError,
-            RangeError: RangeError,
-            ReferenceError: ReferenceError,
-            SyntaxError: SyntaxError,
-            TypeError: TypeError,
-            URIError: URIError,
-        };
-
-        if (Object.hasOwnProperty.call(map, b)) {
-            return a instanceof map[b];
+        if (Object.hasOwnProperty.call(lion.typeMap, b)) {
+            return a instanceof lion.typeMap[b];
         } else {
             return false;
         }
