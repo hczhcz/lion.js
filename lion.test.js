@@ -360,7 +360,7 @@ var lion_test = function (lion, handler) {
     ], 'lalala~');
 
     // types
-    test(['raw', ['strobj', 'aaa']], 'aaa');
+    test(['raw', ['strObj', 'aaa']], 'aaa');
     test(['dict', 'a', 1, 'b', ['+', 1, 1]], {
         LIONJS: true,
         a: 1,
@@ -368,11 +368,11 @@ var lion_test = function (lion, handler) {
     });
     test(['do',
         ['var', 'arr', ['list', 2, 3, 4]],
-        ['indexset', ['arr'], 1, 5],
+        ['indexSet', ['arr'], 1, 5],
         ['arr']
     ], [2, 5, 4]);
-    test(['objstr', 'hello'], '[object String]');
-    test(['objstr', 'hello', true], 'hello');
+    test(['objStr', 'hello'], '[object String]');
+    test(['objStr', 'hello', true], 'hello');
 
     // js built-ins
     test(['Math', ['floor', ['sqrt', 123456]]], 351);
@@ -395,7 +395,7 @@ var lion_test = function (lion, handler) {
     ], ['hello', 'l']);
     test(['do',
         ['=', 'obj', ['regexp', '.{3}']],
-        ['=', 'str', ['restr', ['obj']]],
+        ['=', 'str', ['reStr', ['obj']]],
         [['String', [':', 'match']], ['str'], ['obj']]
     ], ['.{3']);
 };

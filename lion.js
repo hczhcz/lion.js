@@ -483,7 +483,7 @@ lion.addFunc(lion.std, {
 lion.addFunc(lion.std, {
     // give name to arguments with wrap
     // proto: setarg(wrapper, ...) -> caller
-    setarg: function (env, arr) {
+    setarg: function (env, arr) { // TODO: rename?
         // get arguments
         var caller = lion.coreFunc(
             env,
@@ -1021,20 +1021,20 @@ lion.addFunc(lion.std, {
     },
 
     // convert to a string object
-    // proto: strobj(value) -> new String(value)
-    strobj: function (value) {
+    // proto: strObj(value) -> new String(value)
+    strObj: function (value) {
         return new String(value);
     },
 
     // convert to a boolean object
-    // proto: boolobj(value) -> new Boolean(value)
-    boolobj: function (value) {
+    // proto: boolObj(value) -> new Boolean(value)
+    boolObj: function (value) {
         return new Boolean(value);
     },
 
     // convert to a number object
-    // proto: numobj(value) -> new Number(value)
-    numobj: function (value) {
+    // proto: numObj(value) -> new Number(value)
+    numObj: function (value) {
         return new Number(value);
     },
 
@@ -1141,8 +1141,8 @@ lion.addFunc(lion.std, {
     },
 
     // set member in array
-    // proto: indexset(arr, i, value) -> arr
-    indexset: function (arr, i, value) {
+    // proto: indexSet(arr, i, value) -> arr
+    indexSet: function (arr, i, value) {
         if (arr instanceof Array) {
             arr[Math.floor(i)] = value;
             return arr;
@@ -1154,8 +1154,8 @@ lion.addFunc(lion.std, {
     },
 
     // convert an object to a string
-    // proto: objstr(object, locale) -> string
-    objstr: function (object, locale) {
+    // proto: objStr(object, locale) -> string
+    objStr: function (object, locale) {
         if (locale) {
             return Object.prototype.toLocaleString.call(object);
         } else {
@@ -1186,8 +1186,8 @@ lion.addFunc(lion.std, {
     },
 
     // get the source of a regular expression
-    // proto: restr(re) -> str
-    restr: function (re) {
+    // proto: reStr(re) -> str
+    reStr: function (re) {
         if (!re instanceof RegExp) {
             throw Error('[LION] bad type of regexp');
         }
@@ -1196,8 +1196,8 @@ lion.addFunc(lion.std, {
     },
 
     // get the attributes of a regular expression
-    // proto: reattr(re) -> ['g', 'i', 'm']
-    reattr: function (re) {
+    // proto: reAttr(re) -> ['g', 'i', 'm']
+    reAttr: function (re) {
         if (!re instanceof RegExp) {
             throw Error('[LION] bad type of regexp');
         }
@@ -1218,8 +1218,8 @@ lion.addFunc(lion.std, {
     },
 
     // get the match position of a regular expression
-    // proto: reindex(re) -> RegExp.lastIndex
-    reindex: function (re) {
+    // proto: reIndex(re) -> RegExp.lastIndex
+    reIndex: function (re) {
         if (!re instanceof RegExp) {
             throw Error('[LION] bad type of regexp');
         }
@@ -1228,8 +1228,8 @@ lion.addFunc(lion.std, {
     },
 
     // set the match position of a regular expression
-    // proto: reindex(re, index) -> RegExp.lastIndex
-    reindexset: function (re, index) {
+    // proto: reIndexSet(re, index) -> RegExp.lastIndex
+    reIndexSet: function (re, index) {
         if (!re instanceof RegExp) {
             throw Error('[LION] bad type of regexp');
         }
@@ -1295,7 +1295,7 @@ lion.addFunc(lion.std, {
 
     utc: Date.UTC,
     now: Date.now,
-    dateparse: Date.parse,
+    dateParse: Date.parse,
 
     // object: Object, // new String, new Boolean, new Number
     // function: Function,
