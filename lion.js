@@ -211,16 +211,11 @@ var lion = {
 
             var callee = lion.call(env, ast[0]);
 
-            // if (callee === 'LIONSTD') {
-            //     // call with std
-            //     return lion.call(lion.std, ast[1]);
-            // } else {
-                // call via env.callq
-                return lion.coreFunc(
-                    env,
-                    ['callq', callee, ast]
-                );
-            // }
+            // call via env.callq
+            return lion.coreFunc(
+                env,
+                ['callq', callee, ast]
+            );
         } else {
             // is an object
             return ast;
@@ -1216,8 +1211,8 @@ lion.addFunc(lion.std, {
     },
 
     // set the match position of a regular expression
-    // proto: reIndexSet(re, index) -> RegExp.lastIndex
-    reIndexSet: function (re, index) {
+    // proto: reSeek(re, index) -> RegExp.lastIndex
+    reSeek: function (re, index) {
         if (!re instanceof RegExp) {
             throw Error('[LION] bad type of regexp');
         }

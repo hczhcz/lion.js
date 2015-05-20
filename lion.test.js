@@ -54,6 +54,7 @@ var lion_test = function (lion, handler) {
     test(['has', ['', {a: 1}], 'a'], true);
     test(['has', ['', {a: 1}], 'b'], false);
     test(['has', ['', {a: 1}], 'valueOf'], false);
+    test(['list', ['void', ['+', 1, 1]], ['+', 1, 1]], [null, 2]);
 
     // access
     test(['in', 'test1', ['env']], false);

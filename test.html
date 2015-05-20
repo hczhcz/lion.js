@@ -9,7 +9,7 @@
         'use strict';
 
         var lion_run = function (ast) {
-            return lion.call(lion.std, ast);
+            return lion.call(lion.init(), ast);
         };
 
         var lion_profile = function (count) {
