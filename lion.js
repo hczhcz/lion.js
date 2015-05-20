@@ -1091,6 +1091,23 @@ lion.addFunc(lion.std, {
 }, lion.wrap, lion.W_ARG_AS_ARR);
 
 lion.addFunc(lion.std, {
+    // make a dict (object) and set dict.parent = envq()
+    // proto: mkenv(key, value, ...) -> {key: value, ...}
+    mkenv: function (env, arr) {
+        var newenv = {
+            LIONJS: true,
+            parent: lion.coreFunc(env, ['envq']),
+        };
+
+        for (var i = 0; i < arr.length; i += 2) {
+            lion.coreFunc(newenv, ['setq', arr[i], arr[i + 1]]);
+        }
+
+        return newenv;
+    },
+}, lion.wrap, lion.W_ARG_HAS_ENV | lion.W_ARG_AS_ARR);
+
+lion.addFunc(lion.std, {
     // get the length of array
     // proto: length(arr) -> arr.length
     length: function (arr) {

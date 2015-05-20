@@ -367,6 +367,15 @@ var lion_test = function (lion, handler) {
         a: 1,
         b: 2
     });
+    test(['list',
+        ['var', 'a', 1],
+        [['mkenv'], ['list',
+            ['var', 'a', 2],
+            ['parent', ['a']],
+            ['a']
+        ]],
+        ['a']
+    ], [['quote', 1], [['quote', 2], 1, 2], 1]);
     test(['do',
         ['var', 'arr', ['list', 2, 3, 4]],
         ['indexSet', ['arr'], 1, 5],
