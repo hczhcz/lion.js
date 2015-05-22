@@ -460,25 +460,49 @@ lion.addFunc(lion.std, {
 lion.addFunc(lion.std, {
     // return the AST
     // proto: quote('ast) -> 'ast
-    quote: function (env, ast) {return ast[1];},
+    quote: function (env, ast) {
+        return ast[1];
+    },
 
     // just calling
     // proto: pass(ast) -> (call)^1 -> result
-    pass: function (env, ast) {return lion.call(env, ast[1]);},
+    pass: function (env, ast) {
+        return lion.call(env, ast[1]);
+    },
 
     // lion.call() with wrap
     // proto: eval($ast) -> (call)^2 -> result
-    eval: function (env, ast) {return lion.call(env, lion.call(env, ast[1]));},
+    eval: function (env, ast) {
+        return lion.call(env, lion.call(env, ast[1]));
+    },
+
+    // call a function and modify a value
+    // proto: mut(func, name, ...) -> new value
+    mut: function (env, ast) {
+        var name = lion.call(env, ast[2]);
+        var oldvalue = lion.coreFunc(env, ['getq', name]);
+
+        var args = ast.slice(1);
+        args[1] = oldvalue; // hack
+
+        var newvalue = lion.call(env, args);
+
+        return lion.coreFunc(env, ['setq', name, ['quote', newvalue]]);
+    },
 });
 
 lion.addFunc(lion.std, {
     // string to AST (JSON only)
     // proto: parse(str) -> ast
-    parse: function (json) {return JSON.parse(json);},
+    parse: function (json) {
+        return JSON.parse(json);
+    },
 
     // AST to string (JSON only)
     // proto: stringify(ast) -> str
-    stringify: function (ast) {return JSON.stringify(ast);},
+    stringify: function (ast) {
+        return JSON.stringify(ast);
+    },
 }, lion.wrap);
 
 //// function ////

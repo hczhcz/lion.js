@@ -137,6 +137,12 @@ var lion_test = function (lion, handler) {
     test(['repr', ['quote', ['/', 2333, 10]]], '["/",2333,10]');
     test(['parse', ['repr', ['quote', ['/', 2333, 10]]]], ['/', 2333, 10]);
     test(['eval', ['parse', ['repr', ['quote', ['/', 2333, 10]]]]], 233.3);
+    test(['do',
+        ['var', 'x', 1],
+        ['mut', '+', 'x', 2],
+        ['mut', '*', 'x', 4],
+        ['x']
+    ], 12);
 
     // function
     test([['quote',
