@@ -622,8 +622,8 @@ lion.addFunc(lion.std, {
             var target = arr[i]();
             if (target instanceof Array) {
                 // multi cases
-                for (var j in target) {
-                    if (value == target[Math.floor(j)]) {
+                for (var j = 0; j < target.length; ++j) {
+                    if (value == target[j]) {
                         return arr[i + 1]();
                     }
                 }
@@ -825,7 +825,7 @@ lion.addFunc(lion.std, {
 
         for (var i = 1; i < list.length; ++i) {
             lion.coreFunc(env, ['setq', name1, ['quote', value]]);
-            lion.coreFunc(env, ['setq', name2, ['quote', list[Math.floor(i)]]]);
+            lion.coreFunc(env, ['setq', name2, ['quote', list[i]]]);
 
             value = body();
         }
@@ -847,7 +847,7 @@ lion.addFunc(lion.std, {
         var value = list[list.length - 1];
 
         for (var i = list.length - 2; i >= 0; --i) {
-            lion.coreFunc(env, ['setq', name1, ['quote', list[Math.floor(i)]]]);
+            lion.coreFunc(env, ['setq', name1, ['quote', list[i]]]);
             lion.coreFunc(env, ['setq', name2, ['quote', value]]);
 
             value = body();
@@ -867,10 +867,14 @@ lion.addFunc(lion.std, {
 
         var all = [];
 
-        for (var i in list) {
+        for (var i = 0; i < list.length; ++i) {
             all.push(lion.call(
                 env,
-                [['quote', func], ['quote', list[Math.floor(i)]]]
+                [
+                    ['quote', func],
+                    ['quote', list[i]],
+                    ['quote', i]
+                ]
             ));
         }
 
@@ -889,7 +893,13 @@ lion.addFunc(lion.std, {
         for (var i = 1; i < list.length; ++i) {
             value = lion.call(
                 env,
-                [['quote', func], ['quote', value], ['quote', list[Math.floor(i)]]]
+                [
+                    ['quote', func],
+                    ['quote', value],
+                    ['quote', list[i]],
+                    ['quote', i - 1],
+                    ['quote', i]
+                ]
             );
         }
 
@@ -908,7 +918,13 @@ lion.addFunc(lion.std, {
         for (var i = list.length - 2; i >= 0; --i) {
             value = lion.call(
                 env,
-                [['quote', func], ['quote', list[Math.floor(i)]], ['quote', value]]
+                [
+                    ['quote', func],
+                    ['quote', list[i]],
+                    ['quote', value],
+                    ['quote', i],
+                    ['quote', i + 1]
+                ]
             );
         }
 
