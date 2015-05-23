@@ -742,6 +742,24 @@ lion.addFunc(lion.std, {
         return all;
     },
 
+    // find the first value
+    // proto: find(iter, data, cond) -> first result
+    find: function (env, iter, data, cond) {
+        var name = iter();
+        var list = data();
+
+        if (!list instanceof Array) {
+            throw Error('[LION] bad type of list');
+        }
+
+        for (var i in list) {
+            lion.coreFunc(env, ['setq', name, ['quote', list[Math.floor(i)]]]);
+            if (cond()) {
+                return list[Math.floor(i)];
+            }
+        }
+    },
+
     // filter values
     // proto: filter(iter, data, cond) -> result list
     filter: function (env, iter, data, cond) {
@@ -1108,6 +1126,29 @@ lion.addFunc(lion.std, {
 
         for (var i = 0; i < arr.length; i += 2) {
             lion.coreFunc(newenv, ['setq', arr[i], arr[i + 1]]);
+        }
+
+        return newenv;
+    },
+
+    // make a dict (object) by counting
+    // proto: count(value, ...) -> {value: count, ...}
+    count: function (arr) {
+        var newenv = {
+            LIONJS: true,
+        };
+
+        for (var i = 0; i < arr.length; i += 1) {
+            var count;
+
+            if (Object.hasOwnProperty.call(newenv, arr[i])) { // TODO: lion.core.hasq?
+                count = lion.coreFunc(newenv, ['getq', arr[i]]);
+                count += 1;
+            } else {
+                count = 1;
+            }
+
+            lion.coreFunc(newenv, ['setq', arr[i], count]);
         }
 
         return newenv;

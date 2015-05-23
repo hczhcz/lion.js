@@ -310,6 +310,14 @@ var lion_test = function (lion, handler) {
     test(['filter', 'i', ['range', 5, 0, -1],
         ['&', ['i'], 1]
     ], [5, 3, 1]);
+    test(['for', ['var', 'j', 0], ['<', ['j'], 10], ['mut', '+', 'j', 1],
+        ['find', 'i',
+            ['each', 'i', ['range', 10, 20, 1],
+                ['*', ['i'], ['i']]
+            ],
+            ['==', ['%', ['i'], 10], ['j']]
+        ]
+    ], [100, 121, null, null, 144, 225, 196, null, null, 169]);
     test(['foldl', 'a', 'b', ['list', 1000, 100, 10, 1],
         ['-', ['a'], ['b']]
     ], 889);
@@ -373,6 +381,20 @@ var lion_test = function (lion, handler) {
         a: 1,
         b: 2
     });
+    test(['count', 'a', 'a', 'b', 'b', 'a', 'c', 'a'], {
+        LIONJS: true,
+        a: 4,
+        b: 2,
+        c: 1
+    });
+    test([['count',
+        'true',
+        ['==', ['+', 1, 1], 2],
+        ['>', 'a', 'b'],
+        ['boolean', 1],
+        true,
+        1
+    ], ['getq', 'true']], 4);
     test(['list',
         ['var', 'a', 1],
         [['mkenv'], ['list',
