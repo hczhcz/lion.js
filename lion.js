@@ -1041,6 +1041,8 @@ lion.addFunc(lion.std, {
     // proto: op(a, b) -> a op b
     '&&': function (a, b) {return a() && b();},
     '||': function (a, b) {return a() || b();},
+    '&&&': function (a, b) {return Boolean(a()) && Boolean(b());},
+    '|||': function (a, b) {return Boolean(a()) || Boolean(b());},
     ',': function (a, b) {return a() , b();},
     // '=': function (a, b) {return a() = b();}, // +=, -=, ...
     // new

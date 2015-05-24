@@ -330,6 +330,33 @@ var lion_test = function (lion, handler) {
     test(['map', '~~', ['list', 1, -2, 3, -4]], [-1, 2, -3, 4]);
     test(['reducel', '-', ['list', 1000, 100, 10, 1]], 889);
     test(['reducer', '-', ['list', 1000, 100, 10, 1]], 909);
+    test(['each', 'i', ['list', '&&', '||', '&&&', '|||'],
+        ['reducel', ['i'],
+            ['list',
+                ['+', 1, 1],
+                ['==', 0, false],
+                true
+            ]
+        ]
+    ], [true, 2, true, true]);
+    test(['each', 'i', ['list', '&&', '||', '&&&', '|||'],
+        ['reducel', ['i'],
+            ['list',
+                ['+', -1, 1],
+                ['==', 0, false],
+                false
+            ]
+        ]
+    ], [0, true, false, true]);
+    test(['each', 'i', ['list', '&&', '||', '&&&', '|||'],
+        ['reducel', ['i'],
+            ['list',
+                ['+', -1, 1],
+                ['===', 0, false],
+                false
+            ]
+        ]
+    ], [0, false, false, false]);
 
     // exception
     test(['do',
