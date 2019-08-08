@@ -708,7 +708,7 @@ lion.addFunc(lion.std, {
         var name = iter();
         var list = data();
 
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -728,7 +728,7 @@ lion.addFunc(lion.std, {
         var name = iter();
         var list = data();
 
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -748,7 +748,7 @@ lion.addFunc(lion.std, {
         var name = iter();
         var list = data();
 
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -766,7 +766,7 @@ lion.addFunc(lion.std, {
         var name = iter();
         var list = data();
 
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -817,7 +817,7 @@ lion.addFunc(lion.std, {
         var name2 = iter2();
         var list = data();
 
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -840,7 +840,7 @@ lion.addFunc(lion.std, {
         var name2 = iter2();
         var list = data();
 
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -861,7 +861,7 @@ lion.addFunc(lion.std, {
     // pass each value in a list to a function
     // proto: map(func, list) -> all result
     map: function (env, func, list) {
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -884,7 +884,7 @@ lion.addFunc(lion.std, {
     // left folding using a function
     // proto: reducel(func, list) -> result
     reducel: function (env, func, list) {
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -909,7 +909,7 @@ lion.addFunc(lion.std, {
     // right folding using a function
     // proto: reducer(func, list) -> result
     reducer: function (env, func, list) {
-        if (!list instanceof Array) {
+        if (!(list instanceof Array)) {
             throw Error('[LION] bad type of list');
         }
 
@@ -1271,7 +1271,7 @@ lion.addFunc(lion.std, {
     // get the source of a regular expression
     // proto: reStr(re) -> str
     reStr: function (re) {
-        if (!re instanceof RegExp) {
+        if (!(re instanceof RegExp)) {
             throw Error('[LION] bad type of regexp');
         }
 
@@ -1281,7 +1281,7 @@ lion.addFunc(lion.std, {
     // get the attributes of a regular expression
     // proto: reAttr(re) -> ['g', 'i', 'm']
     reAttr: function (re) {
-        if (!re instanceof RegExp) {
+        if (!(re instanceof RegExp)) {
             throw Error('[LION] bad type of regexp');
         }
 
@@ -1303,7 +1303,7 @@ lion.addFunc(lion.std, {
     // get the match position of a regular expression
     // proto: reIndex(re) -> RegExp.lastIndex
     reIndex: function (re) {
-        if (!re instanceof RegExp) {
+        if (!(re instanceof RegExp)) {
             throw Error('[LION] bad type of regexp');
         }
 
@@ -1313,7 +1313,7 @@ lion.addFunc(lion.std, {
     // set the match position of a regular expression
     // proto: reSeek(re, index) -> RegExp.lastIndex
     reSeek: function (re, index) {
-        if (!re instanceof RegExp) {
+        if (!(re instanceof RegExp)) {
             throw Error('[LION] bad type of regexp');
         }
 

@@ -4,7 +4,7 @@ var lion = require('./lion');
 var lion_test_all = require('./lion.test');
 
 var lion_test = lion_test_all.test;
-var lion_test_repeat = lion_test_all.test_repeat;
+// var lion_test_repeat = lion_test_all.test_repeat;
 var lion_test_timing = lion_test_all.test_timing;
 
 // initialize the environment
